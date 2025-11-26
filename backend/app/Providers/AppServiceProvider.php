@@ -3,12 +3,20 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Auth\Events\Login;
+use Illuminate\Support\Facades\Event;
 
 class AppServiceProvider extends ServiceProvider
 {
     /**
      * Register any application services.
      */
+    protected $listen = [
+        \Illuminate\Auth\Events\Authenticated::class => [
+            \App\Listeners\UpdateLastLoginAt::class,
+        ],
+    ];
+
     public function register(): void
     {
         //
