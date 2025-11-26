@@ -12,13 +12,10 @@ export class Navbar {
   menuOpen = false;
   profileOpen = false;
 
-
-
-  constructor(
-    public theme: ThemeService,
-    private router: Router,
-  ) {}
-get themeSignal() { return this.theme.theme; }
+  constructor(public theme: ThemeService, private router: Router) {}
+  get themeSignal() {
+    return this.theme.theme;
+  }
   toggleMenu() {
     this.menuOpen = !this.menuOpen;
   }
