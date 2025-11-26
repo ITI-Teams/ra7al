@@ -1,0 +1,284 @@
+<p-toast position="top-right" [baseZIndex]="10000" [style]="{ width: '300px' }"></p-toast>
+
+<!-- Hero Section -->
+<div
+  class="bg-gradient-to-br from-orange-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 py-16 px-4 transition-colors duration-300"
+>
+  <div class="max-w-7xl mx-auto text-center">
+    <h1
+      class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4 transition-colors duration-300"
+    >
+      Get in <span class="text-orange-500 dark:text-orange-400">touch</span>
+    </h1>
+    <p
+      class="text-gray-600 dark:text-gray-300 text-lg max-w-2xl mx-auto transition-colors duration-300"
+    >
+      Have a question or need help? We're here to assist you. Send us a message and we'll respond as
+      soon as possible.
+    </p>
+  </div>
+</div>
+<!-- Contact Info Cards -->
+<div class="max-w-7xl mx-auto px-4 -mt-8 mb-16">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div
+      *ngFor="let info of contactInfo"
+      class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg dark:shadow-gray-900/50 p-6 text-center transform hover:scale-105 transition-all duration-300 border border-transparent dark:border-gray-700 relative hover:after:absolute hover:after:bottom-0 hover:after:left-0 hover:after:w-full hover:after:h-2 hover:after:rounded-b-2xl hover:after:shadow-[0_4px_6px_-1px_rgba(249,115,22,0.5),0_2px_4px_-1px_rgba(249,115,22,0.1)] dark:hover:after:shadow-[0_4px_6px_-1px_rgba(249,115,22,0.3),0_2px_4px_-1px_rgba(249,115,22,0.06)]"
+    >
+      <div
+        [class]="
+          info.bgColor +
+          ' dark:' +
+          info.darkBgColor +
+          ' w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 transition-colors duration-300'
+        "
+      >
+        <i
+          [class]="
+            info.icon +
+            ' text-2xl ' +
+            info.iconColor +
+            ' dark:' +
+            info.darkIconColor +
+            ' transition-colors duration-300'
+          "
+        ></i>
+      </div>
+      <h3
+        class="font-bold text-gray-900 dark:text-white text-lg mb-2 transition-colors duration-300"
+      >
+        {{ info.title }}
+      </h3>
+      <p class="text-gray-600 dark:text-gray-400 transition-colors duration-300">
+        {{ info.value }}
+      </p>
+    </div>
+  </div>
+</div>
+<!-- Contact Form Section -->
+<div class="max-w-7xl mx-auto px-4 pb-16">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+    <!-- Left Side - Image & Info -->
+    <div class="space-y-6">
+      <div
+        class="dark:bg-gradient-to-br dark:from-gray-800 dark:to-gray-900 rounded-3xl p-8 relative overflow-hidden transition-colors duration-300 border border-transparent dark:border-gray-700 shadow-lg dark:shadow-gray-900/50"
+      >
+        <!-- Decorative Circles -->
+        <div
+          class="absolute top-0 right-0 w-32 h-32 bg-orange-200 dark:bg-gray-700/50 rounded-full -mr-16 -mt-16 transition-all duration-300"
+        ></div>
+
+        <div
+          class="absolute bottom-0 left-0 w-24 h-24 bg-orange-200 dark:bg-gray-700/50 rounded-full -ml-12 -mb-12 transition-all duration-300"
+        ></div>
+
+        <div class="relative z-10">
+          <h2
+            class="text-3xl font-bold text-gray-900 dark:text-white mb-4 transition-colors duration-300"
+          >
+            Let us help you
+          </h2>
+
+          <p class="text-gray-600 dark:text-gray-400 mb-6 transition-colors duration-300">
+            We're committed to providing the best accommodation experience for students. Your
+            questions and feedback help us improve our services.
+          </p>
+
+          <div class="space-y-4">
+            <!-- Feature 1 -->
+            <div class="flex items-start gap-3">
+              <div
+                class="bg-purple-600 dark:bg-purple-500/80 rounded-full p-2 mt-1 transition-colors duration-300 shadow-md"
+              >
+                <i class="pi pi-check text-white text-sm"></i>
+              </div>
+              <div>
+                <h4
+                  class="font-semibold text-gray-900 dark:text-white transition-colors duration-300"
+                >
+                  Quick Response
+                </h4>
+                <p class="text-gray-600 dark:text-gray-400 text-sm transition-colors duration-300">
+                  We typically respond within 24 hours
+                </p>
+              </div>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="flex items-start gap-3">
+              <div
+                class="bg-orange-500 dark:bg-orange-600/80 rounded-full p-2 mt-1 transition-colors duration-300 shadow-md"
+              >
+                <i class="pi pi-check text-white text-sm"></i>
+              </div>
+              <div>
+                <h4
+                  class="font-semibold text-gray-900 dark:text-white transition-colors duration-300"
+                >
+                  Expert Support
+                </h4>
+                <p class="text-gray-600 dark:text-gray-400 text-sm transition-colors duration-300">
+                  Our team is here to help with any inquiry
+                </p>
+              </div>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="flex items-start gap-3">
+              <div
+                class="bg-green-400 dark:bg-green-500/80 rounded-full p-2 mt-1 transition-colors duration-300 shadow-md"
+              >
+                <i class="pi pi-check text-white text-sm"></i>
+              </div>
+              <div>
+                <h4
+                  class="font-semibold text-gray-900 dark:text-white transition-colors duration-300"
+                >
+                  24/7 Available
+                </h4>
+                <p class="text-gray-600 dark:text-gray-400 text-sm transition-colors duration-300">
+                  Send us a message anytime
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Side - Form -->
+    <div class="form-section">
+      <div
+        class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl dark:shadow-gray-900/50 p-8 md:p-10 transform hover:scale-[1.01] transition-all duration-300 border border-gray-100 dark:border-gray-700"
+      >
+        <h2
+          class="text-3xl font-bold text-gray-900 dark:text-white mb-8 transition-colors duration-300"
+        >
+          Send a Message
+        </h2>
+
+        <form [formGroup]="contactForm" (ngSubmit)="onSubmit()">
+          <!-- Full Name -->
+          <div class="mb-6">
+            <label
+              class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 transition-colors duration-300"
+            >
+              Full Name <span class="text-red-500 dark:text-red-400">*</span>
+            </label>
+            <input
+              type="text"
+              formControlName="name"
+              placeholder="Jane Doe"
+              class="w-full px-4 py-3 rounded-lg text-sm border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:border-orange-500 dark:focus:border-orange-400 focus:ring-2 focus:ring-orange-200 dark:focus:ring-orange-900 transition-all outline-none"
+              [class.border-red-500]="isFieldInvalid('name')"
+            />
+            <small
+              *ngIf="isFieldInvalid('name')"
+              class="text-red-500 dark:text-red-400 text-xs mt-1 block"
+            >
+              {{ getErrorMessage('name') }}
+            </small>
+          </div>
+
+          <!-- Email -->
+          <div class="mb-6">
+            <label
+              class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 transition-colors duration-300"
+            >
+              Email <span class="text-red-500 dark:text-red-400">*</span>
+            </label>
+            <input
+              type="email"
+              formControlName="email"
+              placeholder="janeDoe@gmail.com"
+              class="w-full px-4 py-3 text-sm rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:border-orange-500 dark:focus:border-orange-400 focus:ring-2 focus:ring-orange-200 dark:focus:ring-orange-900 transition-all outline-none"
+              [class.border-red-500]="isFieldInvalid('email')"
+            />
+            <small
+              *ngIf="isFieldInvalid('email')"
+              class="text-red-500 dark:text-red-400 text-xs mt-1 block"
+            >
+              {{ getErrorMessage('email') }}
+            </small>
+          </div>
+
+          <!-- Phone -->
+          <div class="mb-6">
+            <label
+              class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 transition-colors duration-300"
+            >
+              Phone Number <span class="text-red-500 dark:text-red-400">*</span>
+            </label>
+            <input
+              type="tel"
+              formControlName="phone"
+              placeholder="01234567890"
+              class="w-full px-4 py-3 rounded-lg text-sm border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:border-orange-500 dark:focus:border-orange-400 focus:ring-2 focus:ring-orange-200 dark:focus:ring-orange-900 transition-all outline-none"
+              [class.border-red-500]="isFieldInvalid('phone')"
+            />
+            <small
+              *ngIf="isFieldInvalid('phone')"
+              class="text-red-500 dark:text-red-400 text-xs mt-1 block"
+            >
+              {{ getErrorMessage('phone') }}
+            </small>
+          </div>
+
+          <!-- Subject -->
+          <div class="mb-6">
+            <label
+              class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 transition-colors duration-300"
+            >
+              Subject <span class="text-red-500 dark:text-red-400">*</span>
+            </label>
+            <input
+              type="text"
+              formControlName="subject"
+              placeholder="Your Subject"
+              class="w-full px-4 py-3 rounded-lg text-sm border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:border-orange-500 dark:focus:border-orange-400 focus:ring-2 focus:ring-orange-200 dark:focus:ring-orange-900 transition-all outline-none"
+              [class.border-red-500]="isFieldInvalid('subject')"
+            />
+            <small
+              *ngIf="isFieldInvalid('subject')"
+              class="text-red-500 dark:text-red-400 text-xs mt-1 block"
+            >
+              {{ getErrorMessage('subject') }}
+            </small>
+          </div>
+
+          <!-- Message -->
+          <div class="mb-6">
+            <label
+              class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 transition-colors duration-300"
+            >
+              Message <span class="text-red-500 dark:text-red-400">*</span>
+            </label>
+            <textarea
+              formControlName="message"
+              placeholder="Type Your Message..."
+              rows="5"
+              class="w-full h-60 px-4 py-3 rounded-lg text-sm border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:border-orange-500 dark:focus:border-orange-400 focus:ring-2 focus:ring-orange-200 dark:focus:ring-orange-900 transition-all outline-none resize-none"
+              [class.border-red-500]="isFieldInvalid('message')"
+            ></textarea>
+            <small
+              *ngIf="isFieldInvalid('message')"
+              class="text-red-500 dark:text-red-400 text-xs mt-1 block"
+            >
+              {{ getErrorMessage('message') }}
+            </small>
+          </div>
+
+          <!-- Submit Button -->
+          <button
+            type="submit"
+            [disabled]="isSubmitting"
+            class="w-full bg-gradient-to-r from-orange-600 to-orange-700 hover:from-orange-700 hover:to-orange-800 dark:from-orange-500 dark:to-orange-600 dark:hover:from-orange-600 dark:hover:to-orange-700 text-white font-semibold py-4 rounded-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            <i class="pi pi-send" [class.pi-spin]="isSubmitting"></i>
+            <span>{{ isSubmitting ? 'Sending...' : 'Send Message' }}</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
