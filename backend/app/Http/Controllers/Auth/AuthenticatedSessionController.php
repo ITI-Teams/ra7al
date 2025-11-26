@@ -27,6 +27,10 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
+        if (!$request->user()->hasAnyRole(['super', 'admin'])) {
+            auth()->logout();
+            return redirect()->route('login')->withErrors(['email' => 'You do not have permission to access the dashboard.']);
+        }
 
         return redirect()->intended(route('dashboard', absolute: false));
     }

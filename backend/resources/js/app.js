@@ -1,39 +1,48 @@
-import Alpine from "alpinejs";
+import Alpine from 'alpinejs'
+window.Alpine = Alpine
 
-window.Alpine = Alpine;
-
-window.themeData = function () {
-    return {
-        dark: false,
+document.addEventListener('alpine:init', () => {
+    Alpine.store('sidebar', {
         open: true,
 
         init() {
-            const saved = localStorage.getItem('theme');
-            const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            this.dark = saved ? saved === 'dark' : systemDark;
-
-            this.applyTheme();
+            const saved = localStorage.getItem('sidebarOpen')
+            this.open = saved !== null ? JSON.parse(saved) : true
         },
 
-        toggleDarkMode() {
-            this.dark = !this.dark;
-            if(this.dark){
-                document.body.classList.add('dark');
-            } else {
-                document.body.classList.remove('dark');
-            }
-            localStorage.setItem('theme', this.dark ? 'dark' : 'light');
-            this.applyTheme();
+        toggle() {
+            this.open = !this.open
+            localStorage.setItem('sidebarOpen', this.open)
+        }
+    })
+
+    Alpine.store('theme', {
+        dark: false,
+
+        init() {
+            const saved = localStorage.getItem('theme')
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+
+            this.dark = saved ? saved === 'dark' : prefersDark
+            this.apply()
         },
 
-        applyTheme() {
+        toggle() {
+            this.dark = !this.dark
+            this.apply()
+            localStorage.setItem('theme', this.dark ? 'dark' : 'light')
+        },
+
+        apply() {
             if (this.dark) {
-                document.documentElement.classList.add('dark');
+                document.documentElement.classList.add('dark')
             } else {
-                document.documentElement.classList.remove('dark');
+                document.documentElement.classList.remove('dark')
             }
         }
-    }
-}
+    })
+})
 
-Alpine.start();
+document.addEventListener('DOMContentLoaded', () => {
+    Alpine.start()
+})
