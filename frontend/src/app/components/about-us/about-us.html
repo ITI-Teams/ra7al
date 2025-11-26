@@ -1,1 +1,36 @@
-<p>about-us works!</p>
+<section class="relative w-full bg-white dark:bg-gray-900 transition-colors duration-300 py-16 overflow-hidden">
+  <!-- Decorative Dots -->
+  <div class="absolute top-15 right-10 -mt-8 -mr-8">
+    <svg width="100" height="100" fill="none" viewBox="0 0 100 100">
+      <defs>
+        <pattern id="dots-pattern" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
+          <circle cx="2" cy="2" r="2" class="fill-purple-500 dark:fill-purple-300"/>
+        </pattern>
+      </defs>
+      <rect width="100" height="100" fill="url(#dots-pattern)"/>
+    </svg>
+  </div>
+
+  <div class="mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center justify-center gap-3 relative z-10">
+
+    <!-- Left: Photo -->
+    <div class="md:w-2/5 flex justify-center md:justify-start">
+      <img
+        src="asset/about-us.png"
+        alt="About Us"
+        class="max-w-sm mx-auto w-full h-[32rem] rounded-lg shadow-lg object-cover"
+      />
+    </div>
+
+    <!-- Right: Content -->
+    <div class="md:w-3/5 flex flex-col justify-center gap-4">
+      <h2 class="text-md font-bold text-[#9233FA]">
+        About the company
+      </h2>
+      <p class="text-gray-700 text-md max-w-[60%] dark:text-gray-300 leading-relaxed">
+        We are a real estate company that manages all the properties on our platform, offering students secure accommodations and the perfect roommate match. No middlemen, no surprises—just trusted service from start to finish.
+      </p>
+    </div>
+
+  </div>
+</section>
