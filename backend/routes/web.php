@@ -20,7 +20,20 @@ Route::get('/', function () {
 Route::middleware(['auth', 'role:super,admin'])->group(function () {
     Route::get('/dashboard', [DashboardController::class,'index'])->name('dashboard');
     Route::resource('messages', MessageController::class);
-    Route::resource('mails', MailController::class);
+    /// Mails Routes
+//    Route::get('/mail', [MailController::class, 'index'])->name('mails.index');
+//    Route::get('/api/mailtrap/message/{id}', function ($id, \App\Services\MailtrapService $mailtrap) {
+//        return $mailtrap->getMessage($id);
+//    });
+//    Route::get('/mail/send-test', [MailController::class, 'sendTestEmail'])->name('mail.send.test');
+//    Route::post('/mail/send-to-user', [MailController::class, 'sendToUser'])->name('mail.send.user');
+//    Route::delete('/mail/{id}', [MailController::class, 'destroy'])->name('mail.destroy');
+    Route::prefix('mail')->group(function () {
+        Route::get('/', [MailController::class, 'index'])->name('mails.index');
+        Route::get('/message/{id}', [MailController::class, 'getMessage'])->name('mail.message');
+        Route::post('/send', [MailController::class, 'sendEmail'])->name('mail.send');
+    });
+
     Route::get('/users/trashed', [UserController::class, 'trashed'])->name('users.trashed');
     Route::resource('users', UserController::class);
     Route::get('users/{id}/restore', [UserController::class, 'restore'])->name('users.restore');
