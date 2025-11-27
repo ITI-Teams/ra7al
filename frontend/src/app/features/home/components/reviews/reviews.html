@@ -1,0 +1,59 @@
+<section class="w-full py-16 bg-white dark:bg-gray-900 transition-colors">
+
+  <!-- Header -->
+  <div class="text-center md:text-start max-w-7xl mx-auto mb-12">
+    <p class="text-purple-600 font-semibold text-lg dark:text-purple-400">
+      What do Students Say
+    </p>
+    <h2 class="font-semibold text-lg text-gray-900 dark:text-white">
+      About Us
+    </h2>
+  </div>
+
+  <!-- Reviews Grid -->
+  <div class="max-w-7xl mx-auto px-6 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+
+    @for (r of reviews; track r.id) {
+      <div class="">
+        <div class="bg-white min-h-[14rem] dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-200 p-6 flex flex-col relative">
+
+          <!-- Top Left Icon -->
+          <i class="fa-solid fa-quote-left text-purple-600 dark:text-purple-400 text-3xl mb-4"></i>
+
+          <!-- Stars -->
+          <div class="flex justify-center mb-3">
+            @for (star of [].constructor(r.stars); track $index) {
+              <i class="fa-solid fa-star text-[#14E076] text-lg"></i>
+            }
+          </div>
+
+          <!-- Review Text -->
+          <p class="text-gray-700 dark:text-gray-300 text-sm leading-relaxed mb-6">
+            "{{ r.review }}"
+          </p>
+
+        </div>
+        <!-- User Info -->
+        <div class="flex items-center mt-auto p-4 border-gray-300 dark:border-gray-700">
+
+          <img
+            [src]="r.image"
+            class="w-12 h-12 rounded-full object-cover mr-3"
+          />
+
+          <div>
+            <h3 class="text-gray-900 dark:text-white font-semibold">
+              {{ r.name }}
+            </h3>
+            <p class="text-gray-500 dark:text-gray-400 text-sm -mt-1">
+              {{ r.college }}
+            </p>
+          </div>
+
+        </div>
+      </div>
+    }
+
+  </div>
+
+</section>
