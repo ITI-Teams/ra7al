@@ -13,26 +13,30 @@ return new class extends Migration
     {
         Schema::create('properties', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignId('location_id')->constrained('areas');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+
+            // CRITICAL: This creates the relationship with areas table
+            $table->foreignId('location_id')->constrained('areas')->onDelete('restrict');
 
             $table->string('title');
-            $table->text('description')->nullable();
+            $table->text('description');
             $table->decimal('price', 10, 2);
-            $table->string('address')->nullable();
-
-            $table->enum('gender_requirement', ['male', 'female', 'any'])->default('any');
+            $table->string('address');
+            $table->enum('gender_requirement', ['male', 'female', 'mixed'])->default('mixed');
             $table->boolean('smoking_allowed')->default(false);
-
             $table->integer('rooms_count')->default(1);
             $table->integer('bathrooms_count')->default(1);
-            $table->integer('size')->nullable();
-
-            $table->date('available_from')->nullable();
-
-            $table->enum('status', ['pending', 'approved', 'rejected', 'active', 'archived'])->default('pending');
-
+            $table->integer('size')->nullable()->comment('Size in square meters');
+            $table->date('available_from');
+            $table->enum('status', ['available', 'rented', 'pending', 'inactive'])->default('available');
             $table->timestamps();
+
+            // Indexes for better query performance
+            $table->index('user_id');
+            $table->index('location_id');
+            $table->index('status');
+            $table->index('available_from');
+            $table->index('price');
         });
     }
 

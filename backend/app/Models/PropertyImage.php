@@ -11,17 +11,30 @@ class PropertyImage extends Model
 
     protected $fillable = [
         'property_id',
-        'image_path',
-        'is_cover',
+        'path',
+        'priority',
     ];
 
-    protected $casts = [
-        'is_cover' => 'boolean',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'priority' => 'integer',
+        ];
+    }
 
-    // Relationship
+    /**
+     * Get the property this image belongs to.
+     */
     public function property()
     {
-        return $this->belongsTo(Property::class);
+        return $this->belongsTo(Property::class, 'property_id');
+    }
+
+    /**
+     * Get the full URL of the image.
+     */
+    public function getUrlAttribute()
+    {
+        return asset('storage/' . $this->path);
     }
 }
