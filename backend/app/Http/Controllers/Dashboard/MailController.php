@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Mail\TestMail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class MailController extends Controller
 {
@@ -61,5 +63,17 @@ class MailController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function sendTestEmail()
+    {
+        $details = [
+            'title' => 'Hello from Laravel',
+            'body' => 'This is a test email!'
+        ];
+
+        Mail::to('abdullahshokr70@gmail.com')->send(new TestMail($details));
+
+        return 'Email Sent!';
     }
 }

@@ -20,6 +20,7 @@ Route::get('/', function () {
 Route::middleware(['auth', 'role:super,admin'])->group(function () {
     Route::get('/dashboard', [DashboardController::class,'index'])->name('dashboard');
     Route::resource('messages', MessageController::class);
+    Route::get('/mails/send', [MailController::class, 'sendTestEmail'])->name('mails.send');
     Route::resource('mails', MailController::class);
     Route::get('/users/trashed', [UserController::class, 'trashed'])->name('users.trashed');
     Route::resource('users', UserController::class);
