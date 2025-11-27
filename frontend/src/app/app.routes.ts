@@ -1,13 +1,15 @@
 import { Routes } from '@angular/router';
 import { Home } from './features/home/home';
-import { Contactus } from './components/contactus/contactus';
+import { AboutUs } from './features/about-us/about-us';
+
+
 export const routes: Routes = [
   {
     path: '',
     component: Home,
   },
-  {
-    path: 'contactus',
-    component: Contactus,
-  },
+   {
+    path: 'about',
+    component: AboutUs,
+  }
 ];
