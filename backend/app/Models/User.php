@@ -52,4 +52,18 @@ class User extends Authenticatable
     }
 
     protected $dates = ['deleted_at'];
+    public function properties()
+    {
+        return $this->hasMany(Property::class);
+    }
+
+    public function savedProperties()
+    {
+        return $this->belongsToMany(Property::class, 'saved_properties');
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(PropertyComment::class);
+    }
 }
