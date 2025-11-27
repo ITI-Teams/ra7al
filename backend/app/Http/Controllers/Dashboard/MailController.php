@@ -3,38 +3,75 @@
 namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
-use App\Mail\TestMail;
+use App\Mail\ProfessionalMail;
 use App\Models\User;
-use App\Services\MailtrapService;
+use App\Services\GmailService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 
 class MailController extends Controller
 {
-    public function index(Request $request, MailtrapService $mailtrap)
+    protected $gmailService;
+
+    public function __construct(GmailService $gmailService)
+    {
+        $this->gmailService = $gmailService;
+    }
+
+    public function index(Request $request)
     {
         $page = (int) $request->get('page', 1);
+        $perPage = 15;
 
-        $messages = $mailtrap->getMessages($page);
+        $messages = $this->gmailService->getMessages($page, $perPage);
 
-        $perPage = 30;
         $total = $messages['total_count'] ?? 0;
         $totalPages = ceil($total / $perPage);
 
         return view('dashboard.mail.index', [
             'messages' => $messages,
             'currentPage' => $page,
-            'totalPages' => $totalPages
+            'totalPages' => $totalPages,
         ]);
     }
 
-    public function getMessage($id, MailtrapService $mailtrap)
+    public function getMessage($id)
     {
-        $message = $mailtrap->getMessage($id);
-        return response()->json($message);
+        try {
+            $message = $this->gmailService->getMessage($id);
+
+            if (isset($message['error'])) {
+                return response()->json([
+                    'error' => $message['error'],
+                    'subject' => 'Error Loading Message',
+                    'from_email' => 'Error',
+                    'text_body' => 'Unable to load message content.'
+                ]);
+            }
+
+            $message = array_merge([
+                'subject' => 'No Subject',
+                'from_email' => 'No Sender',
+                'from_name' => 'No Sender',
+                'date' => now()->toDateTimeString(),
+                'html_body' => null,
+                'text_body' => 'No content available',
+                'is_read' => true
+            ], $message);
+
+            return response()->json($message);
+
+        } catch (\Exception $e) {
+            \Log::error('Error fetching message: ' . $e->getMessage());
+            return response()->json([
+                'error' => 'Failed to fetch message: ' . $e->getMessage(),
+                'subject' => 'Error',
+                'from_email' => 'Error',
+                'text_body' => 'Unable to load message content.'
+            ], 500);
+        }
     }
 
-    // دالة جديدة لإرسال البريد الإلكتروني
     public function sendEmail(Request $request)
     {
         $request->validate([
@@ -45,30 +82,16 @@ class MailController extends Controller
 
         $details = [
             'title' => $request->subject,
-            'body' => $request->message
+            'body' => $request->message,
+            'type' => 'professional'
         ];
 
         try {
-            Mail::to($request->to_email)->send(new TestMail($details));
+            Mail::to($request->to_email)->send(new ProfessionalMail($details));
             return back()->with('success', 'Email sent successfully to ' . $request->to_email);
         } catch (\Exception $e) {
             return back()->with('error', 'Failed to send email: ' . $e->getMessage());
         }
-    }
-
-    // دالة جديدة لإرسال البريد الإلكتروني
-
-
-    public function sendTestEmail()
-    {
-        $details = [
-            'title' => 'Hello from Laravel',
-            'body' => 'This is a test email!'
-        ];
-
-        Mail::to('abdullahshokr70@gmail.com')->send(new TestMail($details));
-
-        return back()->with('success', 'Test email sent successfully!');
     }
 
     public function sendToUser(Request $request)
@@ -83,21 +106,15 @@ class MailController extends Controller
 
         $details = [
             'title' => $request->subject,
-            'body' => $request->message
+            'body' => $request->message,
+            'type' => 'professional'
         ];
 
-        Mail::to($user->email)->send(new TestMail($details));
-
-        return back()->with('success', 'Email sent to ' . $user->name);
-    }
-
-    public function show(string $id)
-    {
-        return "Message ID: " . $id;
-    }
-
-    public function destroy(string $id)
-    {
-        return back()->with('success', 'Message deleted!');
+        try {
+            Mail::to($user->email)->send(new ProfessionalMail($details));
+            return back()->with('success', 'Email sent to ' . $user->name);
+        } catch (\Exception $e) {
+            return back()->with('error', 'Failed to send email: ' . $e->getMessage());
+        }
     }
 }

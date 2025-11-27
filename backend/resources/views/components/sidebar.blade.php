@@ -61,7 +61,7 @@
             </li>
             <li>
                 <a href="{{ route('users.index') }}"
-                class="sidebar-item {{ request()->routeIs('users.*') ? 'active' : '' }}">
+                class="sidebar-item {{ request()->routeIs('users.*') && !(request()->routeIs('users.assign')) ? 'active' : '' }}">
                     <i class="fas fa-users"></i>
                     <span x-show="$store.sidebar.open"
                         x-transition:enter="transition ease-out duration-300"
@@ -71,17 +71,50 @@
                     </span>
                 </a>
             </li>
-            <li>
-                <a href="{{ route('roles.index') }}"
-                class="sidebar-item {{ request()->routeIs('roles.*') || request()->routeIs('permissions.*') ? 'active' : '' }}">
-                    <i class="fas fa-shield-halved"></i>
-                    <span x-show="$store.sidebar.open"
-                        x-transition:enter="transition ease-out duration-300"
-                        x-transition:enter-start="opacity-0 transform -translate-x-2"
-                        x-transition:enter-end="opacity-100 transform translate-x-0">
+            <!-- Roles & Permissions with dropdown -->
+            <li x-data="{ open: {{ request()->routeIs('roles.*') || request()->routeIs('permissions.*')|| request()->routeIs('users.assign') ? 'true' : 'false' }} }">
+                <div class="flex items-center justify-between">
+                    <a href="javascript:void(0)"
+                       @click="open = !open"
+                       class="sidebar-item {{ request()->routeIs('roles.*') || request()->routeIs('permissions.*')|| request()->routeIs('users.assign') ? 'active' : '' }}">
+                        <i class="fas fa-shield-halved"></i>
+                        <span x-show="$store.sidebar.open"
+                              x-transition:enter="transition ease-out duration-300"
+                              x-transition:enter-start="opacity-0 transform -translate-x-2"
+                              x-transition:enter-end="opacity-100 transform translate-x-0">
                         Roles & Permissions
                     </span>
-                </a>
+                    </a>
+                    <button @click="open = !open" x-show="$store.sidebar.open"
+                            class="mr-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                        <i :class="open ? 'fas fa-chevron-down rotate-180' : 'fas fa-chevron-right'"></i>
+                    </button>
+                </div>
+
+                <!-- Submenu -->
+                <div x-show="$store.sidebar.open && open" x-collapse class="ml-6 mt-2 space-y-1">
+                    <a href="{{ route('roles.index') }}"
+                       class="sidebar-item {{ request()->routeIs('roles.*') ? 'active' : '' }} text-sm py-2">
+                        <i class="fas fa-users-gear"></i>
+                        <span x-show="$store.sidebar.open">
+                        Roles
+                    </span>
+                    </a>
+                    <a href="{{ route('permissions.index') }}"
+                       class="sidebar-item {{ request()->routeIs('permissions.*') ? 'active' : '' }} text-sm py-2">
+                        <i class="fas fa-key"></i>
+                        <span x-show="$store.sidebar.open">
+                        Permissions
+                    </span>
+                    </a>
+                    <a href="{{ route('users.assign') }}"
+                       class="sidebar-item {{ request()->routeIs('users.assign') ? 'active' : '' }} text-sm py-2">
+                        <i class="fas fa-user-tag"></i>
+                        <span x-show="$store.sidebar.open">
+                        Assign Access
+                    </span>
+                    </a>
+                </div>
             </li>
             <li>
                 <a href="{{ route('profile.edit') }}"
