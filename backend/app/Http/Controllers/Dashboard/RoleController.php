@@ -4,62 +4,75 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $roles = Role::with('permissions')->paginate(15);
+        return view('dashboard.roles.index', compact('roles'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        $permissions = Permission::all();
+        return view('dashboard.roles.create', compact('permissions'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|unique:roles,name',
+            'permissions' => 'array'
+        ]);
+
+        $role = Role::create(['name' => $request->name]);
+
+        if ($request->permissions) {
+            $permissionModels = Permission::whereIn('id', $request->permissions)->get();
+            $role->syncPermissions($permissionModels);
+        }
+
+
+        return redirect()->route('roles.index')->with('toast', ['type' =>'success', 'message' =>'Role created successfully']);
+
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function edit(Role $role)
     {
-        //
+        $permissions = Permission::all();
+        $rolePermissions = $role->permissions->pluck('id')->toArray();
+        return view('dashboard.roles.edit', compact('role', 'permissions', 'rolePermissions'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(Request $request, Role $role)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|unique:roles,name,' . $role->id,
+            'permissions' => 'array'
+        ]);
+
+        $role->update(['name' => $request->name]);
+
+        if ($request->permissions) {
+            $permissionModels = Permission::whereIn('id', $request->permissions)->get();
+            $role->syncPermissions($permissionModels);
+        } else {
+            $role->syncPermissions([]);
+        }
+        return redirect()->route('roles.index')->with('toast', ['type' =>'success', 'message' =>'Role updated successfully']);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy(Role $role)
     {
-        //
-    }
+        if ($role->name === 'super-admin') {
+            return back()->with('error', 'Cannot delete super admin role');
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $role->delete();
+
+        return redirect()->route('roles.index')->with('toast', ['type' =>'success', 'message' =>'Role deleted']);
     }
 }
