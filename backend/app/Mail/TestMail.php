@@ -22,7 +22,9 @@ class TestMail extends Mailable
 
     public function build()
     {
-        return $this->subject('Test Email')
-            ->view('emails.test');
+        return $this->subject($this->details['title'])
+            ->view('emails.test')
+            ->with('details', $this->details);
     }
 }
+
