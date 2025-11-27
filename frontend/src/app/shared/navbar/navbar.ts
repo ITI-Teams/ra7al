@@ -1,21 +1,31 @@
 import { Component, OnDestroy, OnInit, signal, computed, HostListener } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import { ThemeService } from '../../core/services/themeService/theme-service';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.html',
-  imports: [RouterLink],
+  imports: [RouterLink , NgClass],
   standalone: true,
 })
 export class Navbar {
   menuOpen = false;
   profileOpen = false;
 
-  constructor(public theme: ThemeService, private router: Router) {}
-  get themeSignal() {
-    return this.theme.theme;
+isFixed = false;
+
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    this.isFixed = scrollTop > 0; // fixed if scroll > 0
   }
+
+  constructor(
+    public theme: ThemeService,
+    private router: Router,
+  ) {}
+get themeSignal() { return this.theme.theme; }
   toggleMenu() {
     this.menuOpen = !this.menuOpen;
   }
