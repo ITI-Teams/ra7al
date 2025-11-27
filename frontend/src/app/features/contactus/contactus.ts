@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
-//import { InputTextareaModule } from 'primeng/inputtextarea';
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
@@ -16,7 +15,6 @@ import { Footer } from '../../shared/footer/footer';
     CommonModule,
     ReactiveFormsModule,
     InputTextModule,
-    //InputTextareaModule,
     ButtonModule,
     ToastModule,
     Navbar,
