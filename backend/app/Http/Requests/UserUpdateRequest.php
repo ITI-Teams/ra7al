@@ -1,0 +1,33 @@
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class UserUpdateRequest extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     */
+    public function rules(): array
+    {
+        return [
+            'name'     => 'sometimes|string|min:3|max:50',
+            'email'    => 'sometimes|email|unique:users,email,' . $this->user,
+            'phone'    => ['sometimes', 'regex:/^(010|011|012|015)[0-9]{8}$/'],
+            'password' => 'nullable|min:8|confirmed',
+            'role'     => 'sometimes|exists:roles,name',
+            'avatar'   => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ];
+    }
+}
