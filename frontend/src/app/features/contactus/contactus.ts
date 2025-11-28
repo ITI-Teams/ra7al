@@ -6,8 +6,7 @@ import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Navbar } from '../../shared/navbar/navbar';
-import { Footer } from '../../shared/footer/footer';
+
 @Component({
   selector: 'app-contactus',
   standalone: true,
@@ -17,8 +16,7 @@ import { Footer } from '../../shared/footer/footer';
     InputTextModule,
     ButtonModule,
     ToastModule,
-    Navbar,
-    Footer,
+
   ],
   providers: [MessageService],
   templateUrl: './contactus.html',

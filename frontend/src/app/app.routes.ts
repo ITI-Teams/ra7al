@@ -4,22 +4,14 @@ import { AboutUs } from './features/about-us/about-us';
 import { Contactus } from './features/contactus/contactus';
 import { OwnerDashboard } from './features/owner-dashboard/owner-dashboard';
 import { Apartments } from './features/owner-dashboard/components/apartments/apartments';
+import {FilterPage} from './features/filter-page/filter-page';
 
 export const routes: Routes = [
-  {
-    path: '',
-    component: Home,
-  },
-  {
-    path: 'aboutus',
-    component: AboutUs,
-  },
-  {
-    path: 'contactus',
-    component: Contactus,
-  },
-  {
-    path: 'owner-dashboard',
+  { path: '', component: Home,},
+  { path: 'aboutus', component: AboutUs,},
+  { path: 'contactus', component: Contactus,},
+  { path: 'filter', component: FilterPage,},
+  { path: 'owner-dashboard',
     component: OwnerDashboard,
     children: [
       { path: '', redirectTo: 'apartments', pathMatch: 'full' },
