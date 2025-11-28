@@ -1,0 +1,252 @@
+<div class="min-h-screen w-full bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 px-4 sm:px-6 lg:px-8 py-8 transition-all duration-300">
+
+  <!-- Title and Search Section -->
+  <div class="mb-8 animate-fade-in">
+    <h1 class="text-3xl sm:text-4xl font-bold mb-3 text-gray-900 dark:text-white">
+      Find Your Perfect <span class="text-amber-600 dark:text-amber-400">Student Accommodation</span>
+    </h1>
+    <p class="text-base sm:text-lg text-gray-600 dark:text-gray-300 mb-6">
+      Search through {{totalRecords()}} available accommodations near universities across Egypt
+    </p>
+
+    <!-- Search Bar -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-4 border border-gray-200 dark:border-gray-700">
+      <div class="flex flex-col sm:flex-row gap-4">
+        <div class="flex-1 relative">
+          <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+            </svg>
+          </span>
+          <input
+            type="text"
+            [(ngModel)]="searchQuery"
+            (input)="onSearch()"
+            placeholder="Search by university, city, area, or location..."
+            class="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 dark:focus:ring-amber-400 dark:focus:border-amber-400 transition-all duration-300 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
+          />
+          <button
+            *ngIf="searchQuery"
+            (click)="clearSearch()"
+            class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors duration-200">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+            </svg>
+          </button>
+        </div>
+        <button
+          (click)="onSearch()"
+          class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center gap-2 min-w-[120px] justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+          </svg>
+          Search
+        </button>
+      </div>
+
+      <!-- Search Tips -->
+      <div class="mt-3 flex flex-wrap gap-2 text-xs text-gray-500 dark:text-gray-400">
+        <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-lg">Try: Cairo University</span>
+        <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-lg">Try: Alexandria</span>
+        <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-lg">Try: Maadi</span>
+        <span class="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-lg">Try: Nasr City</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results Info and Sort -->
+  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4
+              bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700">
+    <p class="text-gray-700 dark:text-gray-200 font-medium">
+      Found <span class="font-bold text-amber-600 dark:text-amber-400">{{totalRecords()}}</span> accommodations
+      <span *ngIf="searchQuery()" class="text-sm text-gray-500 dark:text-gray-400">
+        for "{{searchQuery()}}"
+      </span>
+    </p>
+    <div class="flex items-center gap-3 w-full sm:w-auto">
+      <span class="text-sm text-gray-600 dark:text-gray-300 font-medium whitespace-nowrap">
+        Sort by:
+      </span>
+      <p-select
+        [options]="sortOptions"
+        [(ngModel)]="selectedSort"
+        (ngModelChange)="onSortChange()"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Recommended"
+        class="custom-select flex-1 sm:w-64"
+        [showClear]="true">
+      </p-select>
+    </div>
+  </div>
+
+  <!-- Listings Grid - Wider Cards -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
+
+    <article
+      *ngFor="let item of paginatedListings()"
+      class="group bg-white dark:bg-gray-800 rounded-3xl shadow-lg overflow-hidden
+             hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2
+             border border-gray-200 dark:border-gray-700 hover:border-amber-300 dark:hover:border-amber-600">
+
+      <!-- Image -->
+      <div class="relative overflow-hidden h-60">
+        <img
+          [src]="item.image"
+          [alt]="item.title"
+          class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+
+        <!-- Overlay Gradient -->
+        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+        <!-- Bills Included Badge -->
+        <span
+          *ngIf="item.bitsIncluded"
+          class="absolute top-3 left-3 px-3 py-1.5 bg-green-500 text-white text-xs font-bold rounded-full
+                 shadow-lg backdrop-blur-sm flex items-center gap-1">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+          </svg>
+          Bills Included
+        </span>
+
+        <!-- Available Spots -->
+        <span
+          class="absolute top-3 right-3 px-3 py-1.5 bg-blue-500 text-white text-xs font-bold rounded-full
+                 shadow-lg backdrop-blur-sm animate-pulse flex items-center gap-1">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
+          </svg>
+          {{item.availableSpots}} {{item.availableSpots === 1 ? 'Spot' : 'Spots'}} Available
+        </span>
+
+        <!-- University Badge -->
+        <span
+          class="absolute bottom-3 left-3 px-3 py-1.5 bg-amber-500 text-white text-xs font-bold rounded-full
+                 shadow-lg backdrop-blur-sm">
+          {{item.university}}
+        </span>
+      </div>
+
+      <!-- Content -->
+      <div class="p-6">
+        <!-- Title and Location -->
+        <h3 class="font-bold text-xl mb-2 text-gray-900 dark:text-white line-clamp-2
+                   group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors duration-200">
+          {{ item.title }}
+        </h3>
+        <p class="text-sm text-gray-600 dark:text-gray-300 mb-4 line-clamp-1 flex items-center gap-1">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+          </svg>
+          {{ item.location }} • {{ item.city }}
+        </p>
+
+        <!-- Features Grid -->
+        <div class="grid grid-cols-4 gap-2 mb-4 text-xs">
+          <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg text-center">
+            <div class="text-lg mb-1">🏠</div>
+            <div class="text-gray-700 dark:text-gray-300 font-semibold">
+              {{ item.rooms }} Room{{ item.rooms > 1 ? 's' : '' }}
+            </div>
+          </div>
+          <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg text-center">
+            <div class="text-lg mb-1">🛁</div>
+            <div class="text-gray-700 dark:text-gray-300 font-semibold">
+              {{ item.baths }} Bath{{ item.baths > 1 ? 's' : '' }}
+            </div>
+          </div>
+          <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg text-center">
+            <div class="text-lg mb-1">🛏️</div>
+            <div class="text-gray-700 dark:text-gray-300 font-semibold">
+              {{ item.beds }} Bed{{ item.beds > 1 ? 's' : '' }}
+            </div>
+          </div>
+          <div class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg text-center">
+            <div class="text-lg mb-1" [innerHTML]="getTypeIcon(item.accommodationType)"></div>
+            <div class="text-gray-700 dark:text-gray-300 font-semibold text-xs">
+              {{ item.accommodationType === 'SHARED' ? 'Shared' : 'Private' }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Additional Info -->
+        <div class="flex flex-wrap gap-2 mb-4">
+          <span class="inline-flex items-center gap-1 px-3 py-1.5 bg-indigo-50 dark:bg-indigo-900/30
+                       text-indigo-700 dark:text-indigo-300 text-sm font-semibold rounded-full">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+            </svg>
+            {{ item.gender }}
+          </span>
+          <span *ngIf="item.petsAllowed" class="inline-flex items-center gap-1 px-3 py-1.5 bg-green-50 dark:bg-green-900/30
+                       text-green-700 dark:text-green-300 text-sm font-semibold rounded-full">
+            🐾 Pets OK
+          </span>
+          <span *ngIf="!item.smokingAllowed" class="inline-flex items-center gap-1 px-3 py-1.5 bg-red-50 dark:bg-red-900/30
+                       text-red-700 dark:text-red-300 text-sm font-semibold rounded-full">
+            🚭 No Smoking
+          </span>
+        </div>
+
+        <!-- Price and Action -->
+        <div class="flex justify-between items-center pt-4 border-t border-gray-100 dark:border-gray-700">
+          <div>
+            <p class="font-bold text-2xl text-amber-600 dark:text-amber-400">
+              ${{ item.price }}
+            </p>
+            <span class="text-xs text-gray-500 dark:text-gray-400">/month</span>
+          </div>
+          <button
+            class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700
+                   text-white px-6 py-3 rounded-xl text-sm font-bold
+                   transition-all duration-300 shadow-md hover:shadow-lg
+                   transform hover:scale-105 flex items-center gap-2">
+            View Details
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <!-- No Results -->
+  <div *ngIf="filteredListings().length === 0"
+       class="text-center py-16 bg-white dark:bg-gray-800 rounded-3xl shadow-lg
+              border border-gray-200 dark:border-gray-700">
+    <div class="text-7xl mb-6 animate-bounce">🏠</div>
+    <h3 class="text-2xl font-bold mb-3 text-gray-900 dark:text-white">
+      No Accommodations Found
+    </h3>
+    <p class="text-gray-600 dark:text-gray-300 mb-6 text-lg">
+      {{ searchQuery() ? 'Try adjusting your search terms' : 'Start by searching for a university or city' }}
+    </p>
+    <button
+      *ngIf="searchQuery()"
+      class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700
+             text-white px-8 py-3 rounded-xl font-bold shadow-lg hover:shadow-xl
+             transition-all duration-300 transform hover:scale-105 flex items-center gap-2 mx-auto"
+      (click)="clearSearch()">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
+      </svg>
+      Clear Search
+    </button>
+  </div>
+
+  <!-- Pagination -->
+  <div *ngIf="filteredListings().length > 0"
+       class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6
+              border border-gray-200 dark:border-gray-700">
+    <p-paginator
+      [first]="(currentPage() - 1) * rows()"
+      [rows]="rows()"
+      [totalRecords]="totalRecords()"
+      (onPageChange)="onPageChange($event)"
+      [rowsPerPageOptions]="[3,9, 18]"
+      styleClass="custom-paginator">
+    </p-paginator>
+  </div>
+</div>

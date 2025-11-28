@@ -7,17 +7,26 @@
   --color-primary: #615fff;
   --color-secondary: #10b981;
   --font-family-sans: 'Helvetica Neue', Arial, sans-serif;
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-900: #111827;
 }
 
 body {
-  @apply bg-gray-50 text-gray-900 transition-colors duration-300 ease-in-out font-family-sans tracking-[0.1em];
+  background-color: var(--color-gray-50);
+  color: var(--color-gray-900);
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+  font-family: var(--font-family-sans);
+  letter-spacing: 0.025em;
 }
 
 .dark body {
-  @apply bg-gray-900 text-gray-100;
+  background-color: var(--color-gray-900);
+  color: var(--color-gray-100);
 }
 
-button:hover , a:hover{
-  cursor:pointer;
+button:hover, a:hover {
+  cursor: pointer;
 }
-
