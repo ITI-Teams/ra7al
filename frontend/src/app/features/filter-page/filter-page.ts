@@ -1,16 +1,10 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, computed, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
-// PrimeNG v20
 import { SliderModule } from 'primeng/slider';
 import { SelectModule } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
-import { DividerModule } from 'primeng/divider';
-import { PaginatorModule } from 'primeng/paginator';
-import { CheckboxModule } from 'primeng/checkbox';
-import { InputNumberModule } from 'primeng/inputnumber';
+import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 
 interface Listing {
   title: string;
@@ -40,6 +34,7 @@ interface FilterState {
   petsAllowed: boolean | null;
   smokingAllowed: boolean | null;
 }
+
 @Component({
   selector: 'app-filter-page',
   standalone: true,
@@ -49,30 +44,27 @@ interface FilterState {
     SliderModule,
     SelectModule,
     ButtonModule,
-    CardModule,
-    DividerModule,
     PaginatorModule,
-    CheckboxModule,
-    InputNumberModule,
   ],
   templateUrl: './filter-page.html',
   styleUrl: './filter-page.css',
 })
-export class FilterPage implements OnInit{
-  // Filters state
+export class FilterPage implements OnInit {
+
+  showMoreFilters = signal(false);
+
   filters = signal<FilterState>({
     university: null,
     propertyType: null,
     gender: null,
     priceRange: [100, 700],
     studentsRange: [1, 8],
-    bedsRange: [1, 4],
-    roomsRange: [1, 4],
+    bedsRange: [1, 10],
+    roomsRange: [1, 6],
     petsAllowed: null,
     smokingAllowed: null,
   });
 
-  // Dropdown options
   universities = [
     { label: 'Cairo University', value: 'CU' },
     { label: 'Ain Shams University', value: 'ASU' },
@@ -80,46 +72,80 @@ export class FilterPage implements OnInit{
   ];
 
   propertyTypes = [
-    { label: 'Shared apartment', value: 'SHARED' },
-    { label: 'Private accommodation', value: 'PRIVATE' },
+    { label: 'Shared Apartment', value: 'SHARED' },
+    { label: 'Private Accommodation', value: 'PRIVATE' },
   ];
 
   genders = [
-    { label: 'Males', value: 'M' },
-    { label: 'Females', value: 'F' },
+    { label: 'Males', value: 'Males' },
+    { label: 'Females', value: 'Females' },
+    { label: 'Mixed', value: 'Mixed' },
   ];
 
   booleanOptions = [
+    { label: 'Any', value: null },
     { label: 'Allowed', value: true },
-    { label: 'Not allowed', value: false },
+    { label: 'Not Allowed', value: false },
   ];
 
-  // Pagination
-  currentPage = 1;
-  rows = 6;
-  totalRecords = 0;
+  sortOptions = [
+    { label: 'Price: Low to High', value: 'price_asc' },
+    { label: 'Price: High to Low', value: 'price_desc' },
+  ];
 
-  // Listings data
+  currentPage = signal(1);
+  rows = signal(6);
+
+  selectedSort: string | null = null;
+
   allListings: Listing[] = [];
-  filteredListings: Listing[] = [];
 
-  // Show more filters state
-  showMoreFilters = false;
+  filteredListings = computed(() => {
+    const filtered = this.applyFilters(this.allListings, this.filters());
+    return filtered;
+  });
+
+  sortedListings = computed(() => {
+    const list = [...this.filteredListings()];
+
+    if (this.selectedSort === 'price_asc') {
+      const sorted = list.sort((a, b) => a.price - b.price);
+      return sorted;
+    } else if (this.selectedSort === 'price_desc') {
+      const sorted = list.sort((a, b) => b.price - a.price);
+      return sorted;
+    }
+
+    return list;
+  });
+
+  paginatedListings = computed(() => {
+    const start = (this.currentPage() - 1) * this.rows();
+    const end = start + this.rows();
+    const result = this.sortedListings().slice(start, end);
+    return result;
+  });
+
+  totalRecords = computed(() => this.filteredListings().length);
+
+  constructor() {
+    effect(() => {
+    });
+  }
 
   ngOnInit() {
     this.loadListings();
-    this.applyFilters();
   }
 
   loadListings() {
     this.allListings = [
       {
-        title: 'Shared apartment (2/6 open spots)',
-        location: 'Elhai elsabe, naser city',
+        title: 'Shared Apartment (2/6 spots available)',
+        location: '7th District, Nasr City',
         rooms: 3,
         baths: 1,
         beds: 6,
-        gender: 'Required females',
+        gender: 'Females',
         price: 200,
         bitsIncluded: true,
         image: 'https://images.pexels.com/photos/271743/pexels-photo-271743.jpeg',
@@ -131,91 +157,192 @@ export class FilterPage implements OnInit{
       },
       {
         title: 'Private Studio',
-        location: 'Downtown Cairo',
+        location: 'Downtown, Cairo',
         rooms: 1,
         baths: 1,
         beds: 1,
         gender: 'Mixed',
         price: 500,
         bitsIncluded: true,
-        image: 'https://images.pexels.com/photos/271743/pexels-photo-271743.jpeg',
+        image: 'https://images.pexels.com/photos/1457842/pexels-photo-1457842.jpeg',
         university: 'CU',
         accommodationType: 'PRIVATE',
         petsAllowed: true,
         smokingAllowed: false,
         availableSpots: 1,
       },
+      {
+        title: 'Luxury Shared Apartment',
+        location: 'Maadi, Cairo',
+        rooms: 4,
+        baths: 2,
+        beds: 8,
+        gender: 'Males',
+        price: 350,
+        bitsIncluded: true,
+        image: 'https://images.pexels.com/photos/2631746/pexels-photo-2631746.jpeg',
+        university: 'ASU',
+        accommodationType: 'SHARED',
+        petsAllowed: true,
+        smokingAllowed: false,
+        availableSpots: 3,
+      },
+      {
+        title: 'Room in Villa',
+        location: 'Rehab, Cairo',
+        rooms: 2,
+        baths: 1,
+        beds: 2,
+        gender: 'Females',
+        price: 400,
+        bitsIncluded: false,
+        image: 'https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg',
+        university: 'AU',
+        accommodationType: 'PRIVATE',
+        petsAllowed: false,
+        smokingAllowed: false,
+        availableSpots: 1,
+      },
+      {
+        title: 'Modern Apartment',
+        location: 'Zamalek, Cairo',
+        rooms: 2,
+        baths: 1,
+        beds: 2,
+        gender: 'Mixed',
+        price: 450,
+        bitsIncluded: true,
+        image: 'https://images.pexels.com/photos/276724/pexels-photo-276724.jpeg',
+        university: 'CU',
+        accommodationType: 'PRIVATE',
+        petsAllowed: true,
+        smokingAllowed: true,
+        availableSpots: 1,
+      },
+      {
+        title: 'Student Dormitory',
+        location: 'Giza, Cairo',
+        rooms: 5,
+        baths: 2,
+        beds: 10,
+        gender: 'Males',
+        price: 180,
+        bitsIncluded: true,
+        image: 'https://images.pexels.com/photos/1571468/pexels-photo-1571468.jpeg',
+        university: 'ASU',
+        accommodationType: 'SHARED',
+        petsAllowed: false,
+        smokingAllowed: false,
+        availableSpots: 4,
+      },
+      {
+        title: 'Cozy Studio',
+        location: 'Heliopolis, Cairo',
+        rooms: 1,
+        baths: 1,
+        beds: 1,
+        gender: 'Females',
+        price: 300,
+        bitsIncluded: true,
+        image: 'https://images.pexels.com/photos/271743/pexels-photo-271743.jpeg',
+        university: 'CU',
+        accommodationType: 'PRIVATE',
+        petsAllowed: false,
+        smokingAllowed: false,
+        availableSpots: 1,
+      },
+      {
+        title: 'Large Shared Apartment',
+        location: 'Mohandessin, Cairo',
+        rooms: 4,
+        baths: 2,
+        beds: 6,
+        gender: 'Males',
+        price: 250,
+        bitsIncluded: true,
+        image: 'https://images.pexels.com/photos/1457842/pexels-photo-1457842.jpeg',
+        university: 'ASU',
+        accommodationType: 'SHARED',
+        petsAllowed: true,
+        smokingAllowed: false,
+        availableSpots: 3,
+      },
     ];
-    this.totalRecords = this.allListings.length;
   }
 
-  applyFilters() {
-    const currentFilters = this.filters();
+  applyFilters(list: Listing[], filters: FilterState): Listing[] {
 
-    this.filteredListings = this.allListings.filter(listing => {
-      // University filter
-      if (currentFilters.university && listing.university !== currentFilters.university) {
+    const result = list.filter(item => {
+      if (filters.university && item.university !== filters.university) {
         return false;
       }
 
-      // Property type filter
-      if (currentFilters.propertyType && listing.accommodationType !== currentFilters.propertyType) {
+      // Property Type
+      if (filters.propertyType && item.accommodationType !== filters.propertyType) {
         return false;
       }
 
-      // Gender filter
-      if (currentFilters.gender) {
-        const genderMap = { 'M': 'Males', 'F': 'Females' };
-        if (!listing.gender.toLowerCase().includes(genderMap[currentFilters.gender as 'M' | 'F'].toLowerCase())) {
-          return false;
-        }
-      }
-
-      // Price filter
-      if (listing.price < currentFilters.priceRange[0] || listing.price > currentFilters.priceRange[1]) {
+      // Gender
+      if (filters.gender && item.gender !== filters.gender) {
         return false;
       }
 
-      // Students filter (using available spots)
-      if (listing.availableSpots < currentFilters.studentsRange[0] ||
-        listing.availableSpots > currentFilters.studentsRange[1]) {
+      // Price Range
+      if (item.price < filters.priceRange[0] || item.price > filters.priceRange[1]) {
         return false;
       }
 
-      // Beds filter
-      if (listing.beds < currentFilters.bedsRange[0] || listing.beds > currentFilters.bedsRange[1]) {
+      // Students Range
+      if (item.availableSpots < filters.studentsRange[0] || item.availableSpots > filters.studentsRange[1]) {
         return false;
       }
 
-      // Rooms filter
-      if (listing.rooms < currentFilters.roomsRange[0] || listing.rooms > currentFilters.roomsRange[1]) {
+      // Beds Range
+      if (item.beds < filters.bedsRange[0] || item.beds > filters.bedsRange[1]) {
         return false;
       }
 
-      // Pets filter
-      if (currentFilters.petsAllowed !== null && listing.petsAllowed !== currentFilters.petsAllowed) {
+      // Rooms Range
+      if (item.rooms < filters.roomsRange[0] || item.rooms > filters.roomsRange[1]) {
         return false;
       }
 
-      // Smoking filter
-      if (currentFilters.smokingAllowed !== null && listing.smokingAllowed !== currentFilters.smokingAllowed) {
+      if (filters.petsAllowed !== null && item.petsAllowed !== filters.petsAllowed) {
         return false;
       }
 
+      if (filters.smokingAllowed !== null && item.smokingAllowed !== filters.smokingAllowed) {
+        return false;
+      }
       return true;
     });
-
-    this.totalRecords = this.filteredListings.length;
-    this.currentPage = 1;
+    return result;
   }
 
   onFilterChange() {
-    this.applyFilters();
+    this.currentPage.set(1);
+    this.forceUpdate()
   }
 
-  onPageChange(event: any) {
-    this.currentPage = event.page + 1;
-    this.rows = event.rows;
+  updateFilter(key: keyof FilterState, value: any) {
+    this.filters.update(current => ({ ...current, [key]: value }));
+    this.onFilterChange();
+  }
+
+  toggleMoreFilters() {
+    this.showMoreFilters.update(value => !value);
+  }
+
+  onSortChange() {
+    this.currentPage.set(1);
+    this.filters.update(current => ({ ...current }));
+    this.forceUpdate();
+  }
+
+  onPageChange(e: PaginatorState) {
+    this.currentPage.set((e.page ?? 0) + 1);
+    this.rows.set(e.rows ?? 6);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   resetFilters() {
@@ -225,17 +352,26 @@ export class FilterPage implements OnInit{
       gender: null,
       priceRange: [100, 700],
       studentsRange: [1, 8],
-      bedsRange: [1, 4],
-      roomsRange: [1, 4],
+      bedsRange: [1, 10],
+      roomsRange: [1, 6],
       petsAllowed: null,
       smokingAllowed: null,
     });
-    this.applyFilters();
+    this.selectedSort = null;
+    this.currentPage.set(1);
   }
 
-  get paginatedListings() {
-    const start = (this.currentPage - 1) * this.rows;
-    const end = start + this.rows;
-    return this.filteredListings.slice(start, end);
+  forceUpdate() {
+    this.filters.update(current => ({ ...current }));
+  }
+  getOptionIcon(value: any): string {
+    switch(value) {
+      case true:
+        return 'pi pi-check text-green-500';
+      case false:
+        return 'pi pi-times text-red-500';
+      default:
+        return 'pi pi-circle text-gray-500';
+    }
   }
 }
