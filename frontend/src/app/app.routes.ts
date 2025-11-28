@@ -6,19 +6,19 @@ import { OwnerDashboard } from './features/owner-dashboard/owner-dashboard';
 import { Apartments } from './features/owner-dashboard/components/apartments/apartments';
 import { StudentProfile } from './features/student-profile/student-profile';
 import { OwnerProfile } from './features/owner-profile/owner-profile';
+import {FilterPage} from './features/filter-page/filter-page';
 
 export const routes: Routes = [
-  {
-    path: '',
-    component: Home,
-  },
-  {
-    path: 'aboutus',
-    component: AboutUs,
-  },
-  {
-    path: 'contactus',
-    component: Contactus,
+  { path: '', component: Home,},
+  { path: 'aboutus', component: AboutUs,},
+  { path: 'contactus', component: Contactus,},
+  { path: 'filter', component: FilterPage,},
+  { path: 'owner-dashboard',
+    component: OwnerDashboard,
+    children: [
+      { path: '', redirectTo: 'apartments', pathMatch: 'full' },
+      { path: 'apartments', component: Apartments },
+    ],
   },
 
     {
@@ -28,13 +28,5 @@ export const routes: Routes = [
     {
     path: 'profile-owner',
     component:OwnerProfile ,
-  },
-  {
-    path: 'owner-dashboard',
-    component: OwnerDashboard,
-    children: [
-      { path: '', redirectTo: 'apartments', pathMatch: 'full' },
-      { path: 'apartments', component: Apartments },
-    ],
   },
 ];

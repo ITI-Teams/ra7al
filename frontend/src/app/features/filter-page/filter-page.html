@@ -1,0 +1,321 @@
+<div class="min-h-screen w-full bg-gray-50 dark:bg-gray-900 px-4 sm:px-6 py-8 transition-colors duration-300">
+  <!-- Title Section -->
+  <div class="mb-8">
+    <h2 class="text-2xl font-bold mb-2 dark:text-white">
+      Found {{totalRecords}} student accommodations near
+      <span class="text-amber-600 dark:text-amber-500 font-bold">Cairo University</span>
+    </h2>
+    <p class="text-gray-600 dark:text-gray-300">Find your perfect student accommodation</p>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+
+    <!-- Filters Sidebar -->
+    <div class="lg:col-span-1">
+      <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 sticky top-6 transition-all duration-300 hover:shadow-xl">
+
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-6">
+          <h3 class="text-xl font-bold dark:text-white">Filters</h3>
+          <button
+            (click)="resetFilters()"
+            class="text-sm text-amber-600 dark:text-amber-500 hover:text-amber-700 dark:hover:text-amber-400 font-medium transition-colors">
+            Reset All
+          </button>
+        </div>
+
+        <!-- University -->
+        <div class="mb-6">
+          <label class="block text-sm font-medium mb-3 dark:text-gray-200">University</label>
+          <p-select
+            [options]="universities"
+            [(ngModel)]="filters().university"
+            (ngModelChange)="onFilterChange()"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Select University"
+            class="w-full"
+            [showClear]="true">
+          </p-select>
+        </div>
+
+        <!-- Accommodation Type -->
+        <div class="mb-6">
+          <label class="block text-sm font-medium mb-3 dark:text-gray-200">Accommodation type</label>
+          <p-select
+            [options]="propertyTypes"
+            [(ngModel)]="filters().propertyType"
+            (ngModelChange)="onFilterChange()"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Select Type"
+            class="w-full"
+            [showClear]="true">
+          </p-select>
+        </div>
+
+        <!-- Gender -->
+        <div class="mb-6">
+          <label class="block text-sm font-medium mb-3 dark:text-gray-200">Gender</label>
+          <p-select
+            [options]="genders"
+            [(ngModel)]="filters().gender"
+            (ngModelChange)="onFilterChange()"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Select Gender"
+            class="w-full"
+            [showClear]="true">
+          </p-select>
+        </div>
+
+        <!-- Price Range -->
+        <div class="mb-6">
+          <label class="block text-sm font-medium mb-3 dark:text-gray-200">Price / month</label>
+          <p-slider
+            [(ngModel)]="filters().priceRange"
+            (ngModelChange)="onFilterChange()"
+            [range]="true"
+            [min]="100"
+            [max]="700"
+            class="mb-2">
+          </p-slider>
+          <div class="flex justify-between text-sm text-gray-600 dark:text-gray-300">
+            <span>${{filters().priceRange[0]}}</span>
+            <span>${{filters().priceRange[1]}}</span>
+          </div>
+        </div>
+
+        <!-- Number of Students -->
+        <div class="mb-6">
+          <label class="block text-sm font-medium mb-3 dark:text-gray-200">Number of students</label>
+          <p-slider
+            [(ngModel)]="filters().studentsRange"
+            (ngModelChange)="onFilterChange()"
+            [range]="true"
+            [min]="1"
+            [max]="8"
+            class="mb-2">
+          </p-slider>
+          <div class="flex justify-between text-sm text-gray-600 dark:text-gray-300">
+            <span>{{filters().studentsRange[0]}}</span>
+            <span>{{filters().studentsRange[1]}}</span>
+          </div>
+        </div>
+
+        <!-- More Filters Toggle -->
+        <button
+          (click)="showMoreFilters = !showMoreFilters"
+          class="w-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600
+                 text-gray-700 dark:text-gray-200 p-3 rounded-xl mb-4 transition-all duration-300
+                 flex items-center justify-between">
+          <span>More filters</span>
+          <span [class]="showMoreFilters ? 'rotate-180' : ''" class="transition-transform duration-300">▼</span>
+        </button>
+
+        <!-- More Filters (Collapsible) -->
+        <div [class]="['overflow-hidden transition-all duration-300', showMoreFilters ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0']">
+
+          <!-- Beds -->
+          <div class="mb-6">
+            <label class="block text-sm font-medium mb-3 dark:text-gray-200">Beds</label>
+            <p-slider
+              [(ngModel)]="filters().bedsRange"
+              (ngModelChange)="onFilterChange()"
+              [range]="true"
+              [min]="1"
+              [max]="4"
+              class="mb-2">
+            </p-slider>
+            <div class="flex justify-between text-sm text-gray-600 dark:text-gray-300">
+              <span>{{filters().bedsRange[0]}}</span>
+              <span>{{filters().bedsRange[1]}}</span>
+            </div>
+          </div>
+
+          <!-- Rooms -->
+          <div class="mb-6">
+            <label class="block text-sm font-medium mb-3 dark:text-gray-200">Rooms</label>
+            <p-slider
+              [(ngModel)]="filters().roomsRange"
+              (ngModelChange)="onFilterChange()"
+              [range]="true"
+              [min]="1"
+              [max]="4"
+              class="mb-2">
+            </p-slider>
+            <div class="flex justify-between text-sm text-gray-600 dark:text-gray-300">
+              <span>{{filters().roomsRange[0]}}</span>
+              <span>{{filters().roomsRange[1]}}</span>
+            </div>
+          </div>
+
+          <!-- Pets -->
+          <div class="mb-6">
+            <label class="block text-sm font-medium mb-3 dark:text-gray-200">Pets</label>
+            <p-select
+              [options]="booleanOptions"
+              [(ngModel)]="filters().petsAllowed"
+              (ngModelChange)="onFilterChange()"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Select Option"
+              class="w-full"
+              [showClear]="true">
+            </p-select>
+          </div>
+
+          <!-- Smoking -->
+          <div class="mb-4">
+            <label class="block text-sm font-medium mb-3 dark:text-gray-200">Smoking</label>
+            <p-select
+              [options]="booleanOptions"
+              [(ngModel)]="filters().smokingAllowed"
+              (ngModelChange)="onFilterChange()"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Select Option"
+              class="w-full"
+              [showClear]="true">
+            </p-select>
+          </div>
+        </div>
+
+        <!-- Results Button -->
+        <button
+          pButton
+          label="Show results ({{totalRecords}})"
+          class="w-full bg-amber-600 hover:bg-amber-700 border-amber-600 mt-4 py-3 text-white"
+          (click)="applyFilters()">
+        </button>
+      </div>
+    </div>
+
+    <!-- Listings Section -->
+    <div class="lg:col-span-3">
+
+      <!-- Sort and Results Info -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+        <p class="text-gray-600 dark:text-gray-300">
+          Showing {{paginatedListings.length}} of {{totalRecords}} results
+        </p>
+        <div class="flex items-center gap-4">
+          <p-select
+            placeholder="Sort by"
+            [options]="[
+              {label: 'Price: Low to High', value: 'price_asc'},
+              {label: 'Price: High to Low', value: 'price_desc'},
+              {label: 'Newest First', value: 'newest'}
+            ]"
+            optionLabel="label"
+            optionValue="value"
+            class="w-48">
+          </p-select>
+        </div>
+      </div>
+
+      <!-- Listings Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
+
+        <div
+          *ngFor="let item of paginatedListings"
+          class="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden
+                 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+
+          <!-- Image -->
+          <div class="relative overflow-hidden">
+            <img
+              [src]="item.image"
+              [alt]="item.title"
+              class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300" />
+
+            <!-- Bills Included Badge -->
+            <span
+              *ngIf="item.bitsIncluded"
+              class="absolute top-3 left-3 px-3 py-1 bg-green-500 text-white text-xs font-medium rounded-full
+                     shadow-lg">
+              Bills included
+            </span>
+
+            <!-- Available Spots -->
+            <span
+              class="absolute top-3 right-3 px-3 py-1 bg-blue-500 text-white text-xs font-medium rounded-full shadow-lg">
+              {{item.availableSpots}} spots left
+            </span>
+          </div>
+
+          <!-- Content -->
+          <div class="p-5">
+            <!-- Title and Location -->
+            <h3 class="font-bold text-lg mb-2 dark:text-white line-clamp-1 group-hover:text-amber-600 dark:group-hover:text-amber-500 transition-colors">
+              {{ item.title }}
+            </h3>
+            <p class="text-sm text-gray-600 dark:text-gray-300 mb-3 line-clamp-1">
+              📍 {{ item.location }}
+            </p>
+
+            <!-- Features -->
+            <div class="flex flex-wrap gap-3 mb-3 text-sm text-gray-700 dark:text-gray-300">
+              <span class="flex items-center gap-1">
+                🏠 {{ item.rooms }} Room{{item.rooms > 1 ? 's' : ''}}
+              </span>
+              <span class="flex items-center gap-1">
+                🛁 {{ item.baths }} Bath{{item.baths > 1 ? 's' : ''}}
+              </span>
+              <span class="flex items-center gap-1">
+                🛏️ {{ item.beds }} Bed{{item.beds > 1 ? 's' : ''}}
+              </span>
+            </div>
+
+            <!-- Gender -->
+            <p class="text-sm text-gray-700 dark:text-gray-300 mb-4">
+              👤 {{ item.gender }}
+            </p>
+
+            <!-- Price and Action -->
+            <div class="flex justify-between items-center">
+              <div>
+                <p class="font-bold text-xl text-amber-600 dark:text-amber-500">
+                  ${{ item.price }}
+                  <span class="text-sm font-normal text-gray-600 dark:text-gray-400">/month</span>
+                </p>
+              </div>
+              <button
+                pButton
+                label="View Details"
+                class="bg-transparent hover:bg-amber-50 dark:hover:bg-gray-700
+                       text-amber-600 dark:text-amber-500 border border-amber-600 dark:border-amber-500 text-sm py-2">
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- No Results -->
+      <div *ngIf="filteredListings.length === 0"
+           class="text-center py-12 bg-white dark:bg-gray-800 rounded-2xl shadow-lg">
+        <div class="text-6xl mb-4">🏠</div>
+        <h3 class="text-xl font-bold mb-2 dark:text-white">No accommodations found</h3>
+        <p class="text-gray-600 dark:text-gray-300 mb-4">Try adjusting your filters to find more results</p>
+        <button
+          pButton
+          label="Reset Filters"
+          class="bg-amber-600 hover:bg-amber-700 border-amber-600 text-white"
+          (click)="resetFilters()">
+        </button>
+      </div>
+
+      <!-- Pagination -->
+      <div *ngIf="filteredListings.length > 0" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-4">
+        <p-paginator
+          [first]="(currentPage - 1) * rows"
+          [rows]="rows"
+          [totalRecords]="totalRecords"
+          (onPageChange)="onPageChange($event)"
+          [rowsPerPageOptions]="[6, 12, 18]"
+          styleClass="border-0">
+        </p-paginator>
+      </div>
+    </div>
+  </div>
+</div>

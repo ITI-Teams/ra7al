@@ -6,6 +6,7 @@ import { Footer } from "../shared/footer/footer";
 
 @Component({
   selector: 'app-layout',
+  standalone: true,
   imports: [RouterOutlet, Navbar, Footer],
   templateUrl: './layout.html',
   styleUrl: './layout.css',
