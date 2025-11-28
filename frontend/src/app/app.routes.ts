@@ -7,12 +7,14 @@ import { Apartments } from './features/owner-dashboard/components/apartments/apa
 import { StudentProfile } from './features/student-profile/student-profile';
 import { OwnerProfile } from './features/owner-profile/owner-profile';
 import {FilterPage} from './features/filter-page/filter-page';
+import {Search} from './features/search/search';
 
 export const routes: Routes = [
   { path: '', component: Home,},
   { path: 'aboutus', component: AboutUs,},
   { path: 'contactus', component: Contactus,},
   { path: 'filter', component: FilterPage,},
+  { path: 'search', component: Search,},
   { path: 'owner-dashboard',
     component: OwnerDashboard,
     children: [

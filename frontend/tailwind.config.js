@@ -1,10 +1,17 @@
 module.exports = {
-  darkMode: 'class',
   content: [
     "./src/**/*.{html,ts}",
   ],
+  darkMode: 'class',
   theme: {
     extend: {
+      colors: {
+        primary: '#615fff',
+        secondary: '#10b981',
+      },
+      fontFamily: {
+        sans: ['Helvetica Neue', 'Arial', 'sans-serif'],
+      },
       keyframes: {
         spinSlow: {
           '0%': { transform: 'rotate(0deg)' },
@@ -16,7 +23,4 @@ module.exports = {
       },
     },
   },
-  plugins: [],
 }
-
-
