@@ -5,6 +5,7 @@ import { Loader } from "./shared/loader/loader";
 
 @Component({
   selector: 'app-root',
+  standalone: true,
   imports: [Layout, Loader],
   templateUrl: './app.html',
   styleUrl: './app.css'
