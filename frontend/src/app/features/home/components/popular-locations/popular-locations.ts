@@ -17,6 +17,7 @@ interface LocationCard {
 }
 
 @Component({
+  standalone: true,
   selector: 'app-popular-locations',
   templateUrl: './popular-locations.html',
 })
