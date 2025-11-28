@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-about-us',
-  imports: [Navbar, Footer],
+  imports: [],
   templateUrl: './about-us.html',
   styleUrl: './about-us.css',
 })

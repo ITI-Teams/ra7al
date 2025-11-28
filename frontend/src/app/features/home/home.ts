@@ -10,7 +10,7 @@ import { AboutUs } from './components/about-us/about-us';
 
 @Component({
   selector: 'app-home',
-  imports: [Hero, About, OurService, HowItWork, LetsMatch, PopularLocations, Reviews],
+  imports: [Hero, AboutUs, OurService, HowItWork, LetsMatch, PopularLocations, Reviews],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
