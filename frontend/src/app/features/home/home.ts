@@ -5,12 +5,14 @@ import { HowItWork } from "./components/how-it-work/how-it-work";
 import { LetsMatch } from "./components/lets-match/lets-match";
 import { PopularLocations } from "./components/popular-locations/popular-locations";
 import { Reviews } from "./components/reviews/reviews";
-import { AboutUs } from './components/about-us/about-us';
+import { AboutUs } from "./components/about-us/about-us";
+
 
 
 @Component({
   selector: 'app-home',
-  imports: [Hero, About, OurService, HowItWork, LetsMatch, PopularLocations, Reviews],
+  standalone: true,
+  imports: [Hero, AboutUs, OurService, HowItWork, LetsMatch, PopularLocations, Reviews],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
