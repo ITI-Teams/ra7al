@@ -25,25 +25,46 @@
       <li><a routerLink="/Roommates" class="hover:text-[#FA9233] dark:hover:text-white transition">Roommates</a></li>
       <li><a routerLink="/Recommended" class="hover:text-[#FA9233] dark:hover:text-white transition">Recommended</a></li>
       <li><a routerLink="/aboutus" class="hover:text-[#FA9233] dark:hover:text-white transition">About</a></li>
-      <li><a routerLink="/contact" class="hover:text-[#FA9233] dark:hover:text-white transition">Contact</a></li>
+      <li><a routerLink="/contactus" class="hover:text-[#FA9233] dark:hover:text-white transition">Contact</a></li>
     </ul>
   </div>
 
   <!-- RIGHT SIDE -->
 <div class="flex px-6 py-2 items-center space-x-4">
   <!-- Login / Register -->
-  <div class="hidden md:flex items-center gap-2">
+  <div *ngIf="!isLoggedIn" class="hidden md:flex items-center gap-2">
     <button
-      (click)="goLogin()"
+      routerLink="/login"
       class="text-sm font-semibold uppercase border border-[#852EE4] text-white bg-[#852EE4] px-5 py-2 rounded-md hover:bg-[#7330d1] transition">
       Login
     </button>
 
     <button
-      (click)="goRegister()"
+      routerLink="/register"
       class="text-sm font-semibold uppercase text-white bg-[#852EE4] px-5 py-2 rounded-md hover:bg-[#7330d1] transition">
       Register
     </button>
+  </div>
+
+  <div *ngIf="isLoggedIn" class="hidden md:flex items-center gap-4">
+    <!-- Notification Icon -->
+    <button class="text-white p-2 rounded-full hover:bg-white/10">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+      </svg>
+    </button>
+
+    <!-- Chat Icon -->
+    <button class="text-white p-2 rounded-full hover:bg-white/10">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4-.8L3 20l1.2-4.2A7.963 7.963 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+      </svg>
+    </button>
+
+    <!-- User Avatar -->
+    <a [routerLink]="user?.role === 'owner' ? '/profile-owner' : '/profile-student'">
+      <img [src]="avatarUrl()" alt="avatar" class="w-10 h-10 rounded-full object-cover" />
+    </a>
   </div>
 
   <!-- Theme Toggle -->
@@ -90,20 +111,36 @@
         <a routerLink="/Roommates" class="hover:text-[#FA9233] dark:hover:text-white transition">Roommates</a>
         <a routerLink="/about" class="hover:text-[#FA9233] dark:hover:text-white transition">About</a>
 
-        <a routerLink="/contact" class="hover:text-[#FA9233] dark:hover:text-white transition">Contact</a>
+        <a routerLink="/contactus" class="hover:text-[#FA9233] dark:hover:text-white transition">Contact</a>
 
-        <!-- Login + Register inside mobile -->
-        <button
-          (click)="goLogin()"
-          class="border border-zinc-500 text-black dark:text-white px-5 py-2 rounded-md hover:bg-[#852EE4] dark:bg-[#5e1fbf]  hover:text-white dark:hover:text-black transition">
-          Login
-        </button>
+              <!-- Login + Register inside mobile -->
+              <ng-container *ngIf="!isLoggedIn">
+                <button
+                  routerLink="/login"
+                  class="border border-zinc-500 text-black dark:text-white px-5 py-2 rounded-md hover:bg-[#852EE4] dark:bg-[#5e1fbf]  hover:text-white dark:hover:text-black transition">
+                  Login
+                </button>
 
-        <button
-          (click)="goRegister()"
-          class="bg-[#852EE4] dark:bg-[#5e1fbf] text-white dark:text-black px-5 py-2 rounded-md hover:opacity-90 transition">
-          Register
-        </button>
+                <button
+                  routerLink="/register"
+                  class="bg-[#852EE4] dark:bg-[#5e1fbf] text-white dark:text-black px-5 py-2 rounded-md hover:opacity-90 transition">
+                  Register
+                </button>
+              </ng-container>
+
+              <ng-container *ngIf="isLoggedIn" class="flex flex-col space-y-2">
+                <div class="flex items-center space-x-3">
+                  <button class="p-2 rounded-full bg-[#f3f4f6] dark:bg-[#111827]">
+                    <!-- small bell -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                    </svg>
+                  </button>
+                  <a [routerLink]="user?.role === 'owner' ? '/profile-owner' : '/profile-student'">
+                    <img [src]="avatarUrl()" alt="avatar" class="w-10 h-10 rounded-full object-cover" />
+                  </a>
+                </div>
+              </ng-container>
       </ul>
     </div>
   }
