@@ -121,7 +121,7 @@ export class Contactus {
 
     this.isSubmitting = true;
 
-    // إرسال البيانات للـ Laravel API
+    //  Laravel API
     const payload: Message = this.contactForm.value;
 
     this.apiMessageService.sendMessage(payload).subscribe({
