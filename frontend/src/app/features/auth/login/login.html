@@ -1,30 +1,76 @@
-<div class="auth-container">
-  <div class="auth-card">
-    <h2>Login</h2>
-    <form [formGroup]="loginForm" (ngSubmit)="submit()">
-      <div class="field">
-        <label>Email</label>
-        <input type="email" placeholder="Enter your email" formControlName="email" />
+<p-toast></p-toast>
+
+<div class="auth-container min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 px-4">
+  <div class="auth-card w-full max-w-md bg-white dark:bg-gray-800 shadow-lg rounded-xl p-8">
+
+    <h2 class="text-3xl font-bold text-center mb-6 text-gray-900 dark:text-white">
+      Login
+    </h2>
+
+    <form [formGroup]="loginForm" (ngSubmit)="submit()" class="space-y-5">
+
+      <!-- Email -->
+      <div class="field flex flex-col gap-1">
+        <label class="text-gray-700 dark:text-gray-300">Email</label>
+
+        <input
+          type="email"
+          class="p-inputtext w-full"
+          placeholder="Enter your email"
+          formControlName="email"
+        />
+
+        @if (f.email.touched && f.email.invalid) {
+          <small class="text-red-500">
+            @if (f.email.errors['required']) { Email is required }
+            @if (f.email.errors['email']) { Invalid email format }
+          </small>
+        }
       </div>
 
-      <div class="field">
-        <label>Password</label>
-        <input type="password" placeholder="Enter your password" formControlName="password" />
+      <!-- Password -->
+      <div class="field flex flex-col gap-1">
+        <label class="text-gray-700 dark:text-gray-300">Password</label>
+
+        <input
+          type="password"
+          class="p-inputtext w-full"
+          placeholder="Enter your password"
+          formControlName="password"
+        />
+
+        @if (f.password.touched && f.password.invalid) {
+          <small class="text-red-500">
+            @if (f.password.errors['required']) { Password is required }
+            @if (f.password.errors['minlength']) { Minimum length is 6 }
+          </small>
+        }
       </div>
 
-      <div class="field">
-        <label>Login As</label>
-        <select formControlName="role">
+      <!-- Role -->
+      <div class="field flex flex-col gap-1">
+        <label class="text-gray-700 dark:text-gray-300">Login As</label>
+
+        <select
+          class="p-inputtext w-full"
+          formControlName="role"
+        >
           <option value="student">Student</option>
           <option value="owner">Owner</option>
         </select>
       </div>
 
+      <!-- Submit -->
       <div class="actions">
-        <button type="submit" [disabled]="isSubmitting" class="submit-btn">
+        <button
+          type="submit"
+          [disabled]="isSubmitting"
+          class="submit-btn w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg transition disabled:opacity-50"
+        >
           {{ isSubmitting ? 'Logging in...' : 'Login' }}
         </button>
       </div>
+
     </form>
   </div>
 </div>

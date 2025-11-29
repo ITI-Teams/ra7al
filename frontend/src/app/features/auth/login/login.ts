@@ -32,29 +32,57 @@ export class Login {
     return this.loginForm.controls;
   }
 
-  submit() {
-    if (this.loginForm.invalid) {
-      this.msg.add({ severity: 'error', summary: 'Validation', detail: 'Please fill required fields' });
-      return;
-    }
-
-    this.isSubmitting = true;
-    const payload = this.loginForm.value as { email: string; password: string; role: string };
-    this.auth.login(payload).subscribe({
-      next: (res) => {
-        this.auth.storeToken(res.token);
-        this.auth.storeUser(res.user);
-        this.msg.add({ severity: 'success', summary: 'Logged in', detail: 'Welcome back' });
-        this.isSubmitting = false;
-        // redirect based on role
-        if (res.user.role === 'owner') this.router.navigate(['/owner-dashboard']);
-        else this.router.navigate(['/profile-student']);
-      },
-      error: (err) => {
-        const detail = err?.error?.message || 'Login failed';
-        this.msg.add({ severity: 'error', summary: 'Login', detail });
-        this.isSubmitting = false;
-      },
+ submit() {
+  if (this.loginForm.invalid) {
+    this.msg.add({
+      severity: 'error',
+      summary: 'Validation',
+      detail: 'Please fill required fields'
     });
+    return;
   }
+
+  this.isSubmitting = true;
+
+  const payload = this.loginForm.value;
+
+  this.auth.login(payload).subscribe({
+    next: (res) => {
+      this.auth.storeToken(res.token);
+      this.auth.storeUser(res.user);
+
+      this.msg.add({ severity: 'success', summary: 'Logged in', detail: 'Welcome back' });
+      this.isSubmitting = false;
+
+      if (res.user.role === 'owner') this.router.navigate(['/owner-dashboard']);
+      else this.router.navigate(['/profile-student']);
+    },
+
+    error: (err) => {
+      this.isSubmitting = false;
+
+      // Laravel request validation (422)
+      if (err.status === 422 && err.error?.errors) {
+        Object.entries(err.error.errors).forEach(([field, msgs]: any) => {
+          msgs.forEach((m: string) => {
+            this.msg.add({
+              severity: 'error',
+              summary: field.toUpperCase(),
+              detail: m
+            });
+          });
+        });
+        return;
+      }
+
+      // Normal login error
+      this.msg.add({
+        severity: 'error',
+        summary: 'Login',
+        detail: err.error?.message || 'Login failed'
+      });
+    }
+  });
+}
+
 }

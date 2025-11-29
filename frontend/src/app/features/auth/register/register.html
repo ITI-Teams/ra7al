@@ -1,40 +1,64 @@
-<div class="auth-container">
-  <div class="auth-card">
-    <h2>Register</h2>
-    <form [formGroup]="registerForm" (ngSubmit)="submit()">
-      <div class="field">
-        <label>Full Name</label>
-        <input type="text" placeholder="Enter your full name" formControlName="name" />
+<p-toast></p-toast>
+
+<div class="auth-container min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 px-4">
+  <div class="auth-card w-full max-w-md bg-white dark:bg-gray-800 shadow-lg rounded-xl p-8">
+
+    <h2 class="text-3xl font-bold text-center mb-6 text-gray-900 dark:text-white">Register</h2>
+
+    <form [formGroup]="registerForm" (ngSubmit)="submit()" class="space-y-5">
+
+      <!-- Name -->
+      <div class="field flex flex-col gap-1">
+        <label class="text-gray-700 dark:text-gray-300">Full Name</label>
+        <input type="text" class="p-inputtext w-full" placeholder="Enter your full name" formControlName="name" />
+        <small *ngIf="f.name.touched && f.name.invalid" class="text-red-500">
+          <span *ngIf="f.name.errors['required']">Name is required</span>
+          <span *ngIf="f.name.errors['minlength']">Minimum 3 characters</span>
+        </small>
       </div>
 
-      <div class="field">
-        <label>Email</label>
-        <input type="email" placeholder="Enter your email" formControlName="email" />
+      <!-- Email -->
+      <div class="field flex flex-col gap-1">
+        <label class="text-gray-700 dark:text-gray-300">Email</label>
+        <input type="email" class="p-inputtext w-full" placeholder="Enter your email" formControlName="email" />
+        <small *ngIf="f.email.touched && f.email.invalid" class="text-red-500">
+          <span *ngIf="f.email.errors['required']">Email is required</span>
+          <span *ngIf="f.email.errors['email']">Invalid email format</span>
+        </small>
       </div>
 
-      <div class="field">
-        <label>Password</label>
-        <input type="password" placeholder="Enter password (min 8 chars)" formControlName="password" />
+      <!-- Password -->
+      <div class="field flex flex-col gap-1">
+        <label class="text-gray-700 dark:text-gray-300">Password</label>
+        <input type="password" class="p-inputtext w-full" placeholder="Enter password (min 8 chars)" formControlName="password" />
+        <small *ngIf="f.password.touched && f.password.invalid" class="text-red-500">
+          <span *ngIf="f.password.errors['required']">Password is required</span>
+          <span *ngIf="f.password.errors['minlength']">Minimum 8 characters</span>
+        </small>
       </div>
 
-      <div class="field">
-        <label>Account Type</label>
-        <select formControlName="role">
+      <!-- Role -->
+      <div class="field flex flex-col gap-1">
+        <label class="text-gray-700 dark:text-gray-300">Account Type</label>
+        <select class="p-inputtext w-full" formControlName="role">
           <option value="student">Student</option>
           <option value="owner">Owner</option>
         </select>
       </div>
 
-      <div class="field">
-        <label>Profile Image</label>
+      <!-- Profile Image -->
+      <div class="field flex flex-col gap-1">
+        <label class="text-gray-700 dark:text-gray-300">Profile Image</label>
         <input type="file" accept="image/*" (change)="onFileChange($event)" />
       </div>
 
+      <!-- Submit -->
       <div class="actions">
-        <button type="submit" [disabled]="isSubmitting" class="submit-btn">
+        <button type="submit" [disabled]="isSubmitting || registerForm.invalid" class="submit-btn w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg transition disabled:opacity-50">
           {{ isSubmitting ? 'Registering...' : 'Register' }}
         </button>
       </div>
+
     </form>
   </div>
 </div>

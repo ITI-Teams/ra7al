@@ -11,13 +11,14 @@ import { Search } from './features/search/search';
 import { ErrorPage } from './features/error-page/error-page';
 import { Login } from './features/auth/login/login';
 import { Register } from './features/auth/register/register';
+import { AuthGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   { path: '', component: Home },
   { path: 'home', component: Home },
   { path: 'aboutus', component: AboutUs },
-  { path: 'login', component: Login },
-  { path: 'register', component: Register },
+  { path: 'login', component: Login, canActivate: [AuthGuard] },
+  { path: 'register', component: Register, canActivate: [AuthGuard] },
   { path: 'contactus', component: Contactus },
   { path: 'filter', component: FilterPage },
   { path: 'search', component: Search },
