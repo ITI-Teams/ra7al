@@ -6,7 +6,10 @@ import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-
+import {
+  Message,
+  MessageService as ApiMessageService,
+} from '../../core/services/message';
 @Component({
   selector: 'app-contactus',
   standalone: true,
@@ -16,7 +19,6 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
     InputTextModule,
     ButtonModule,
     ToastModule,
-
   ],
   providers: [MessageService],
   templateUrl: './contactus.html',
@@ -56,11 +58,14 @@ export class Contactus {
     },
   ];
 
-  constructor(private fb: FormBuilder, private messageService: MessageService) {
+  constructor(
+    private fb: FormBuilder,
+    private messageService: MessageService,
+    private apiMessageService: ApiMessageService
+  ) {
     this.contactForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
-      phone: ['', [Validators.required, Validators.pattern(/^[0-9]{10,15}$/)]],
       subject: ['', [Validators.required, Validators.minLength(5)]],
       message: ['', [Validators.required, Validators.minLength(10)]],
     });
@@ -79,13 +84,17 @@ export class Contactus {
     const field = this.contactForm.get(fieldName);
     if (field?.errors) {
       if (field.errors['required']) {
-        return `${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)} is required`;
+        return `${
+          fieldName.charAt(0).toUpperCase() + fieldName.slice(1)
+        } is required`;
       }
       if (field.errors['email']) {
         return 'Please enter a valid email address';
       }
       if (field.errors['minlength']) {
-        return `${fieldName.charAt(0).toUpperCase() + fieldName.slice(1)} must be at least ${
+        return `${
+          fieldName.charAt(0).toUpperCase() + fieldName.slice(1)
+        } must be at least ${
           field.errors['minlength'].requiredLength
         } characters`;
       }
@@ -101,7 +110,6 @@ export class Contactus {
       Object.keys(this.contactForm.controls).forEach((key) => {
         this.contactForm.get(key)?.markAsTouched();
       });
-
       this.messageService.add({
         severity: 'error',
         summary: 'Validation Error',
@@ -113,17 +121,30 @@ export class Contactus {
 
     this.isSubmitting = true;
 
-    // Simulate API call
-    setTimeout(() => {
-      this.messageService.add({
-        severity: 'success',
-        summary: 'Success',
-        detail: 'Your message has been sent successfully! We will get back to you soon.',
-        life: 3000,
-      });
+    // إرسال البيانات للـ Laravel API
+    const payload: Message = this.contactForm.value;
 
-      this.contactForm.reset();
-      this.isSubmitting = false;
-    }, 1200);
+    this.apiMessageService.sendMessage(payload).subscribe({
+      next: (res) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Your message has been sent successfully!',
+          life: 3000,
+        });
+        this.contactForm.reset();
+        this.isSubmitting = false;
+      },
+      error: (err) => {
+        console.error(err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to send message. Please try again later.',
+          life: 3000,
+        });
+        this.isSubmitting = false;
+      },
+    });
   }
 }
