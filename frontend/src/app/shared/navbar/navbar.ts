@@ -25,14 +25,29 @@ isFixed = false;
   isLoggedIn = false;
   user: any = null;
 
-  constructor(
-    public theme: ThemeService,
-    private router: Router,
-    private auth: AuthService,
-  ) {
-    this.syncUser();
-    window.addEventListener('storage', () => this.syncUser());
-  }
+ constructor(
+  public theme: ThemeService,
+  private router: Router,
+  private auth: AuthService,
+) {
+  // الاشتراك في تغييرات المستخدم
+  this.auth.user$.subscribe(user => {
+    this.user = user;
+    this.isLoggedIn = !!user;
+    this.menuOpen = false;     // reset menu
+    this.profileOpen = false;  // reset profile dropdown
+  });
+
+  // اختياري: للاستجابة لتغييرات localStorage من نافذة ثانية
+  window.addEventListener('storage', () => {
+    const user = this.auth.getUser();
+    this.user = user;
+    this.isLoggedIn = !!user;
+    this.menuOpen = false;
+    this.profileOpen = false;
+  });
+}
+
 
   // toggle profile dropdown
   toggleProfile() {

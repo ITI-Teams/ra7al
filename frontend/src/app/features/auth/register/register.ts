@@ -55,6 +55,17 @@ togglePassword() {
     reader.readAsDataURL(file);
   }
 
+  roles = ['student', 'owner'];
+roleOpen = false;
+selectedRole: string | null = null;
+
+selectRole(role: string) {
+  this.selectedRole = role;
+  this.registerForm.patchValue({ role: role });
+  this.roleOpen = false;
+}
+
+
   submit() {
     if (this.registerForm.invalid) {
       this.msg.add({ severity: 'error', summary: 'Validation', detail: 'Please fill required fields' });

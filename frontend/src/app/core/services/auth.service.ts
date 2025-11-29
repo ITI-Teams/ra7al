@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -8,6 +8,10 @@ import { Observable } from 'rxjs';
 export class AuthService {
   private apiBase = 'http://localhost:8000/api';
   private backendBase = 'http://localhost:8000';
+
+  // 🔥 BehaviorSubject لمتابعة المستخدم
+  private userSubject = new BehaviorSubject<any>(this.getUser());
+  public user$ = this.userSubject.asObservable();
 
   constructor(private http: HttpClient) {}
 
@@ -35,17 +39,9 @@ export class AuthService {
     localStorage.removeItem('api_token');
   }
 
-  clearUser() {
-    localStorage.removeItem('user');
-  }
-
-  // Store/get user helper methods
   storeUser(user: any) {
-    try {
-      localStorage.setItem('user', JSON.stringify(user));
-    } catch (e) {
-      // ignore
-    }
+    localStorage.setItem('user', JSON.stringify(user));
+    this.userSubject.next(user); // 🔥 إشعار الـ navbar
   }
 
   getUser(): any | null {
@@ -56,6 +52,11 @@ export class AuthService {
     } catch (e) {
       return null;
     }
+  }
+
+  clearUser() {
+    localStorage.removeItem('user');
+    this.userSubject.next(null); // 🔥 إشعار الـ navbar
   }
 
   isLoggedIn(): boolean {

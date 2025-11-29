@@ -1,7 +1,7 @@
 <p-toast></p-toast>
 
 <div
-  class="flex flex-col md:flex-row w-full bg-gradient-to-br from-[#f7f2ff] to-white dark:from-gray-900 dark:to-gray-800"
+  class="flex flex-col md:flex-row w-full from-[#f7f2ff] to-white dark:bg-gray-900"
 >
   <!-- LEFT IMAGE -->
   <div class=" absolute md:static w-full h-[120vh] md:p-7  md:w-1/2  min-h-full order-2 md:order-1">
@@ -34,7 +34,7 @@
           >
 
           <label
-            class="relative w-28 h-28 cursor-pointer rounded-full border-2 border-dashed border-[#5e1fbf]/40 flex items-center justify-center bg-white/30 dark:bg-black/30 text-gray-700 dark:text-gray-300 hover:border-[#7a30e3] hover:shadow-lg transition"
+            class="relative w-28 h-28 cursor-pointer rounded-full border-2 border-dashed border-[#5e1fbf]/40 flex items-center justify-center bg-gray-200  dark:bg-gray-900  text-gray-700 dark:text-gray-300 hover:border-[#7a30e3] hover:shadow-lg transition"
           >
             <!-- Show preview if image selected -->
             <img
@@ -64,7 +64,7 @@
             type="text"
             placeholder="Full Name"
             formControlName="name"
-            class="w-full bg-white/30 dark:bg-black/30 px-5 py-3.5 rounded-xl border border-[#5e1fbf]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#5e1fbf] outline-none transition"
+            class="w-full bg-gray-200  dark:bg-gray-900 px-5 py-3.5 rounded-xl border border-[#5e1fbf]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#5e1fbf] outline-none transition"
           />
           <small
             *ngIf="f.name.touched && f.name.invalid"
@@ -81,7 +81,7 @@
             type="email"
             placeholder="Email"
             formControlName="email"
-            class="w-full bg-white/30 dark:bg-black/30 px-5 py-3.5 rounded-xl border border-[#5e1fbf]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#5e1fbf] outline-none transition"
+            class="w-full bg-gray-200  dark:bg-gray-900  px-5 py-3.5 rounded-xl border border-[#5e1fbf]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#5e1fbf] outline-none transition"
           />
           <small
             *ngIf="f.email.touched && f.email.invalid"
@@ -98,7 +98,7 @@
             [type]="passwordVisible ? 'text' : 'password'"
             placeholder="Password"
             formControlName="password"
-            class="w-full bg-white/30 dark:bg-black/30 px-5 py-3.5 pr-12 rounded-xl border border-[#5e1fbf]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#5e1fbf] outline-none transition"
+            class="w-full bg-gray-200  dark:bg-gray-900  px-5 py-3.5 pr-12 rounded-xl border border-[#5e1fbf]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#5e1fbf] outline-none transition"
           />
           <!-- Eye Icon -->
           <button
@@ -124,16 +124,34 @@
           </small>
         </div>
 
-        <!-- Role Select -->
-        <div>
-          <select
-            class="w-full bg-white/30 dark:bg-black/30 px-5 py-3.5 rounded-xl border border-[#5e1fbf]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#5e1fbf] outline-none transition"
-            formControlName="role"
-          >
-            <option class="text-black" value="student">Student</option>
-            <option class="text-black" value="owner">Owner</option>
-          </select>
-        </div>
+       <div class="relative w-full" [class.z-50]="roleOpen">
+  <label class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Account Type</label>
+
+  <!-- Dropdown button -->
+  <button
+    type="button"
+    (click)="roleOpen = !roleOpen"
+    class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3.5 rounded-xl border border-[#5e1fbf]/40 text-gray-900 dark:text-white shadow-sm flex justify-between items-center focus:ring-2 focus:ring-[#5e1fbf] outline-none transition"
+  >
+    {{ selectedRole || 'Select Role' }}
+    <i class="fa" [ngClass]="roleOpen ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+  </button>
+
+  <!-- Dropdown list -->
+  <ul
+    *ngIf="roleOpen"
+    class="absolute w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-xl shadow-lg overflow-hidden z-50"
+  >
+    <li
+      *ngFor="let role of roles"
+      (click)="selectRole(role)"
+      class="px-5 py-3 hover:bg-blue-100 dark:hover:bg-gray-700 cursor-pointer text-gray-900 dark:text-white"
+    >
+      {{ role | titlecase }}
+    </li>
+  </ul>
+</div>
+
 
         <!-- Submit -->
         <button
