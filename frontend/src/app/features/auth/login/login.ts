@@ -17,6 +17,12 @@ import { AuthService } from '../../../core/services/auth.service';
   styleUrl: './login.css',
 })
 export class Login {
+passwordVisible: boolean = false;
+
+togglePassword() {
+  this.passwordVisible = !this.passwordVisible;
+}
+
   loginForm: any;
   isSubmitting = false;
 

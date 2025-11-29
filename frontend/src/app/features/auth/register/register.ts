@@ -17,8 +17,16 @@ import { AuthService } from '../../../core/services/auth.service';
   styleUrl: './register.css',
 })
 export class Register {
+  passwordVisible: boolean = false;
+
+togglePassword() {
+  this.passwordVisible = !this.passwordVisible;
+}
+
   registerForm: any;
   isSubmitting = false;
+
+    previewImage: string | ArrayBuffer | null = null;
 
   constructor(private fb: FormBuilder, private auth: AuthService, private msg: MessageService, private router: Router) {
     this.registerForm = this.fb.group({
@@ -26,7 +34,7 @@ export class Register {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8)]],
       role: ['student', [Validators.required]],
-      image: [null],
+      image: [null as File | null],
     });
   }
 
@@ -36,7 +44,15 @@ export class Register {
 
   onFileChange(event: any) {
     const file = event.target.files && event.target.files[0];
-    if (file) this.registerForm.patchValue({ image: file });
+    if (!file) return;
+
+    this.registerForm.patchValue({ image: file });
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.previewImage = reader.result; // now works
+    };
+    reader.readAsDataURL(file);
   }
 
   submit() {
