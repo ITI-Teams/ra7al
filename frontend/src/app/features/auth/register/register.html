@@ -4,10 +4,10 @@
   class="flex flex-col md:flex-row w-full from-[#f7f2ff] to-white dark:bg-gray-900"
 >
   <!-- LEFT IMAGE -->
-  <div class=" absolute md:static w-full h-[120vh] md:p-7  md:w-1/2  min-h-full order-2 md:order-1">
+  <div class=" absolute md:static w-full mb-5 min-h-[120vh] md:w-1/2  order-2 md:order-1">
     <img
       src="asset/auth/20251129_2105_image.png"
-      class="w-full h-full rounded-2xl object-cove  shadow-lg"
+      class="w-full h-full rounded-2xl mb-5 object-cove  shadow-lg"
       alt="Register Image"
     />
     <div class="md:hidden absolute inset-0 bg-black/50"></div>
@@ -26,9 +26,9 @@
         Register
       </h2>
 
-      <form [formGroup]="registerForm" (ngSubmit)="submit()" class="space-y-6">
+      <form [formGroup]="registerForm" (ngSubmit)="submit()" class="space-y-6 ">
         <!-- Profile Image Upload -->
-        <div class="flex flex-col items-center mb-6">
+        <div class="flex flex-col items-center">
           <label class="text-gray-700 dark:text-gray-300 font-medium mb-2"
             >Profile Image</label
           >
