@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, signal, computed, HostListener } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import { NgClass, NgIf } from '@angular/common';
-import { AuthService } from '../../core/services/auth.service';
+import { AuthService } from '../../core/services/authService/auth.service';
 import { ThemeService } from '../../core/services/themeService/theme-service';
 
 @Component({
