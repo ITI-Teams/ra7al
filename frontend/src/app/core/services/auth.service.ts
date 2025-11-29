@@ -35,6 +35,10 @@ export class AuthService {
     localStorage.removeItem('api_token');
   }
 
+  clearUser() {
+    localStorage.removeItem('user');
+  }
+
   // Store/get user helper methods
   storeUser(user: any) {
     try {
