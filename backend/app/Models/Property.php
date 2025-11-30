@@ -195,4 +195,64 @@ class Property extends Model
     {
         return $this->savedByUsers()->where('user_id', $userId)->exists();
     }
+
+    /**
+     * Get all applications for this property.
+     */
+    public function applications()
+    {
+        return $this->hasMany(PropertyApplication::class);
+    }
+
+    /**
+     * Get pending applications for this property.
+     */
+    public function pendingApplications()
+    {
+        return $this->hasMany(PropertyApplication::class)->pending();
+    }
+
+    /**
+     * Get approved applications for this property.
+     */
+    public function approvedApplications()
+    {
+        return $this->hasMany(PropertyApplication::class)->approved();
+    }
+
+    /**
+     * Get contracts related to this property.
+     */
+    public function contracts()
+    {
+        return $this->hasMany(Verification::class)
+            ->where('document_type', 'contract');
+    }
+
+    /**
+     * Get active contract for this property.
+     */
+    public function activeContract()
+    {
+        return $this->hasOne(Verification::class)
+            ->where('document_type', 'contract')
+            ->where('status', 'approved')
+            ->where('contract_end_date', '>=', now());
+    }
+
+    /**
+     * Check if property has active contract (is currently rented).
+     */
+    public function hasActiveContract(): bool
+    {
+        return $this->activeContract()->exists();
+    }
+
+    /**
+     * Get count of pending applications.
+     */
+    public function pendingApplicationsCount(): int
+    {
+        return $this->pendingApplications()->count();
+    }
 }

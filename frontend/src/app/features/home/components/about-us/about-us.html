@@ -1,5 +1,16 @@
 <div class="mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center justify-center gap-8 relative z-10 ">
 
+  <!-- Dots (Top Right) -->
+  <div class="absolute top-6 right-6">
+    <svg width="120" height="120" fill="none" viewBox="0 0 120 120">
+      <defs>
+        <pattern id="hero-dots" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
+          <circle cx="2" cy="2" r="2" class="fill-gray-300 dark:fill-gray-700"/>
+        </pattern>
+      </defs>
+      <rect width="90" height="90" fill="url(#hero-dots)" />
+    </svg>
+  </div>
     <!-- Left: Photo -->
     <div class="md:w-2/5 flex justify-center md:justify-start">
       <img
