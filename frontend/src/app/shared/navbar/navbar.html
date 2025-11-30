@@ -1,5 +1,5 @@
 <nav
- [ngClass]="{
+  [ngClass]="{
     'fixed top-0 left-0 overflow-visible w-full z-50 bg-white dark:bg-gray-900': isFixed,
     'static': !isFixed
   }"
@@ -29,7 +29,6 @@
 
     <!-- RIGHT SECTION -->
     <div class="flex items-center space-x-4">
-
 
       <!-- NOT LOGGED -->
       <ng-container *ngIf="!isLoggedIn">
@@ -143,93 +142,49 @@
   @if (menuOpen) {
     <div class="md:hidden bg-white dark:bg-gray-900 border-t border-zinc-200 dark:border-gray-700 px-6 py-4">
       <ul class="flex flex-col space-y-4 text-zinc-700 dark:text-zinc-200 uppercase text-sm font-semibold">
-        <a routerLink="/" class="hover:text-[#FA9233] dark:hover:text-white">Home</a>
-        <a routerLink="/Roommates" class="hover:text-[#FA9233] dark:hover:text-white">Roommates</a>
-        <a routerLink="/aboutus" class="hover:text-[#FA9233] dark:hover:text-white">About</a>
-        <a routerLink="/contactus" class="hover:text-[#FA9233] dark:hover:text-white">Contact</a>
+        <li><a routerLink="/" class="hover:text-[#FA9233] dark:hover:text-white">Home</a></li>
+        <li><a routerLink="/Roommates" class="hover:text-[#FA9233] dark:hover:text-white">Roommates</a></li>
+        <li><a routerLink="/aboutus" class="hover:text-[#FA9233] dark:hover:text-white">About</a></li>
+        <li><a routerLink="/contactus" class="hover:text-[#FA9233] dark:hover:text-white">Contact</a></li>
 
         <!-- LOGIN REGISTER -->
         <ng-container *ngIf="!isLoggedIn">
-          <button routerLink="/login"
-            class="border border-zinc-500 px-5 py-2 rounded-md hover:bg-[#852EE4] hover:text-white">
-            Login
-          </button>
-
-          <button routerLink="/register"
-            class="bg-[#852EE4] text-white px-5 py-2 rounded-md hover:opacity-90">
-            Register
-          </button>
+          <li>
+            <button routerLink="/login"
+              class="border border-zinc-500 px-5 py-2 rounded-md hover:bg-[#852EE4] hover:text-white">
+              Login
+            </button>
+          </li>
+          <li>
+            <button routerLink="/register"
+              class="bg-[#852EE4] text-white px-5 py-2 rounded-md hover:opacity-90">
+              Register
+            </button>
+          </li>
         </ng-container>
 
         <!-- USER MOBILE -->
         <ng-container *ngIf="isLoggedIn">
-          <div class="flex items-center space-x-3">
-            <button class="p-2 rounded-full bg-gray-200 dark:bg-gray-900">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M15 17h5l-1.405-1.405A2.032
-                  2.032 0 0118 14.158V11a6 6 0 10-12
-                  0v3.159c0 .538-.214 1.055-.595
-                  1.436L4 17h5m6 0v1a3 3 0 11-6
-                  0v-1m6 0H9" />
-              </svg>
-            </button>
+          <li>
+            <div class="flex items-center space-x-3">
+              <button class="p-2 rounded-full bg-gray-200 dark:bg-gray-900">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M15 17h5l-1.405-1.405A2.032
+                    2.032 0 0118 14.158V11a6 6 0 10-12
+                    0v3.159c0 .538-.214 1.055-.595
+                    1.436L4 17h5m6 0v1a3 3 0 11-6
+                    0v-1m6 0H9" />
+                </svg>
+              </button>
 
-            <a [routerLink]="user?.role === 'owner' ? '/profile-owner' : '/profile-student'">
-              <img [src]="avatarUrl()" class="w-10 h-10 rounded-full object-cover" />
-            </a>
-          </div>
+              <a [routerLink]="user?.role === 'owner' ? '/profile-owner' : '/profile-student'">
+                <img [src]="avatarUrl()" class="w-10 h-10 rounded-full object-cover" />
+              </a>
+            </div>
+          </li>
         </ng-container>
-
       </ul>
     </div>
-  </div>
-
-  <!-- Mobile Menu -->
-  @if (menuOpen) {
-  <div
-    class="md:hidden bg-white dark:bg-[#0a0a0a] border-t border-zinc-200 dark:border-black px-6 py-4"
-  >
-    <ul
-      class="flex flex-col space-y-4 text-zinc-700 dark:text-zinc-200 uppercase text-sm font-semibold"
-    >
-      <a
-        routerLink="/"
-        class="hover:text-[#FA9233] dark:hover:text-white transition"
-        >Home</a
-      >
-      <a
-        routerLink="/Roommates"
-        class="hover:text-[#FA9233] dark:hover:text-white transition"
-        >Roommates</a
-      >
-      <a
-        routerLink="/about"
-        class="hover:text-[#FA9233] dark:hover:text-white transition"
-        >About</a
-      >
-
-      <a
-        routerLink="/contact"
-        class="hover:text-[#FA9233] dark:hover:text-white transition"
-        >Contact</a
-      >
-
-      <!-- Login + Register inside mobile -->
-      <button
-        (click)="goLogin()"
-        class="border border-zinc-500 text-black dark:text-white px-5 py-2 rounded-md hover:bg-[#852EE4] dark:bg-[#5e1fbf] hover:text-white dark:hover:text-black transition"
-      >
-        Login
-      </button>
-
-      <button
-        (click)="goRegister()"
-        class="bg-[#852EE4] dark:bg-[#5e1fbf] text-white dark:text-black px-5 py-2 rounded-md hover:opacity-90 transition"
-      >
-        Register
-      </button>
-    </ul>
-  </div>
   }
 </nav>
