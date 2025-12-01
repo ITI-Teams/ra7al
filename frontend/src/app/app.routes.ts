@@ -11,14 +11,14 @@ import { Search } from './features/search/search';
 import { ErrorPage } from './features/error-page/error-page';
 import { Login } from './features/auth/login/login';
 import { Register } from './features/auth/register/register';
-import { AuthGuard } from './core/guards/auth.guard';
+import { Unauthorized } from './features/unauthorized/unauthorized';
+import { NoAuthGuard } from './core/guards/noAuth.guard';
+import { UserRoleGuard } from './core/guards/userRole.guard';
 
 export const routes: Routes = [
   { path: '', component: Home },
   { path: 'home', component: Home },
   { path: 'aboutus', component: AboutUs },
-  { path: 'login', component: Login, canActivate: [AuthGuard] },
-  { path: 'register', component: Register, canActivate: [AuthGuard] },
   { path: 'contactus', component: Contactus },
   { path: 'filter', component: FilterPage },
   { path: 'search', component: Search },
@@ -30,11 +30,37 @@ export const routes: Routes = [
       { path: '', redirectTo: 'apartments', pathMatch: 'full' },
       { path: 'apartments', component: Apartments },
     ],
+    canActivate: [UserRoleGuard],
+    data: { role: 'owner' }
   },
 
-  { path: 'profile-student', component: StudentProfile },
-  { path: 'profile-owner', component: OwnerProfile },
 
+// Prevent logged users from accessing login/register
+  {
+    path: 'login',
+    component: Login,
+    canActivate: [NoAuthGuard]
+  },
+  {
+    path: 'register',
+    component: Register,
+    canActivate: [NoAuthGuard]
+  },
+
+  // Student-only page
+  {
+    path: 'profile-student',
+    component: StudentProfile,
+    canActivate: [UserRoleGuard],
+    data: { role: 'student' }
+  },
+
+
+  // Unauthorized page
+  {
+    path: 'unauthorized',
+    component: Unauthorized
+  },
   // MUST ALWAYS BE LAST
   { path: '**', component: ErrorPage },
 ];
