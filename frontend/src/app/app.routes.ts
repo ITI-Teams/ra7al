@@ -24,7 +24,7 @@ export const routes: Routes = [
   },
 
     {
-    path: 'profile-student',
+    path: 'profile',
     component:StudentProfile ,
   },
     {
