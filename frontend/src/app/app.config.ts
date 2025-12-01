@@ -7,6 +7,7 @@ import { provideRouter } from '@angular/router';
 import { providePrimeNG } from 'primeng/config';
 import { provideHttpClient } from '@angular/common/http';
 import Aura from '@primeuix/themes/aura';
+import { HttpClientModule } from '@angular/common/http';
 
 import { routes } from './app.routes';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -17,6 +18,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(),
     importProvidersFrom(BrowserAnimationsModule),
+    importProvidersFrom(HttpClientModule),
     providePrimeNG({
       theme: {
         preset: Aura
