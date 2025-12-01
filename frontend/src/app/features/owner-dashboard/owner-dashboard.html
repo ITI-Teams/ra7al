@@ -1,16 +1,14 @@
 <div
   class="min-h-screen w-full overflow-x-hidden bg-gradient-to-br from-slate-50 to-slate-100"
 >
-  <div class="flex pt-16">
-    <!-- Sidebar (fixed at left) -->
-    <app-sidebar [isOpen]="isSidebarOpen"></app-sidebar>
+  <!-- Sidebar -->
+  <app-sidebar [(isOpen)]="isSidebarOpen"></app-sidebar>
 
-    <!-- Main Content -->
-    <main
-      class="flex-1 p-6 transition-all duration-300 ease-in-out"
-      [ngStyle]="{'margin-left.px': isSidebarOpen ? 240 : 80}"
-    >
-      <router-outlet></router-outlet>
-    </main>
-  </div>
+  <!-- Main Content -->
+  <main
+    class="flex-1 p-6 transition-all duration-300"
+    [ngClass]="isSidebarOpen ? 'ml-72' : 'ml-20'"
+  >
+    <router-outlet></router-outlet>
+  </main>
 </div>
