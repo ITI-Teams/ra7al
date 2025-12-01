@@ -103,4 +103,84 @@ class User extends Authenticatable
     {
         $this->update(['last_login' => now()]);
     }
+
+    /**
+     * Get the user's profile.
+     */
+    public function profile()
+    {
+        return $this->hasOne(UserProfile::class);
+    }
+
+    /**
+     * Get all verifications submitted by this user.
+     */
+    public function verifications()
+    {
+        return $this->hasMany(Verification::class);
+    }
+
+    /**
+     * Get verifications where this user is the admin who verified.
+     */
+    public function verificationsApproved()
+    {
+        return $this->hasMany(Verification::class, 'verified_by');
+    }
+
+    /**
+     * Get all property applications submitted by this student.
+     */
+    public function applications()
+    {
+        return $this->hasMany(PropertyApplication::class, 'student_id');
+    }
+
+    /**
+     * Get contracts where this user is the tenant.
+     */
+    public function contractsAsTenant()
+    {
+        return $this->hasMany(Verification::class, 'tenant_id')
+            ->where('document_type', 'contract');
+    }
+
+    /**
+     * Get contracts where this user is the landlord.
+     */
+    public function contractsAsLandlord()
+    {
+        return $this->hasMany(Verification::class, 'landlord_id')
+            ->where('document_type', 'contract');
+    }
+
+    /**
+     * Get recommendation responses by this user.
+     */
+    public function recommendationResponses()
+    {
+        return $this->hasMany(UserRecommendationResponse::class);
+    }
+
+    /**
+     * Check if user has completed the recommendation questionnaire.
+     */
+    public function hasCompletedQuestionnaire(?string $sessionId = null): bool
+    {
+        $query = $this->recommendationResponses()->whereNotNull('completed_at');
+
+        if ($sessionId) {
+            $query->where('session_id', $sessionId);
+        }
+
+        return $query->exists();
+    }
+
+    /**
+     * Check if user profile is verified.
+     */
+    public function isVerified(): bool
+    {
+        return $this->profile && $this->profile->is_verified;
+    }
 }
