@@ -3,202 +3,162 @@
   <!-- Profile Card -->
   <div class="flex flex-col items-center">
     <div class="w-28 h-28 rounded-full overflow-hidden shadow-md">
-      <img
-        src="images\profile_student\3.png"
-        class="w-full h-full object-cover"
-        alt="User"
-      />
+      <img src="images/profile_student/3.png" class="w-full h-full object-cover" alt="User" />
     </div>
 
     <h2 class="mt-3 text-xl font-semibold dark:text-white">
-      Yusuf Alsyd
+      {{ profileForm.get('name')?.value }}
     </h2>
 
- <button
-  class="mt-3 px-5 py-2 border border-orange-500 text-orange-500 rounded-lg
-         hover:bg-orange-500 hover:text-white transition-all duration-300"
-  (click)="toggleEdit()"
->
-  Edit my info
-</button>
-
-<!-- Edit Form -->
-<div *ngIf="isEditing" class="mt-5 w-900 max-w-md bg-white dark:bg-gray-800 p-5 rounded-xl shadow-lg">
-
-  <label class="block text-gray-600 dark:text-gray-300 mb-1">Name</label>
-  <input
-    type="text"
-    [(ngModel)]="user.name"
-    class="w-full p-2 border rounded-lg mb-3 dark:bg-gray-700 dark:border-gray-600"
-  />
-
-  <label class="block text-gray-600 dark:text-gray-300 mb-1">Email</label>
-  <input
-    type="email"
-    [(ngModel)]="user.email"
-    class="w-full p-2 border rounded-lg mb-3 dark:bg-gray-700 dark:border-gray-600"
-  />
-
-  <label class="block text-gray-600 dark:text-gray-300 mb-1">Password</label>
-  <input
-    type="password"
-    [(ngModel)]="user.password"
-    class="w-full p-2 border rounded-lg mb-4 dark:bg-gray-700 dark:border-gray-600"
-  />
-
-  <div class="flex justify-between">
     <button
-      class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition"
-      (click)="saveInfo()"
-    >
-      Save
-    </button>
-
-    <button
-      class="px-4 py-2 border border-gray-400 text-gray-600 rounded-lg hover:bg-gray-200 transition"
+      class="mt-3 px-5 py-2 border border-orange-500 text-orange-500 rounded-lg
+             hover:bg-orange-500 hover:text-white transition-all duration-300"
       (click)="toggleEdit()"
     >
-      Cancel
+      {{ isEditing ? 'Cancel' : 'Edit my info' }}
     </button>
-  </div>
 
-</div>
+    <!-- Edit Form -->
+    <div *ngIf="isEditing" class="mt-5 w-900 max-w-md bg-white dark:bg-gray-800 p-5 rounded-xl shadow-lg">
+      <form [formGroup]="profileForm">
+
+        <!-- Name -->
+        <label class="block text-gray-600 dark:text-gray-300 mb-1">Name</label>
+        <input type="text" formControlName="name"
+          class="w-full p-2 border rounded-lg mb-1 dark:bg-gray-700 dark:border-gray-600" />
+        <div class="text-red-500 text-sm mb-3" *ngIf="profileForm.get('name')?.invalid && profileForm.get('name')?.touched">
+          <div *ngIf="profileForm.get('name')?.errors?.['required']">Name is required.</div>
+        </div>
+
+        <!-- Email -->
+        <label class="block text-gray-600 dark:text-gray-300 mb-1">Email</label>
+        <input type="email" formControlName="email"
+          class="w-full p-2 border rounded-lg mb-1 dark:bg-gray-700 dark:border-gray-600" />
+        <div class="text-red-500 text-sm mb-3" *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched">
+          <div *ngIf="profileForm.get('email')?.errors?.['required']">Email is required.</div>
+          <div *ngIf="profileForm.get('email')?.errors?.['email']">Invalid email format.</div>
+        </div>
+
+        <!-- Password -->
+        <label class="block text-gray-600 dark:text-gray-300 mb-1">Password</label>
+        <input type="password" formControlName="password"
+          class="w-full p-2 border rounded-lg mb-1 dark:bg-gray-700 dark:border-gray-600" />
+        <div class="text-red-500 text-sm mb-3" *ngIf="profileForm.get('password')?.invalid && profileForm.get('password')?.touched">
+          <div *ngIf="profileForm.get('password')?.errors?.['minlength']">
+            Password must be at least 6 characters.
+          </div>
+        </div>
+
+        <!-- Age -->
+        <label class="block text-gray-600 dark:text-gray-300 mb-1">Age</label>
+        <input type="number" formControlName="age"
+          class="w-full p-2 border rounded-lg mb-3 dark:bg-gray-700 dark:border-gray-600" />
+
+        <!-- Gender -->
+        <label class="block text-gray-600 dark:text-gray-300 mb-1">Gender</label>
+        <select formControlName="gender"
+          class="w-full p-2 border rounded-lg mb-3 dark:bg-gray-700 dark:border-gray-600">
+          <option value="">Select gender</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="other">Other</option>
+        </select>
+
+        <!-- Habits -->
+        <label class="block text-gray-600 dark:text-gray-300 mb-1">Habits</label>
+        <input type="text" formControlName="habits"
+          class="w-full p-2 border rounded-lg mb-3 dark:bg-gray-700 dark:border-gray-600" />
+
+        <!-- Preferences -->
+        <label class="block text-gray-600 dark:text-gray-300 mb-1">Preferences</label>
+        <input type="text" formControlName="preferences"
+          class="w-full p-2 border rounded-lg mb-3 dark:bg-gray-700 dark:border-gray-600" />
+
+        <!-- Roommate Style -->
+        <label class="block text-gray-600 dark:text-gray-300 mb-1">Roommate Style</label>
+        <input type="text" formControlName="roommate_style"
+          class="w-full p-2 border rounded-lg mb-3 dark:bg-gray-700 dark:border-gray-600" />
+
+        <!-- Cleanliness Level -->
+        <label class="block text-gray-600 dark:text-gray-300 mb-1">Cleanliness Level</label>
+        <input type="text" formControlName="cleanliness_level"
+          class="w-full p-2 border rounded-lg mb-3 dark:bg-gray-700 dark:border-gray-600" />
+
+        <!-- Smoking -->
+        <label class="block text-gray-600 dark:text-gray-300 mb-1">Smoking</label>
+        <select formControlName="smoking"
+          class="w-full p-2 border rounded-lg mb-3 dark:bg-gray-700 dark:border-gray-600">
+          <option value="">Select</option>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
+
+        <!-- Pets -->
+        <label class="block text-gray-600 dark:text-gray-300 mb-1">Pets</label>
+        <select formControlName="pets"
+          class="w-full p-2 border rounded-lg mb-3 dark:bg-gray-700 dark:border-gray-600">
+          <option value="">Select</option>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
+
+        <!-- Buttons -->
+        <div class="flex justify-between mt-4">
+          <button type="button"
+            class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition"
+            (click)="saveInfo()">
+            Save
+          </button>
+
+          <button type="button"
+            class="px-4 py-2 border border-gray-400 text-gray-600 rounded-lg hover:bg-gray-200 transition"
+            (click)="toggleEdit()">
+            Cancel
+          </button>
+        </div>
+
+      </form>
+    </div>
   </div>
 
   <!-- Tabs -->
   <div class="flex flex-wrap justify-center gap-10 mt-10 border-b w-full max-w-4xl pb-2 text-gray-600 dark:text-gray-300">
+    <button
+      class="flex items-center gap-2 pb-2 transition"
+      [ngClass]="{ 'border-b-2 border-orange-500 text-orange-500 font-semibold dark:text-orange-400': activeTab === 'favourites' }"
+      (click)="changeTab('favourites')">❤️ Favourites</button>
 
     <button
       class="flex items-center gap-2 pb-2 transition"
-      [ngClass]="{
-        'border-b-2 border-orange-500 text-orange-500 font-semibold dark:text-orange-400': activeTab === 'favourites'
-      }"
-      (click)="changeTab('favourites')"
-    >
-      ❤️ Favourites
-    </button>
+      [ngClass]="{ 'border-b-2 border-orange-500 text-orange-500 font-semibold dark:text-orange-400': activeTab === 'about' }"
+      (click)="changeTab('about')">👤 About me</button>
 
     <button
       class="flex items-center gap-2 pb-2 transition"
-      [ngClass]="{
-        'border-b-2 border-orange-500 text-orange-500 font-semibold dark:text-orange-400': activeTab === 'about'
-      }"
-      (click)="changeTab('about')"
-    >
-      👤 About me
-    </button>
+      [ngClass]="{ 'border-b-2 border-orange-500 text-orange-500 font-semibold dark:text-orange-400': activeTab === 'roommates' }"
+      (click)="changeTab('roommates')">👥 Roommates</button>
 
     <button
       class="flex items-center gap-2 pb-2 transition"
-      [ngClass]="{
-        'border-b-2 border-orange-500 text-orange-500 font-semibold dark:text-orange-400': activeTab === 'roommates'
-      }"
-      (click)="changeTab('roommates')"
-    >
-      👥 Roommates
-    </button>
-
-    <button
-      class="flex items-center gap-2 pb-2 transition"
-      [ngClass]="{
-        'border-b-2 border-orange-500 text-orange-500 font-semibold dark:text-orange-400': activeTab === 'history'
-      }"
-      (click)="changeTab('history')"
-    >
-      🕘 History
-    </button>
-
+      [ngClass]="{ 'border-b-2 border-orange-500 text-orange-500 font-semibold dark:text-orange-400': activeTab === 'history' }"
+      (click)="changeTab('history')">🕘 History</button>
   </div>
 
-
-  <!-- ⭐ FAVOURITES TAB -->
+  <!-- Tab Contents -->
   <div *ngIf="activeTab === 'favourites'" class="grid md:grid-cols-2 grid-cols-1 gap-6 mt-10 w-full max-w-5xl">
-
-    <!-- Card 1 -->
-    <div class="bg-white dark:bg-gray-800 shadow-md rounded-xl overflow-hidden border dark:border-gray-700 cursor-pointer hover:shadow-xl transition">
-      <img src="images\profile_student\4.png" class="w-full h-48 object-cover" />
-
-      <div class="p-4">
-        <span class="inline-block bg-green-100 text-green-700 px-3 py-1 rounded text-sm">
-          Bills included
-        </span>
-
-        <h3 class="mt-3 font-semibold text-lg dark:text-white">
-          Shared apartment (2/6 open spots)
-        </h3>
-
-        <p class="text-gray-500 dark:text-gray-300 text-sm mt-1">
-          Elhai elsabe , naser city
-        </p>
-
-        <div class="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-300 mt-3">
-          <span>3 Room</span>
-          <span>1 Bath</span>
-          <span>6 Beds</span>
-        </div>
-
-        <div class="flex items-center justify-between mt-4">
-          <span class="font-semibold text-lg text-gray-900 dark:text-white">
-            $200 <span class="text-sm text-gray-400">/ month</span>
-          </span>
-
-          <button class="text-gray-400 dark:text-gray-200 text-xl">⋮</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Card 2 -->
-    <div class="bg-white dark:bg-gray-800 shadow-md rounded-xl overflow-hidden border dark:border-gray-700 cursor-pointer hover:shadow-xl transition">
-      <img src="images\profile_student\5.png" class="w-full h-48 object-cover" />
-
-      <div class="p-4">
-        <span class="inline-block bg-red-100 text-red-700 px-3 py-1 rounded text-sm">
-          no bills paid
-        </span>
-
-        <h3 class="mt-3 font-semibold text-lg dark:text-white">
-          Private accommodation
-        </h3>
-
-        <p class="text-gray-500 dark:text-gray-300 text-sm mt-1">
-          Elhai elsabe , naser city
-        </p>
-
-        <div class="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-300 mt-3">
-          <span>2 Room</span>
-          <span>1 Bath</span>
-          <span>1 Bed</span>
-        </div>
-
-        <div class="flex items-center justify-between mt-4">
-          <span class="font-semibold text-lg text-gray-900 dark:text-white">
-            $250 <span class="text-sm text-gray-400">/ month</span>
-          </span>
-
-          <button class="text-gray-400 dark:text-gray-200 text-xl">⋮</button>
-        </div>
-      </div>
-    </div>
-
+    <!-- Add favourite cards here (مثل كودك السابق) -->
   </div>
 
-
-
-  <!-- ⭐ ABOUT ME TAB -->
   <div *ngIf="activeTab === 'about'" class="mt-10 w-full max-w-3xl text-gray-700 dark:text-gray-300">
     <h3 class="text-xl font-semibold mb-4">About Me</h3>
-    <p class="text-sm">
-      Add personal information here...
-    </p>
+    <p class="text-sm">Add personal information here...</p>
   </div>
 
-  <!-- ⭐ ROOMMATES TAB -->
   <div *ngIf="activeTab === 'roommates'" class="mt-10 w-full max-w-3xl text-gray-700 dark:text-gray-300">
     <h3 class="text-xl font-semibold mb-4">Roommates</h3>
     <p class="text-sm">No roommates found.</p>
   </div>
 
-  <!-- ⭐ HISTORY TAB -->
   <div *ngIf="activeTab === 'history'" class="mt-10 w-full max-w-3xl text-gray-700 dark:text-gray-300">
     <h3 class="text-xl font-semibold mb-4">History</h3>
     <p class="text-sm">No history available.</p>
