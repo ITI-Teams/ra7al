@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, ActivatedRouteSnapshot } from '@angular/router';
 import { AuthService } from '../services/authService/auth.service';
+import { MessageService } from 'primeng/api'; // تأكد من أنك أضفت MessageService
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserRoleGuard implements CanActivate {
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(private auth: AuthService, private router: Router , private messageService: MessageService) {}
 
   canActivate(route: ActivatedRouteSnapshot): boolean {
     const expectedRole = route.data['role'];
@@ -21,6 +22,13 @@ export class UserRoleGuard implements CanActivate {
     // 2️⃣ Wrong role → unauthorized page
     if (expectedRole && user.role !== expectedRole) {
       this.router.navigate(['/unauthorized']);
+      setTimeout(() => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Access Denied',
+          detail: 'You do not have the required role to access this page.',
+        });
+      }, 1500); // 1.5ثانية
       return false;
     }
 
