@@ -54,19 +54,23 @@ isFixed = false;
     this.profileOpen = !this.profileOpen;
   }
 
-  // logout: call backend then clear local storage and redirect
-  logout() {
-    // attempt backend logout but proceed even on error
-    this.auth.logout().subscribe({
-      next: () => {},
-      error: () => {},
-    }).add(() => {
-      this.auth.clearToken();
+ // logout: call backend then clear local storage and redirect
+logout() {
+  this.auth.logout()
+    .subscribe({
+      next: () => console.log('Logged out from backend'),
+      error: () => console.warn('Backend logout failed, clearing local data anyway'),
+    })
+    .add(() => {
+      // Always run — even if backend failed
       this.auth.clearUser();
+      this.auth.clearToken();
       this.syncUser();
-      this.router.navigate(['/']);
+
+      this.router.navigate(['/login'], { replaceUrl: true });
     });
-  }
+}
+
 
   // share profile URL to clipboard and show feedback
   shareProfile() {
