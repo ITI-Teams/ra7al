@@ -8,14 +8,22 @@ import { StudentProfile } from './features/student-profile/student-profile';
 import { OwnerProfile } from './features/owner-profile/owner-profile';
 import { FilterPage } from './features/filter-page/filter-page';
 import { Search } from './features/search/search';
+import { ErrorPage } from './features/error-page/error-page';
+import { Login } from './features/auth/login/login';
+import { Register } from './features/auth/register/register';
+import { Unauthorized } from './features/unauthorized/unauthorized';
+import { NoAuthGuard } from './core/guards/noAuth.guard';
+import { UserRoleGuard } from './core/guards/userRole.guard';
 import { PropertyDetail } from './features/property-detail/property-detail';
 
 export const routes: Routes = [
   { path: '', component: Home },
+  { path: 'home', component: Home },
   { path: 'aboutus', component: AboutUs },
   { path: 'contactus', component: Contactus },
   { path: 'filter', component: FilterPage },
   { path: 'search', component: Search },
+
   {
     path: 'owner-dashboard',
     component: OwnerDashboard,
@@ -26,9 +34,7 @@ export const routes: Routes = [
     canActivate: [UserRoleGuard],
     data: { role: 'owner' }
   },
-
-
-
+  { path: 'properties/:id', component: PropertyDetail },
 
 
 // Prevent logged users from accessing login/register
@@ -43,13 +49,20 @@ export const routes: Routes = [
     canActivate: [NoAuthGuard]
   },
 
+  // Student-only page
   {
     path: 'profile-student',
     component: StudentProfile,
+    canActivate: [UserRoleGuard],
+    data: { role: 'student' }
   },
+
+
+  // Unauthorized page
   {
-    path: 'profile-owner',
-    component: OwnerProfile,
+    path: 'unauthorized',
+    component: Unauthorized
   },
-  { path: 'properties/:id', component: PropertyDetail },
+  // MUST ALWAYS BE LAST
+  { path: '**', component: ErrorPage },
 ];
