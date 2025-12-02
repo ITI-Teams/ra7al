@@ -1,0 +1,167 @@
+<p-toast></p-toast>
+
+<div
+  class="flex flex-col md:flex-row w-full from-[#f7f2ff] to-white dark:bg-gray-900"
+>
+  <!-- LEFT IMAGE -->
+  <div class=" absolute md:static w-full min-h-[120vh] md:w-1/2  order-2 md:order-1">
+    <img
+      src="asset/auth/auth.png"
+      class="w-full mid:h-full object-cover rounded-none min-h-[121vh] shadow-lg"
+      alt="Register Image"
+    />
+    <div class="md:hidden absolute inset-0 bg-black/50"></div>
+  </div>
+
+  <!-- RIGHT FORM -->
+  <div
+    class="relative w-full z-30  md:w-1/2 flex items-center justify-center p-6 order-1 md:order-2"
+  >
+    <div
+      class="w-full max-w-xl bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl shadow-xl rounded-3xl p-8 md:p-10 border border-white/30 dark:border-white/10"
+    >
+      <h2
+        class="text-4xl font-extrabold mb-8 text-center bg-gradient-to-r from-[#5e1fbf] to-[#9b4dff] text-transparent bg-clip-text"
+      >
+        Register
+      </h2>
+
+      <form [formGroup]="registerForm" (ngSubmit)="submit()" class="space-y-6 ">
+        <!-- Profile Image Upload -->
+        <div class="flex flex-col items-center">
+          <label class="text-gray-700 dark:text-gray-300 font-medium"
+            >Profile Image</label
+          >
+
+          <label
+            class="relative w-28 h-28 cursor-pointer rounded-full border-2 border-dashed border-[#5e1fbf]/40 flex items-center justify-center bg-gray-200  dark:bg-gray-900  text-gray-700 dark:text-gray-300 hover:border-[#7a30e3] hover:shadow-lg transition"
+          >
+            <!-- Show preview if image selected -->
+            <img
+              *ngIf="previewImage"
+              [src]="previewImage"
+              class="w-full h-full object-cover rounded-full"
+              alt="Profile Preview"
+            />
+
+            <!-- Placeholder text if no image -->
+            <span *ngIf="!previewImage" class="text-center text-sm"
+              >Click to upload</span
+            >
+
+            <!-- Hidden file input -->
+            <input
+              type="file"
+              accept="image/*"
+              (change)="onFileChange($event)"
+              class="absolute inset-0 w-full h-full opacity-0 rounded-full cursor-pointer"
+            />
+          </label>
+        </div>
+        <!-- Full Name -->
+        <div>
+          <input
+            type="text"
+            placeholder="Full Name"
+            formControlName="name"
+            class="w-full bg-gray-200  dark:bg-gray-900 px-5 py-3.5 rounded-xl border border-[#5e1fbf]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#5e1fbf] outline-none transition"
+          />
+          <small
+            *ngIf="f.name.touched && f.name.invalid"
+            class="text-red-500 text-sm mt-1 block"
+          >
+            <span *ngIf="f.name.errors['required']">Name is required</span>
+            <span *ngIf="f.name.errors['minlength']">Minimum 3 characters</span>
+          </small>
+        </div>
+
+        <!-- Email -->
+        <div>
+          <input
+            type="email"
+            placeholder="Email"
+            formControlName="email"
+            class="w-full bg-gray-200  dark:bg-gray-900  px-5 py-3.5 rounded-xl border border-[#5e1fbf]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#5e1fbf] outline-none transition"
+          />
+          <small
+            *ngIf="f.email.touched && f.email.invalid"
+            class="text-red-500 text-sm mt-1 block"
+          >
+            <span *ngIf="f.email.errors['required']">Email is required</span>
+            <span *ngIf="f.email.errors['email']">Invalid email format</span>
+          </small>
+        </div>
+
+        <!-- Password -->
+        <div class="relative">
+          <input
+            [type]="passwordVisible ? 'text' : 'password'"
+            placeholder="Password"
+            formControlName="password"
+            class="w-full bg-gray-200  dark:bg-gray-900  px-5 py-3.5 pr-12 rounded-xl border border-[#5e1fbf]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#5e1fbf] outline-none transition"
+          />
+          <!-- Eye Icon -->
+          <button
+            type="button"
+            (click)="passwordVisible = !passwordVisible"
+            class="absolute right-4 top-1/2 -translate-y-1/2 text-[#5e1fbf] hover:text-[#4a18a2] transition"
+          >
+            <i
+              class="fa"
+              [ngClass]="passwordVisible ? 'fa-eye-slash' : 'fa-eye'"
+            ></i>
+          </button>
+          <small
+            *ngIf="f.password.touched && f.password.invalid"
+            class="text-red-500 text-sm mt-1 block"
+          >
+            <span *ngIf="f.password.errors['required']"
+              >Password is required</span
+            >
+            <span *ngIf="f.password.errors['minlength']"
+              >Minimum 8 characters</span
+            >
+          </small>
+        </div>
+
+       <div class="relative w-full" [class.z-50]="roleOpen">
+  <label class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Account Type</label>
+
+  <!-- Dropdown button -->
+  <button
+    type="button"
+    (click)="roleOpen = !roleOpen"
+    class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3.5 rounded-xl border border-[#5e1fbf]/40 text-gray-900 dark:text-white shadow-sm flex justify-between items-center focus:ring-2 focus:ring-[#5e1fbf] outline-none transition"
+  >
+    {{ selectedRole || 'Select Role' }}
+    <i class="fa" [ngClass]="roleOpen ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+  </button>
+
+  <!-- Dropdown list -->
+  <ul
+    *ngIf="roleOpen"
+    class="absolute w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-xl shadow-lg overflow-hidden z-50"
+  >
+    <li
+      *ngFor="let role of roles"
+      (click)="selectRole(role)"
+      class="px-5 py-3 hover:bg-blue-100 dark:hover:bg-gray-700 cursor-pointer text-gray-900 dark:text-white"
+    >
+      {{ role | titlecase }}
+    </li>
+  </ul>
+</div>
+
+
+        <!-- Submit -->
+        <button
+          type="submit"
+          [disabled]="isSubmitting || registerForm.invalid"
+          class="w-full text-white py-3.5 rounded-xl text-base font-semibold bg-gradient-to-r from-[#5e1fbf] to-[#7a30e3] hover:opacity-90 transition shadow-lg disabled:opacity-50"
+        >
+          {{ isSubmitting ? 'Registering...' : 'Register' }}
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
