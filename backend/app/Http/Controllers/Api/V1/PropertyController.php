@@ -165,7 +165,7 @@ class PropertyController extends Controller
             'city_id' => 'required|exists:cities,id',
             'area_id' => 'required|exists:areas,id',
 
-            'gender_requirement' => 'required|in:male,female,mixed',
+            'gender_requirement' => 'required|in:male,female',
             'smoking_allowed' => 'boolean',
             'pets_allowed' => 'boolean',
 
@@ -339,7 +339,7 @@ class PropertyController extends Controller
             'city_id' => 'sometimes|exists:cities,id',
             'area_id' => 'sometimes|exists:areas,id',
 
-            'gender_requirement' => 'sometimes|in:male,female,mixed',
+            'gender_requirement' => 'sometimes|in:male,female',
             'smoking_allowed' => 'sometimes|boolean',
             'pets_allowed' => 'sometimes|boolean',
 
