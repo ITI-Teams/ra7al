@@ -151,13 +151,13 @@
         <ng-container *ngIf="!isLoggedIn">
           <li>
             <button routerLink="/login"
-              class="border border-zinc-500 px-5 py-2 rounded-md hover:bg-[#852EE4] hover:text-white">
+              class="border w-full  border-zinc-500 px-5 py-2 rounded-md hover:bg-[#852EE4] hover:text-white">
               Login
             </button>
           </li>
           <li>
             <button routerLink="/register"
-              class="bg-[#852EE4] text-white px-5 py-2 rounded-md hover:opacity-90">
+              class="bg-[#852EE4] w-full  text-white px-5 py-2 rounded-md hover:opacity-90">
               Register
             </button>
           </li>
@@ -188,3 +188,7 @@
     </div>
   }
 </nav>
+
+<p-toast></p-toast>
+
+
