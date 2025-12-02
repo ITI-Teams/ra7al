@@ -13,19 +13,43 @@ class Property extends Model
      * The attributes that are mass assignable.
      */
     protected $fillable = [
-        'user_id',
-        'location_id', // This should reference areas table
+        'owner_id',
+        'city_id',
+        'area_id',
         'title',
         'description',
         'price',
         'address',
         'gender_requirement',
         'smoking_allowed',
-        'rooms_count',
+        'pets_allowed',
+        'total_rooms',
+        'available_rooms',
         'bathrooms_count',
+        'beds',
+        'available_spots',
         'size',
+        'accommodation_type',
+        'university',
         'available_from',
+        'available_to',
         'status',
+        'contact_phone',
+        'contact_email',
+        'is_negotiable',
+        'minimum_stay_months',
+        'security_deposit',
+        'payment_methods',
+        'views_count',
+        'is_featured',
+        'is_verified',
+        'rating',
+        'reviews_count',
+        'latitude',
+        'longitude',
+        'street',
+        'building_number',
+        'apartment_number'
     ];
 
     /**
@@ -36,44 +60,44 @@ class Property extends Model
         return [
             'price' => 'decimal:2',
             'smoking_allowed' => 'boolean',
-            'rooms_count' => 'integer',
-            'bathrooms_count' => 'integer',
-            'size' => 'integer',
+            'pets_allowed' => 'boolean',
+            'is_negotiable' => 'boolean',
+            'is_featured' => 'boolean',
+            'is_verified' => 'boolean',
             'available_from' => 'date',
+            'available_to' => 'date',
+            'security_deposit' => 'decimal:2',
+            'size' => 'integer',
+            'total_rooms' => 'integer',
+            'available_rooms' => 'integer',
+            'bathrooms_count' => 'integer',
+            'beds' => 'integer',
+            'available_spots' => 'integer',
+            'minimum_stay_months' => 'integer',
+            'views_count' => 'integer',
+            'reviews_count' => 'integer',
+            'rating' => 'float',
+            'payment_methods' => 'array',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime'
         ];
     }
 
-    /**
-     * Get the owner/landlord of this property.
-     */
+
     public function owner()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    /**
-     * Get the area where this property is located.
-     * CRITICAL: location_id should reference areas table
-     */
-    public function area()
-    {
-        return $this->belongsTo(Area::class, 'location_id');
-    }
 
-    /**
-     * Get the city through the area relationship.
-     * This provides direct access to city without extra queries.
-     */
     public function city()
     {
-        return $this->hasOneThrough(
-            City::class,
-            Area::class,
-            'id',           // Foreign key on areas table
-            'id',           // Foreign key on cities table
-            'location_id',  // Local key on properties table
-            'city_id'       // Local key on areas table
-        );
+        return $this->belongsTo(City::class, 'city_id', 'id');
+    }
+
+    public function area()
+    {
+        return $this->belongsTo(Area::class, 'area_id', 'id');
     }
 
     /**
@@ -81,7 +105,7 @@ class Property extends Model
      */
     public function amenities()
     {
-        return $this->belongsToMany(Amenity::class, 'property_amenities');
+        return $this->belongsToMany(Amenity::class, 'property_amenity');
     }
 
     /**
@@ -91,6 +115,26 @@ class Property extends Model
     {
         return $this->hasMany(PropertyImage::class, 'property_id')
             ->orderBy('priority');
+    }
+
+    public function rentals()
+    {
+        return $this->hasMany(PropertyRental::class, 'property_id');
+    }
+
+    public function activeRentals()
+    {
+        return $this->rentals()->where('status', 'active');
+    }
+
+    public function rentalRequests()
+    {
+        return $this->hasMany(RentalRequest::class, 'property_id');
+    }
+
+    public function pendingRentalRequests()
+    {
+        return $this->rentalRequests()->where('status', 'pending');
     }
 
     /**
