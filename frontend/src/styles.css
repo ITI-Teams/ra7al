@@ -31,3 +31,55 @@ body {
 button:hover, a:hover {
   cursor: pointer;
 }
+
+/* Input Fields */
+.input-field {
+  @apply w-full p-3 border border-gray-300 rounded-lg
+         dark:bg-gray-800 dark:text-white dark:border-gray-700
+         focus:ring-2 focus:ring-orange-400 focus:outline-none
+         transition-colors duration-300;
+}
+
+.input-small {
+  @apply w-full p-2 border-2 border-gray-300 rounded-lg
+         dark:bg-gray-800 dark:text-white dark:border-gray-700
+         focus:ring-2 focus:ring-orange-400 focus:outline-none
+         transition-colors duration-300;
+}
+
+
+/* Labels */
+.label {
+  @apply block mb-1 font-medium dark:text-gray-200;
+}
+
+/* Toggle Buttons */
+.toggle-container {
+  @apply flex items-center gap-2;
+}
+
+.toggle-container button {
+  @apply px-4 py-2 rounded-lg border border-gray-300
+         dark:border-gray-700 dark:text-white
+
+         transition-colors duration-300;
+}
+
+.toggle-container .active {
+  @apply bg-green-500 text-white border-green-500 dark:bg-green-500 dark:border-green-500;
+}
+
+.toggle-container .active-red {
+  @apply bg-[#f99332] dark:bg-[#f99332] dark:border-[#f99332] text-white border-[#f99332];
+}
+
+/* Payment Pills */
+.payment-pill {
+  @apply px-4 py-2 border border-gray-300 rounded-full cursor-pointer
+         transition-colors duration-300
+         dark:text-white dark:border-gray-600;
+}
+
+.payment-pill.active {
+  @apply bg-orange-500 dark:bg-orange-500 dark:border-orange-500 text-white border-orange-500;
+}
