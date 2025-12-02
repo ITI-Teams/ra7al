@@ -8,9 +8,9 @@ import { providePrimeNG } from 'primeng/config';
 import { provideHttpClient } from '@angular/common/http';
 import Aura from '@primeuix/themes/aura';
 import { HttpClientModule } from '@angular/common/http';
-
 import { routes } from './app.routes';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MessageService } from 'primeng/api'; // ← مهم جداً
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -23,6 +23,7 @@ export const appConfig: ApplicationConfig = {
       theme: {
         preset: Aura
       }
-    })
+    }),
+    MessageService // ← هنا توفر الـ service للـ guards و أي component
   ],
 };
