@@ -1,0 +1,309 @@
+<div class="max-w-5xl mx-auto py-10 space-y-10 text-gray-900 dark:text-gray-100">
+
+  <!-- Page Title -->
+  <h1 class="text-3xl font-bold text-center mb-6 flex items-center justify-center gap-3">
+    <i class="fas fa-building text-orange-500"></i>
+    Create Apartment Listing
+  </h1>
+
+  <form [formGroup]="form" class="space-y-10">
+
+    <!-- 🟧 BASIC INFO -->
+    <h2 class="text-xl font-semibold flex items-center gap-2">
+      <i class="fas fa-info-circle text-orange-500"></i> Basic Information
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <label class="label"><i class="fas fa-heading"></i> Title</label>
+        <input type="text" placeholder="Apartment Title" formControlName="title" class="input-field" />
+      </div>
+
+      <div>
+        <label class="label"><i class="fas fa-map-marker-alt"></i> Address</label>
+        <input type="text" placeholder="Address" formControlName="address" class="input-field" />
+      </div>
+    </div>
+
+    <div>
+      <label class="label"><i class="fas fa-align-left"></i> Description</label>
+      <textarea rows="5" placeholder="Description" formControlName="description" class="input-field"></textarea>
+    </div>
+
+
+    <!-- 🟧 LOCATION -->
+    <h2 class="text-xl font-semibold flex items-center gap-2">
+      <i class="fas fa-location-dot text-orange-500"></i> Location
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <label class="label">City ID</label>
+        <input type="number" formControlName="city_id" class="input-field" />
+      </div>
+
+      <div>
+        <label class="label">Area ID</label>
+        <input type="number" formControlName="area_id" class="input-field" />
+      </div>
+    </div>
+
+
+    <!-- 🟧 PROPERTY DETAILS -->
+    <h2 class="text-xl font-semibold flex items-center gap-2">
+      <i class="fas fa-door-open text-orange-500"></i> Property Details
+    </h2>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 p-6 border border-gray-300 rounded-xl dark:border-gray-700">
+
+      <div>
+        <label class="label"><i class="fas fa-bed"></i> Beds</label>
+        <input type="number" formControlName="beds" class="input-small" />
+      </div>
+
+      <div>
+        <label class="label"><i class="fas fa-bath"></i> Bathrooms</label>
+        <input type="number" formControlName="bathrooms_count" class="input-small" />
+      </div>
+
+      <div>
+        <label class="label"><i class="fas fa-door-closed"></i> Total Rooms</label>
+        <input type="number" formControlName="total_rooms" class="input-small" />
+      </div>
+
+      <div>
+        <label class="label"><i class="fas fa-door-open"></i> Available Rooms</label>
+        <input type="number" formControlName="available_rooms" class="input-small" />
+      </div>
+
+      <div>
+        <label class="label"><i class="fas fa-users"></i> Available Spots</label>
+        <input type="number" formControlName="available_spots" class="input-small" />
+      </div>
+
+      <div>
+        <label class="label"><i class="fas fa-ruler-combined"></i> Size (m²)</label>
+        <input type="number" formControlName="size" class="input-small" />
+      </div>
+
+      <div>
+        <label class="label">Accommodation Type</label>
+        <select formControlName="accommodation_type" class="input-small">
+          <option value="apartment">Apartment</option>
+          <option value="studio">Studio</option>
+          <option value="room">Room</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="label"><i class="fas fa-university"></i> University</label>
+        <input type="text" formControlName="university" class="input-small" />
+      </div>
+    </div>
+
+
+   <!-- 🟧 PRICE & REQUIREMENTS -->
+<h2 class="text-xl font-semibold flex items-center gap-2">
+  <i class="fas fa-money-bill text-orange-500"></i> Pricing & Requirements
+</h2>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 p-6 border border-gray-300 rounded-xl dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+
+  <!-- Furnished Toggle -->
+  <div>
+    <label class="label">Furnished</label>
+    <div class="toggle-container">
+      <button type="button"
+              (click)="setToggle('furnished', true)"
+              [class.active]="form.value.furnished === true">
+        Yes
+      </button>
+      <button type="button"
+              (click)="setToggle('furnished', false)"
+              [class.active-red]="form.value.furnished === false">
+        No
+      </button>
+    </div>
+  </div>
+
+  <!-- Price -->
+  <div>
+    <label class="label"><i class="fas fa-tag"></i> Price (EGP/Month)</label>
+    <input type="number" formControlName="price" class="input-small" />
+  </div>
+
+  <!-- Gender Requirement -->
+  <div>
+    <label class="label"><i class="fas fa-venus-mars"></i> Gender Requirement</label>
+    <select formControlName="gender_requirement" class="input-small">
+      <option value="male">Male</option>
+      <option value="female">Female</option>
+      <option value="mixed">Mixed</option>
+    </select>
+  </div>
+
+</div>
+
+
+
+    <!-- 🟧 AVAILABILITY -->
+    <h2 class="text-xl font-semibold flex items-center gap-2">
+      <i class="fas fa-calendar text-orange-500"></i> Availability Period
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <label class="label">Available From</label>
+        <input type="date" formControlName="available_from" class="input-field" />
+      </div>
+      <div>
+        <label class="label">Available To</label>
+        <input type="date" formControlName="available_to" class="input-field" />
+      </div>
+    </div>
+
+
+    <!-- 🟧 PREFERENCES -->
+    <h2 class="text-xl font-semibold flex items-center gap-2">
+      <i class="fas fa-user-check text-orange-500"></i> Preferences
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 border border-gray-300 rounded-xl dark:border-gray-700">
+
+      <div>
+        <label class="label">Pets Allowed?</label>
+        <div class="toggle-container">
+          <button type="button" (click)="setToggle('pets_allowed', true)" [class.active]="form.value.pets_allowed">Yes</button>
+          <button type="button" (click)="setToggle('pets_allowed', false)" [class.active-red]="!form.value.pets_allowed">No</button>
+        </div>
+      </div>
+
+      <div>
+        <label class="label">Smoking Allowed?</label>
+        <div class="toggle-container">
+          <button type="button" (click)="setToggle('smoking_allowed', true)" [class.active]="form.value.smoking_allowed">Yes</button>
+          <button type="button" (click)="setToggle('smoking_allowed', false)" [class.active-red]="!form.value.smoking_allowed">No</button>
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- 🟧 AMENITIES -->
+    <h2 class="text-xl font-semibold flex items-center gap-2">
+      <i class="fas fa-couch text-orange-500"></i> Amenities
+    </h2>
+
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 p-6 border border-gray-300 rounded-xl dark:border-gray-700">
+  <label class="flex items-center gap-3 dark:text-gray-200">
+    <input type="checkbox" value="1" (change)="toggleAmenity($event)" class="accent-orange-500" /> Wifi
+  </label>
+  <label class="flex items-center gap-3 dark:text-gray-200">
+    <input type="checkbox" value="3" (change)="toggleAmenity($event)" class="accent-orange-500" /> TV
+  </label>
+  <label class="flex items-center gap-3 dark:text-gray-200">
+    <input type="checkbox" value="5" (change)="toggleAmenity($event)" class="accent-orange-500" /> Balcony
+  </label>
+  <label class="flex items-center gap-3 dark:text-gray-200">
+    <input type="checkbox" value="7" (change)="toggleAmenity($event)" class="accent-orange-500" /> Oven
+  </label>
+  <label class="flex items-center gap-3 dark:text-gray-200">
+    <input type="checkbox" value="9" (change)="toggleAmenity($event)" class="accent-orange-500" /> Air Conditioner
+  </label>
+</div>
+
+
+
+    <!-- 🟧 PAYMENT METHODS -->
+    <h2 class="text-xl font-semibold flex items-center gap-2">
+      <i class="fas fa-credit-card text-orange-500"></i> Payment Methods
+    </h2>
+
+    <div class="flex gap-3 flex-wrap">
+
+      <span
+        class="payment-pill"
+        [class.active]="form.value.payment_methods.includes('cash')"
+        (click)="togglePayment('cash')"
+      >
+        Cash
+      </span>
+
+      <span
+        class="payment-pill"
+        [class.active]="form.value.payment_methods.includes('bank_transfer')"
+        (click)="togglePayment('bank_transfer')"
+      >
+        Bank Transfer
+      </span>
+
+      <span
+        class="payment-pill"
+        [class.active]="form.value.payment_methods.includes('vodafone_cash')"
+        (click)="togglePayment('vodafone_cash')"
+      >
+        Vodafone Cash
+      </span>
+
+    </div>
+
+
+    <!-- 🟧 CONTACT -->
+    <h2 class="text-xl font-semibold flex items-center gap-2">
+      <i class="fas fa-phone text-orange-500"></i> Contact Information
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div>
+        <label class="label"><i class="fas fa-phone-alt"></i> Phone</label>
+        <input type="text" formControlName="contact_phone" class="input-field" />
+      </div>
+
+      <div>
+        <label class="label"><i class="fas fa-envelope"></i> Email</label>
+        <input type="email" formControlName="contact_email" class="input-field" />
+      </div>
+    </div>
+
+
+    <!-- 🟧 OWNER -->
+    <div>
+      <label class="label">Owner ID</label>
+      <input type="number" formControlName="owner_id" class="input-field" />
+    </div>
+
+
+    <!-- 🟧 IMAGE UPLOAD -->
+    <h2 class="text-xl font-semibold flex items-center gap-2">
+      <i class="fas fa-images text-orange-500"></i> Images
+    </h2>
+
+    <div
+      class="border-2 border-dashed border-orange-400 rounded-xl p-10 flex flex-col justify-center items-center cursor-pointer dark:border-orange-600"
+      (click)="fileInput.click()"
+      (dragover)="onDragOver($event)"
+      (drop)="onFileDrop($event)"
+    >
+      <input #fileInput type="file" accept="image/*" multiple class="hidden" (change)="onFileSelect($event)" />
+
+      <i class="fas fa-cloud-upload-alt text-4xl text-orange-500"></i>
+      <p class="mt-2 text-gray-700 dark:text-gray-300">Upload Images (max 6)</p>
+    </div>
+
+    <div class="mt-4 grid grid-cols-3 gap-4" *ngIf="previewImages.length > 0">
+      <div *ngFor="let img of previewImages; let i = index" class="relative w-full h-32">
+        <img [src]="img" class="w-full h-full object-cover rounded-xl border border-gray-300 dark:border-gray-700" />
+        <button type="button" class="absolute -top-2 -right-2 bg-orange-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs" (click)="removeImage(i)">✕</button>
+      </div>
+    </div>
+
+
+    <!-- SUBMIT -->
+    <button type="button" (click)="submitForm()" class="px-10 py-3 bg-orange-500 text-white rounded-full text-lg hover:bg-orange-600">
+  Submit Listing
+</button>
+
+
+  </form>
+
+</div>
