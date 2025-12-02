@@ -9,13 +9,16 @@ use App\Http\Controllers\Dashboard\UserController;
 use App\Http\Controllers\Dashboard\RoleController;
 use App\Http\Controllers\Dashboard\PermissionController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Dashboard\CityController;
+use App\Http\Controllers\Dashboard\AreaController;
+use App\Http\Controllers\Dashboard\UniversityController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
 Route::middleware(['auth', 'role:super,admin'])->group(function () {
-    Route::get('/dashboard', [DashboardController::class,'index'])->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/messages/trashed', [MessageController::class, 'trashed'])->name('messages.trashed');
     Route::resource('messages', MessageController::class);
     Route::get('messages/{id}/restore', [MessageController::class, 'restore'])->name('messages.restore');
@@ -27,7 +30,7 @@ Route::middleware(['auth', 'role:super,admin'])->group(function () {
         Route::post('/send', [MailController::class, 'sendEmail'])->name('mail.send');
         Route::post('/send-to-user', [MailController::class, 'sendToUser'])->name('mail.send.user');
     });
-    Route::get('/gmail/connect', function() {
+    Route::get('/gmail/connect', function () {
         $client = new Google\Client();
         $client->setAuthConfig(storage_path('app/credentials.json'));
         $client->addScope(Google\Service\Gmail::GMAIL_READONLY);
@@ -35,7 +38,7 @@ Route::middleware(['auth', 'role:super,admin'])->group(function () {
         $client->setAccessType('offline');
         return redirect($client->createAuthUrl());
     });
-    Route::get('/gmail/callback', function() {
+    Route::get('/gmail/callback', function () {
         $client = new Google\Client();
         $client->setAuthConfig(storage_path('app/credentials.json'));
         $client->addScope(Google\Service\Gmail::GMAIL_READONLY);
@@ -65,10 +68,28 @@ Route::middleware(['auth', 'role:super,admin'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    /** ------------------- Cities ------------------- */
+    Route::get('cities/trashed', [CityController::class, 'trashed'])->name('cities.trashed');
+    Route::resource('cities', CityController::class);
+    Route::post('cities/{id}/restore', [CityController::class, 'restore'])->name('cities.restore');
+    Route::delete('cities/{id}/force-delete', [CityController::class, 'forceDelete'])->name('cities.force-delete');
+
+    /** ------------------- Areas ------------------- */
+    Route::get('areas/trashed', [AreaController::class, 'trashed'])->name('areas.trashed');
+    Route::resource('areas', AreaController::class);
+    Route::post('areas/{id}/restore', [AreaController::class, 'restore'])->name('areas.restore');
+    Route::delete('areas/{id}/force-delete', [AreaController::class, 'forceDelete'])->name('areas.force-delete');
+
+    /** ------------------- Universities ------------------- */
+    Route::get('universities/trashed', [UniversityController::class, 'trashed'])->name('universities.trashed');
+    Route::resource('universities', UniversityController::class);
+    Route::post('universities/{id}/restore', [UniversityController::class, 'restore'])->name('universities.restore');
+    Route::delete('universities/{id}/force-delete', [UniversityController::class, 'forceDelete'])->name('universities.force-delete');
 });
 
 
 
 
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
