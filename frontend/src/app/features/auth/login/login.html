@@ -1,0 +1,104 @@
+<p-toast></p-toast>
+
+<div class="flex flex-col md:flex-row w-full h-screen bg-gradient-to-br from-[#f7f2ff] to-white dark:from-gray-900 dark:to-gray-800">
+
+  <!-- LEFT IMAGE -->
+  <div class="relative w-full md:w-1/2 h-1/2 min-h-full order-2 md:order-1">
+    <img
+      src="asset/auth/auth.png"
+      class="w-full h-full object-cover rounded-b-3xl md:rounded-none shadow-lg"
+      alt="Login Image"
+    />
+
+    <!-- Dark overlay on mobile -->
+    <div class="md:hidden absolute inset-0 bg-black/50"></div>
+  </div>
+
+  <!-- RIGHT FORM -->
+  <div class="w-full min-h-screen z-30 absolute md:static md:w-1/2 flex items-center justify-center
+              p-8 md:p-20 order-1 md:order-2">
+
+    <div
+      class="w-full max-w-md bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl
+             shadow-xl rounded-3xl p-8 md:p-10 border border-white/30 dark:border-white/10">
+
+      <h2 class="text-4xl font-extrabold mb-8 text-center bg-gradient-to-r from-[#5e1fbf] to-[#9b4dff]
+                 text-transparent bg-clip-text">
+        Login
+      </h2>
+
+      <form [formGroup]="loginForm" (ngSubmit)="submit()" class="space-y-6">
+
+        <!-- Email -->
+        <div>
+          <input
+            type="email"
+            placeholder="Email"
+            formControlName="email"
+            class="w-full bg-white/30 dark:bg-black/30 px-5 py-3.5 rounded-xl border border-[#5e1fbf]/40
+                   text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#5e1fbf] outline-none transition"
+          />
+
+          @if (f.email.touched && f.email.invalid) {
+            <small class="text-red-500 text-sm mt-1 block">
+              @if (f.email.errors['required']) { Email is required }
+              @if (f.email.errors['email']) { Invalid email format }
+            </small>
+          }
+        </div>
+
+        <!-- Password -->
+        <div class="relative">
+          <input
+            [type]="passwordVisible ? 'text' : 'password'"
+            placeholder="Password"
+            formControlName="password"
+            class="w-full bg-white/30 dark:bg-black/30 px-5 py-3.5 pr-12 rounded-xl border border-[#5e1fbf]/40
+                   text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#5e1fbf] outline-none transition"
+          />
+
+          <!-- Eye Icon -->
+          <button
+            type="button"
+            (click)="passwordVisible = !passwordVisible"
+            class="absolute right-4 top-1/2 -translate-y-1/2 text-[#5e1fbf] hover:text-[#4a18a2] transition"
+          >
+            <i class="fa" [ngClass]="passwordVisible ? 'fa-eye-slash' : 'fa-eye'"></i>
+          </button>
+
+          @if (f.password.touched && f.password.invalid) {
+            <small class="text-red-500 text-sm mt-1 block">
+              @if (f.password.errors['required']) { Password is required }
+              @if (f.password.errors['minlength']) { Minimum length is 6 }
+            </small>
+          }
+        </div>
+
+        <!-- Role Select -->
+        <div>
+          <select
+            class="w-full bg-white/30 dark:bg-black/30 px-5 py-3.5 rounded-xl border border-[#5e1fbf]/40
+                   text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#5e1fbf] outline-none transition"
+            formControlName="role"
+          >
+            <option class="text-black" value="student">Student</option>
+            <option class="text-black" value="owner">Owner</option>
+          </select>
+        </div>
+
+        <!-- Submit -->
+        <button
+          type="submit"
+          [disabled]="isSubmitting"
+          class="w-full text-white py-3.5 rounded-xl text-base font-semibold
+                 bg-gradient-to-r from-[#5e1fbf] to-[#7a30e3]
+                 hover:opacity-90 transition shadow-lg disabled:opacity-50"
+        >
+          {{ isSubmitting ? 'Logging in...' : 'Login' }}
+        </button>
+
+      </form>
+
+    </div>
+  </div>
+</div>

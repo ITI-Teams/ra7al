@@ -1,0 +1,26 @@
+<div class="h-screen w-full flex flex-col text-[#c1c9fb] dark:text-[#5e1fbf] items-center justify-center">
+  <!-- Error Image -->
+  <img
+    src="asset/notFound/401.jpg"
+    alt="Unauthorized"
+    class="w-full max-w-md mb-8  object-cover"
+  />
+
+  <!-- Heading -->
+  <h1 class="text-5xl font-bold mb-4">
+    Unauthorized
+  </h1>
+
+  <!-- Paragraph -->
+  <p class="text-md text-center font-bold  mb-6">
+    You do not have permission to access this page or perform this action.
+  </p>
+
+  <!-- Back Button -->
+  <button
+    (click)="goHome()"
+    class=" bg-[#5e1fbf] text-white px-6 py-3 rounded-md shadow  transition"
+  >
+    Back to Home
+  </button>
+</div>

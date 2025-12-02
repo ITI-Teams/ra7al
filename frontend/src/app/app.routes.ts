@@ -23,6 +23,24 @@ export const routes: Routes = [
       { path: '', redirectTo: 'apartments', pathMatch: 'full' },
       { path: 'apartments', component: Apartments },
     ],
+    canActivate: [UserRoleGuard],
+    data: { role: 'owner' }
+  },
+
+
+
+
+
+// Prevent logged users from accessing login/register
+  {
+    path: 'login',
+    component: Login,
+    canActivate: [NoAuthGuard]
+  },
+  {
+    path: 'register',
+    component: Register,
+    canActivate: [NoAuthGuard]
   },
 
   {
