@@ -14,53 +14,67 @@ import { Register } from './features/auth/register/register';
 import { Unauthorized } from './features/unauthorized/unauthorized';
 import { NoAuthGuard } from './core/guards/noAuth.guard';
 import { UserRoleGuard } from './core/guards/userRole.guard';
+import { General } from './layouts/general/general';
+import { Dashboard } from './layouts/dashboard/dashboard';
+import { CreateApartment } from './features/owner-dashboard/components/create-apartment/create-apartment';
 
 export const routes: Routes = [
-  { path: '', component: Home },
-  { path: 'home', component: Home },
-  { path: 'aboutus', component: AboutUs },
-  { path: 'contactus', component: Contactus },
-  { path: 'filter', component: FilterPage },
-  { path: 'search', component: Search },
-
+  // General layout routes (with navbar & footer)
   {
-    path: 'owner-dashboard',
-    component: OwnerDashboard,
+    path: '',
+    component: General,
     children: [
-      { path: '', redirectTo: 'apartments', pathMatch: 'full' },
-      { path: 'apartments', component: Apartments },
-    ],
-    canActivate: [UserRoleGuard],
-    data: { role: 'owner' }
+      { path: '', component: Home },
+      { path: 'home', component: Home },
+      { path: 'aboutus', component: AboutUs },
+      { path: 'contactus', component: Contactus },
+      { path: 'filter', component: FilterPage },
+      { path: 'search', component: Search },
+
+      // Prevent logged-in users from accessing login/register
+      {
+        path: 'login',
+        component: Login,
+        canActivate: [NoAuthGuard]
+      },
+      {
+        path: 'register',
+        component: Register,
+        canActivate: [NoAuthGuard]
+      },
+
+      // Unauthorized page
+      {
+        path: 'unauthorized',
+        component: Unauthorized
+      },
+    ]
   },
 
+  // Dashboard layout routes (no navbar & footer)
+{
+  path: 'owner-dashboard',
+  component: Dashboard,
+  canActivate: [UserRoleGuard],
+  data: { role: 'owner' },
+  children: [
+    { path: '', redirectTo: 'apartments', pathMatch: 'full' },
+    { path: 'apartments', component: Apartments },
+    { path: 'create-apartment', component: CreateApartment }
+  ]
+},
 
-// Prevent logged users from accessing login/register
-  {
-    path: 'login',
-    component: Login,
-    canActivate: [NoAuthGuard]
-  },
-  {
-    path: 'register',
-    component: Register,
-    canActivate: [NoAuthGuard]
-  },
-
-  // Student-only page
+  // Student-only dashboard page
   {
     path: 'profile-student',
-    component: StudentProfile,
+    component: General,
     canActivate: [UserRoleGuard],
-    data: { role: 'student' }
+    data: { role: 'student' },
+    children: [
+      { path: '', component: StudentProfile }
+    ]
   },
 
-
-  // Unauthorized page
-  {
-    path: 'unauthorized',
-    component: Unauthorized
-  },
-  // MUST ALWAYS BE LAST
+  // Catch-all error page
   { path: '**', component: ErrorPage },
 ];
