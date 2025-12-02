@@ -35,6 +35,9 @@ export const routes: Routes = [
   },
 
 
+
+
+
 // Prevent logged users from accessing login/register
   {
     path: 'login',
