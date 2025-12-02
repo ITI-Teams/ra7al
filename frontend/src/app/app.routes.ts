@@ -17,6 +17,7 @@ import { UserRoleGuard } from './core/guards/userRole.guard';
 import { General } from './layouts/general/general';
 import { Dashboard } from './layouts/dashboard/dashboard';
 import { CreateApartment } from './features/owner-dashboard/components/create-apartment/create-apartment';
+import { PropertyDetail } from './features/property-detail/property-detail';
 
 export const routes: Routes = [
   // General layout routes (with navbar & footer)
@@ -50,6 +51,7 @@ export const routes: Routes = [
       },
     ]
   },
+  { path: 'properties/:id', component: PropertyDetail },
 
   // Dashboard layout routes (no navbar & footer)
 {

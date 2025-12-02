@@ -9,19 +9,23 @@ import Aura from '@primeuix/themes/aura';
 import { HttpClientModule } from '@angular/common/http';
 import { routes } from './app.routes';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MessageService } from 'primeng/api'; // ← مهم جداً
+import { MessageService } from 'primeng/api';
+import { provideHttpClient } from '@angular/common/http';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
+    provideHttpClient(),
     importProvidersFrom(BrowserAnimationsModule),
     importProvidersFrom(HttpClientModule),
     providePrimeNG({
       theme: {
-        preset: Aura
-      }
+        preset: Aura,
+      },
     }),
-    MessageService // ← هنا توفر الـ service للـ guards و أي component
+    provideAnimations(),
+    MessageService
   ],
 };

@@ -2,9 +2,18 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\ProfileStudentController;
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\V1\PropertyController;
 use App\Http\Controllers\AuthController;
+
+
+// profile student and owner
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('profile', [ProfileStudentController::class, 'show']);
+    Route::post('profile', [ProfileStudentController::class, 'storeOrUpdate']);
+});
+
 
 
 // message contact-us
