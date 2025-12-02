@@ -14,6 +14,7 @@ import { Register } from './features/auth/register/register';
 import { Unauthorized } from './features/unauthorized/unauthorized';
 import { NoAuthGuard } from './core/guards/noAuth.guard';
 import { UserRoleGuard } from './core/guards/userRole.guard';
+import { Payment } from './features/payment/payment';
 
 export const routes: Routes = [
   { path: '', component: Home },
@@ -57,7 +58,10 @@ export const routes: Routes = [
     canActivate: [UserRoleGuard],
     data: { role: 'student' }
   },
-
+ {
+    path: 'payment',
+    component: Payment
+  },
 
   // Unauthorized page
   {
