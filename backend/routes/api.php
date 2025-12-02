@@ -2,7 +2,9 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\V1\ProfileStudentController;
+use App\Http\Controllers\Api\ProfileStudentController;
+use App\Http\Controllers\Api\MessageController;
+use App\Http\Controllers\AuthController;
 
 
 
@@ -10,8 +12,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('profile', [ProfileStudentController::class, 'show']);
     Route::post('profile', [ProfileStudentController::class, 'storeOrUpdate']);
 });
-use App\Http\Controllers\Api\MessageController;
-use App\Http\Controllers\AuthController;
+
 
 
 // message contact-us

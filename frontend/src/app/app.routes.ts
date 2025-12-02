@@ -33,14 +33,11 @@ export const routes: Routes = [
   },
 
     {
-    path: 'profile',
-    component:StudentProfile ,
+    path: 'profile-student',
+    component:StudentProfile,
   },
-    {
-    path: 'profile-owner',
-    component:OwnerProfile ,
-  },
-  { path: 'profile-student', component: StudentProfile },
+
+  // { path: 'profile-student', component: StudentProfile },
   { path: 'profile-owner', component: OwnerProfile },
 
   // MUST ALWAYS BE LAST

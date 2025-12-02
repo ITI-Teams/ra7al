@@ -6,11 +6,12 @@ import { Observable } from 'rxjs';
 
 
 
-export interface StudentProfile{
+export interface StudentProfileData{
     name?:string;
     email?:string;
     age?:string;
     gender?:string;
+    avatar?:string;
     habits?: string;
     preferences?: string;
     roommate_style?: string;
@@ -24,12 +25,18 @@ export class ProfileService {
   constructor(private http:HttpClient){}
 
   //Get /profile
-getProfile(): Observable<{ profile: StudentProfile }> {
-return this.http.get<{ profile: StudentProfile }>(`${this.base}/profile`);
+getProfile(): Observable<{ profile: StudentProfileData }> {
+  const token=localStorage.getItem('api_token');
+  const headers = { Authorization: `Bearer ${token}` };
+return this.http.get<{ profile: StudentProfileData }>(`${this.base}/profile`,{ headers });
 }
 // POST /profile (create/update)
-saveProfile(payload: Partial<StudentProfile>): Observable<any> {
-return this.http.post<any>(`${this.base}/profile`, payload);
+saveProfile(payload: Partial<StudentProfileData>): Observable<any> {
+  const token = localStorage.getItem('api_token');
+  const headers = { Authorization: `Bearer ${token}` };
+
+  return this.http.post<any>(`${this.base}/profile`, payload, { headers });
 }
+
 
 }

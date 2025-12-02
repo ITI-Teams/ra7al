@@ -1,167 +1,275 @@
-<div class="w-full flex flex-col items-center py-10 px-4">
+
+<div class="w-full flex flex-col items-center py-10 px-4 bg-gradient-to-br from-orange-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 py-16 px-4 transition-colors duration-300">
+
+
+<div *ngIf="toastMessage"
+     class="fixed z-50 bottom-10 right-5 px-4 py-2 rounded shadow-lg transition-opacity duration-300"
+     [ngClass]="{
+       'opacity-0': !showToast,
+       'opacity-100': showToast,
+       'bg-green-500 text-white': toastType === 'success',
+       'bg-red-500 text-white': toastType === 'error'
+     }">
+  {{ toastMessage }}
+</div>
+
+<h1 _ngcontent-ng-c1571833741="" class="text-3xl sm:text-4xl font-bold mb-3 text-gray-900 dark:text-white mb-10">My <span _ngcontent-ng-c1571833741="" class="text-amber-600 dark:text-amber-400">Profile</span></h1>
 
   <!-- Profile Card -->
-  <div class="flex flex-col items-center">
-    <div class="w-28 h-28 rounded-full overflow-hidden shadow-md">
-      <img src="images/profile_student/3.png" class="w-full h-full object-cover" alt="User" />
+  <div class="flex flex-col items-center w-full max-w-5xl">
+    <div class="w-32 h-32 rounded-full overflow-hidden shadow-lg mx-auto">
+
+
+<div class="relative w-32 h-32 rounded-full overflow-hidden shadow-lg mx-auto">
+
+  <img [src]="profileForm.get('avatar')?.value" class="w-full h-full object-cover" alt="User" />
+
+
+  <label for="avatarInput"
+         class="absolute bottom-10 left-25 bg-orange-500 text-white p-2 rounded-full cursor-pointer hover:bg-orange-600 transition">
+    <i class="pi pi-camera"></i>
+  </label>
+
+
+  <input type="file" id="avatarInput" (change)="onAvatarChange($event)" accept="image/*" class="hidden">
+</div>
+
+
+
     </div>
 
-    <h2 class="mt-3 text-xl font-semibold dark:text-white">
-      {{ profileForm.get('name')?.value }}
+
+    <h2 class="mt-3 text-3xl font-bold dark:text-white text-center">
+      {{ profileForm.get('name')?.value || 'Your Name' }}
     </h2>
 
     <button
-      class="mt-3 px-5 py-2 border border-orange-500 text-orange-500 rounded-lg
+      class="mt-3 px-6 py-2 border border-orange-500 text-orange-500 rounded-lg
              hover:bg-orange-500 hover:text-white transition-all duration-300"
-      (click)="toggleEdit()"
-    >
+      (click)="toggleEdit()">
       {{ isEditing ? 'Cancel' : 'Edit my info' }}
     </button>
 
     <!-- Edit Form -->
-    <div *ngIf="isEditing" class="mt-5 w-900 max-w-md bg-white dark:bg-gray-800 p-5 rounded-xl shadow-lg">
-      <form [formGroup]="profileForm">
+    <div *ngIf="isEditing" class="mt-8 w-full bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl">
+      <form [formGroup]="profileForm" class="space-y-6">
 
         <!-- Name -->
-        <label class="block text-gray-600 dark:text-gray-300 mb-1">Name</label>
-        <input type="text" formControlName="name"
-          class="w-full p-2 border rounded-lg mb-1 dark:bg-gray-700 dark:border-gray-600" />
-        <div class="text-red-500 text-sm mb-3" *ngIf="profileForm.get('name')?.invalid && profileForm.get('name')?.touched">
-          <div *ngIf="profileForm.get('name')?.errors?.['required']">Name is required.</div>
-        </div>
-
-        <!-- Email -->
-        <label class="block text-gray-600 dark:text-gray-300 mb-1">Email</label>
-        <input type="email" formControlName="email"
-          class="w-full p-2 border rounded-lg mb-1 dark:bg-gray-700 dark:border-gray-600" />
-        <div class="text-red-500 text-sm mb-3" *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched">
-          <div *ngIf="profileForm.get('email')?.errors?.['required']">Email is required.</div>
-          <div *ngIf="profileForm.get('email')?.errors?.['email']">Invalid email format.</div>
-        </div>
-
-        <!-- Password -->
-        <label class="block text-gray-600 dark:text-gray-300 mb-1">Password</label>
-        <input type="password" formControlName="password"
-          class="w-full p-2 border rounded-lg mb-1 dark:bg-gray-700 dark:border-gray-600" />
-        <div class="text-red-500 text-sm mb-3" *ngIf="profileForm.get('password')?.invalid && profileForm.get('password')?.touched">
-          <div *ngIf="profileForm.get('password')?.errors?.['minlength']">
-            Password must be at least 6 characters.
+        <div>
+          <label class="block text-gray-700 dark:text-gray-300 mb-2 font-medium">Name</label>
+          <input type="text" formControlName="name"
+            class="w-full p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 dark:bg-gray-700 dark:border-gray-600"
+            placeholder="Enter your name" />
+          <div class="text-red-500 text-sm mt-1"
+               *ngIf="profileForm.get('name')?.invalid && profileForm.get('name')?.touched">
+            <div *ngIf="profileForm.get('name')?.errors?.['required']">Name is required.</div>
+            <div *ngIf="profileForm.get('name')?.errors?.['pattern']">Name must be text only.</div>
           </div>
         </div>
 
-        <!-- Age -->
-        <label class="block text-gray-600 dark:text-gray-300 mb-1">Age</label>
-        <input type="number" formControlName="age"
-          class="w-full p-2 border rounded-lg mb-3 dark:bg-gray-700 dark:border-gray-600" />
+        <!-- Email -->
+        <div>
+          <label class="block text-gray-700 dark:text-gray-300 mb-2 font-medium">Email</label>
+          <input type="email" formControlName="email"
+            class="w-full p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 dark:bg-gray-700 dark:border-gray-600"
+            placeholder="Enter your email" />
+          <div class="text-red-500 text-sm mt-1"
+               *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched">
+            <div *ngIf="profileForm.get('email')?.errors?.['required']">Email is required.</div>
+            <div *ngIf="profileForm.get('email')?.errors?.['email']">Invalid email format.</div>
+          </div>
+        </div>
+<!-- Password -->
+  <div>
+          <label class="block text-gray-700 dark:text-gray-300 mb-2 font-medium">Password</label>
+        <input type="password" formControlName="password"
+       class="w-full p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 dark:bg-gray-700 dark:border-gray-600"
+       placeholder="Enter your password" />
+       <div class="text-red-500 text-sm mt-1"
+     *ngIf="profileForm.get('password')?.invalid && profileForm.get('password')?.touched">
+  <div *ngIf="profileForm.get('password')?.errors?.['minlength']">
+    Password must be at least 6 characters.
+  </div>
+  <div *ngIf="profileForm.get('password')?.errors?.['maxlength']">
+    Password cannot exceed 20 characters.
+  </div>
+</div>
+</div>
 
-        <!-- Gender -->
-        <label class="block text-gray-600 dark:text-gray-300 mb-1">Gender</label>
-        <select formControlName="gender"
-          class="w-full p-2 border rounded-lg mb-3 dark:bg-gray-700 dark:border-gray-600">
-          <option value="">Select gender</option>
-          <option value="male">Male</option>
-          <option value="female">Female</option>
-          <option value="other">Other</option>
-        </select>
+        <!-- Age -->
+        <div>
+          <label class="block text-gray-700 dark:text-gray-300 mb-2 font-medium">Age</label>
+          <input type="number" formControlName="age"
+            class="w-full p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 dark:bg-gray-700 dark:border-gray-600"
+            placeholder="Enter your age" />
+          <div class="text-red-500 text-sm mt-1"
+               *ngIf="profileForm.get('age')?.invalid && profileForm.get('age')?.touched">
+            <div *ngIf="profileForm.get('age')?.errors?.['required']">Age is required.</div>
+            <div *ngIf="profileForm.get('age')?.errors?.['min'] || profileForm.get('age')?.errors?.['max']">
+              Age must be between 5 and 120.
+            </div>
+
+
+          </div>
+        </div>
 
         <!-- Habits -->
-        <label class="block text-gray-600 dark:text-gray-300 mb-1">Habits</label>
-        <input type="text" formControlName="habits"
-          class="w-full p-2 border rounded-lg mb-3 dark:bg-gray-700 dark:border-gray-600" />
+        <div>
+          <label class="block text-gray-700 dark:text-gray-300 mb-2 font-medium">Habits</label>
+          <input type="text" formControlName="habits"
+            placeholder="Reading, Sports, Music"
+            class="w-full p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 dark:bg-gray-700 dark:border-gray-600" />
+          <div class="text-red-500 text-sm mt-1"
+               *ngIf="profileForm.get('habits')?.invalid && profileForm.get('habits')?.touched">
+            <div *ngIf="profileForm.get('habits')?.errors?.['pattern']">Please enter valid text.</div>
+          </div>
+        </div>
 
         <!-- Preferences -->
-        <label class="block text-gray-600 dark:text-gray-300 mb-1">Preferences</label>
-        <input type="text" formControlName="preferences"
-          class="w-full p-2 border rounded-lg mb-3 dark:bg-gray-700 dark:border-gray-600" />
+        <div>
+          <label class="block text-gray-700 dark:text-gray-300 mb-2 font-medium">Preferences</label>
+          <input type="text" formControlName="preferences"
+            placeholder="Early Riser, Night Owl, Quiet"
+            class="w-full p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 dark:bg-gray-700 dark:border-gray-600" />
+          <div class="text-red-500 text-sm mt-1"
+               *ngIf="profileForm.get('preferences')?.invalid && profileForm.get('preferences')?.touched">
+            <div *ngIf="profileForm.get('preferences')?.errors?.['pattern']">Please enter valid text.</div>
+          </div>
+        </div>
 
         <!-- Roommate Style -->
-        <label class="block text-gray-600 dark:text-gray-300 mb-1">Roommate Style</label>
-        <input type="text" formControlName="roommate_style"
-          class="w-full p-2 border rounded-lg mb-3 dark:bg-gray-700 dark:border-gray-600" />
+        <div>
+          <label class="block text-gray-700 dark:text-gray-300 mb-2 font-medium">Roommate Style</label>
+          <input type="text" formControlName="roommate_style"
+            placeholder="Friendly, Quiet, Party"
+            class="w-full p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 dark:bg-gray-700 dark:border-gray-600" />
+          <div class="text-red-500 text-sm mt-1"
+               *ngIf="profileForm.get('roommate_style')?.invalid && profileForm.get('roommate_style')?.touched">
+            <div *ngIf="profileForm.get('roommate_style')?.errors?.['required']">Roommate Style is required.</div>
+            <div *ngIf="profileForm.get('roommate_style')?.errors?.['pattern']">Must be text only.</div>
+          </div>
+        </div>
 
         <!-- Cleanliness Level -->
-        <label class="block text-gray-600 dark:text-gray-300 mb-1">Cleanliness Level</label>
-        <input type="text" formControlName="cleanliness_level"
-          class="w-full p-2 border rounded-lg mb-3 dark:bg-gray-700 dark:border-gray-600" />
+        <div>
+          <label class="block text-gray-700 dark:text-gray-300 mb-2 font-medium">Cleanliness Level</label>
+          <input type="text" formControlName="cleanliness_level"
+            placeholder="Enter a number"
+            class="w-full p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 dark:bg-gray-700 dark:border-gray-600" />
+          <div class="text-red-500 text-sm mt-1"
+               *ngIf="profileForm.get('cleanliness_level')?.invalid && profileForm.get('cleanliness_level')?.touched">
+            <div *ngIf="profileForm.get('cleanliness_level')?.errors?.['required']">Cleanliness level is required.</div>
+            <div *ngIf="profileForm.get('cleanliness_level')?.errors?.['pattern']">Enter a number 0-9.</div>
+          </div>
+        </div>
+ <div>
+    <!-- gender -->
+            <label class="block text-gray-700 dark:text-gray-300 mb-2 font-medium">Gender</label>
+            <select formControlName="gender"
+              class="w-full mb-5 p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 dark:bg-gray-700 dark:border-gray-600">
+              <option value="">Select</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
+            <div class="text-red-500 text-sm mt-1"
+                 *ngIf="profileForm.get('gender')?.invalid && profileForm.get('gender')?.touched">
+              <div *ngIf="profileForm.get('gender')?.errors?.['required']">gender field is required.</div>
+            </div>
+          </div>
+        <!-- Smoking & Pets -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-gray-700 dark:text-gray-300 mb-2 font-medium">Smoking</label>
+            <select formControlName="smoking"
+              class="w-full p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 dark:bg-gray-700 dark:border-gray-600">
+              <option value="">Select</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+            <div class="text-red-500 text-sm mt-1"
+                 *ngIf="profileForm.get('smoking')?.invalid && profileForm.get('smoking')?.touched">
+              <div *ngIf="profileForm.get('smoking')?.errors?.['required']">Smoking field is required.</div>
+            </div>
+          </div>
 
-        <!-- Smoking -->
-        <label class="block text-gray-600 dark:text-gray-300 mb-1">Smoking</label>
-        <select formControlName="smoking"
-          class="w-full p-2 border rounded-lg mb-3 dark:bg-gray-700 dark:border-gray-600">
-          <option value="">Select</option>
-          <option value="yes">Yes</option>
-          <option value="no">No</option>
-        </select>
+          <div>
+            <label class="block text-gray-700 dark:text-gray-300 mb-2 font-medium">Pets</label>
+            <select formControlName="pets"
+              class="w-full p-4 mb-20 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 dark:bg-gray-700 dark:border-gray-600">
+              <option value="">Select</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+            <div class="text-red-500 text-sm mt-1"
+                 *ngIf="profileForm.get('pets')?.invalid && profileForm.get('pets')?.touched">
+              <div *ngIf="profileForm.get('pets')?.errors?.['required']">Pets field is required.</div>
+            </div>
+          </div>
+        </div>
 
-        <!-- Pets -->
-        <label class="block text-gray-600 dark:text-gray-300 mb-1">Pets</label>
-        <select formControlName="pets"
-          class="w-full p-2 border rounded-lg mb-3 dark:bg-gray-700 dark:border-gray-600">
-          <option value="">Select</option>
-          <option value="yes">Yes</option>
-          <option value="no">No</option>
-        </select>
 
+        
         <!-- Buttons -->
-        <div class="flex justify-between mt-4">
+        <div class="flex justify-end gap-4 mt-6">
           <button type="button"
-            class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition"
-            (click)="saveInfo()">
-            Save
-          </button>
+            class="px-6 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition"
+            (click)="saveData()">Save</button>
 
           <button type="button"
-            class="px-4 py-2 border border-gray-400 text-gray-600 rounded-lg hover:bg-gray-200 transition"
-            (click)="toggleEdit()">
-            Cancel
-          </button>
+            class="px-6 py-3 border border-gray-400 text-gray-600 rounded-lg hover:bg-gray-200 transition"
+            (click)="toggleEdit()">Cancel</button>
         </div>
 
       </form>
+
+
+
     </div>
   </div>
 
   <!-- Tabs -->
-  <div class="flex flex-wrap justify-center gap-10 mt-10 border-b w-full max-w-4xl pb-2 text-gray-600 dark:text-gray-300">
-    <button
-      class="flex items-center gap-2 pb-2 transition"
-      [ngClass]="{ 'border-b-2 border-orange-500 text-orange-500 font-semibold dark:text-orange-400': activeTab === 'favourites' }"
-      (click)="changeTab('favourites')">❤️ Favourites</button>
+<div class="flex flex-wrap justify-center gap-10 mt-10 border-b w-full max-w-4xl pb-2 text-gray-600 dark:text-gray-300">
+  <button class="flex items-center gap-2 pb-2 transition"
+    [ngClass]="{ 'border-b-2 border-orange-500 text-orange-500 font-semibold dark:text-orange-400': activeTab === 'favourites' }"
+    (click)="changeTab('favourites')">
+    ❤️ Favourites
+  </button>
+  <button class="flex items-center gap-2 pb-2 transition"
+    [ngClass]="{ 'border-b-2 border-orange-500 text-orange-500 font-semibold dark:text-orange-400': activeTab === 'about' }"
+    (click)="changeTab('about')">
+    👤 About me
+  </button>
+  <button class="flex items-center gap-2 pb-2 transition"
+    [ngClass]="{ 'border-b-2 border-orange-500 text-orange-500 font-semibold dark:text-orange-400': activeTab === 'roommates' }"
+    (click)="changeTab('roommates')">
+    👥 Roommates
+  </button>
+  <button class="flex items-center gap-2 pb-2 transition"
+    [ngClass]="{ 'border-b-2 border-orange-500 text-orange-500 font-semibold dark:text-orange-400': activeTab === 'history' }"
+    (click)="changeTab('history')">
+    🕘 History
+  </button>
+</div>
 
-    <button
-      class="flex items-center gap-2 pb-2 transition"
-      [ngClass]="{ 'border-b-2 border-orange-500 text-orange-500 font-semibold dark:text-orange-400': activeTab === 'about' }"
-      (click)="changeTab('about')">👤 About me</button>
+<!-- Tab Contents -->
+<div *ngIf="activeTab === 'favourites'" class="grid md:grid-cols-2 grid-cols-1 gap-6 mt-10 w-full max-w-5xl">
+<article _ngcontent-ng-c1571833741="" class="group bg-white dark:bg-gray-800 rounded-3xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-200 dark:border-gray-700 hover:border-amber-300 dark:hover:border-amber-600 ng-star-inserted"><div _ngcontent-ng-c1571833741="" class="relative overflow-hidden h-60"><img _ngcontent-ng-c1571833741="" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://images.pexels.com/photos/271743/pexels-photo-271743.jpeg" alt="Luxury Shared Apartment near Campus"><div _ngcontent-ng-c1571833741="" class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div><span _ngcontent-ng-c1571833741="" class="absolute top-3 left-3 px-3 py-1.5 bg-green-500 text-white text-xs font-bold rounded-full shadow-lg backdrop-blur-sm flex items-center gap-1 ng-star-inserted"><svg _ngcontent-ng-c1571833741="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-3 w-3"><path _ngcontent-ng-c1571833741="" fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> Bills Included </span><!--container--><span _ngcontent-ng-c1571833741="" class="absolute top-3 right-3 px-3 py-1.5 bg-blue-500 text-white text-xs font-bold rounded-full shadow-lg backdrop-blur-sm animate-pulse flex items-center gap-1"><svg _ngcontent-ng-c1571833741="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-3 w-3"><path _ngcontent-ng-c1571833741="" d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"></path></svg> 3 Spots Available </span><span _ngcontent-ng-c1571833741="" class="absolute bottom-3 left-3 px-3 py-1.5 bg-amber-500 text-white text-xs font-bold rounded-full shadow-lg backdrop-blur-sm"> Cairo University </span></div><div _ngcontent-ng-c1571833741="" class="p-6"><h3 _ngcontent-ng-c1571833741="" class="font-bold text-xl mb-2 text-gray-900 dark:text-white line-clamp-2 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors duration-200"> Luxury Shared Apartment near Campus </h3><p _ngcontent-ng-c1571833741="" class="text-sm text-gray-600 dark:text-gray-300 mb-4 line-clamp-1 flex items-center gap-1"><svg _ngcontent-ng-c1571833741="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4 text-red-500"><path _ngcontent-ng-c1571833741="" fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path></svg> 7th District, Nasr City • Cairo </p><div _ngcontent-ng-c1571833741="" class="grid grid-cols-4 gap-2 mb-4 text-xs"><div _ngcontent-ng-c1571833741="" class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg text-center"><div _ngcontent-ng-c1571833741="" class="text-lg mb-1">🏠</div><div _ngcontent-ng-c1571833741="" class="text-gray-700 dark:text-gray-300 font-semibold"> 3 Rooms </div></div><div _ngcontent-ng-c1571833741="" class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg text-center"><div _ngcontent-ng-c1571833741="" class="text-lg mb-1">🛁</div><div _ngcontent-ng-c1571833741="" class="text-gray-700 dark:text-gray-300 font-semibold"> 2 Baths </div></div><div _ngcontent-ng-c1571833741="" class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg text-center"><div _ngcontent-ng-c1571833741="" class="text-lg mb-1">🛏️</div><div _ngcontent-ng-c1571833741="" class="text-gray-700 dark:text-gray-300 font-semibold"> 6 Beds </div></div><div _ngcontent-ng-c1571833741="" class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg text-center"><div _ngcontent-ng-c1571833741="" class="text-lg mb-1">👥</div><div _ngcontent-ng-c1571833741="" class="text-gray-700 dark:text-gray-300 font-semibold text-xs"> Shared </div></div></div><div _ngcontent-ng-c1571833741="" class="flex flex-wrap gap-2 mb-4"><span _ngcontent-ng-c1571833741="" class="inline-flex items-center gap-1 px-3 py-1.5 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 text-sm font-semibold rounded-full"><svg _ngcontent-ng-c1571833741="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-3 w-3"><path _ngcontent-ng-c1571833741="" fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg> Females </span><!--container--><span _ngcontent-ng-c1571833741="" class="inline-flex items-center gap-1 px-3 py-1.5 bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 text-sm font-semibold rounded-full ng-star-inserted"> 🚭 No Smoking </span><!--container--></div><div _ngcontent-ng-c1571833741="" class="flex justify-between items-center pt-4 border-t border-gray-100 dark:border-gray-700"><div _ngcontent-ng-c1571833741=""><p _ngcontent-ng-c1571833741="" class="font-bold text-2xl text-amber-600 dark:text-amber-400"> $220 </p><span _ngcontent-ng-c1571833741="" class="text-xs text-gray-500 dark:text-gray-400">/month</span></div><button _ngcontent-ng-c1571833741="" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 flex items-center gap-2"> View Details <svg _ngcontent-ng-c1571833741="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4"><path _ngcontent-ng-c1571833741="" fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg></button></div></div></article>
+<article _ngcontent-ng-c1571833741="" class="group bg-white dark:bg-gray-800 rounded-3xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-200 dark:border-gray-700 hover:border-amber-300 dark:hover:border-amber-600 ng-star-inserted"><div _ngcontent-ng-c1571833741="" class="relative overflow-hidden h-60"><img _ngcontent-ng-c1571833741="" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" src="https://images.pexels.com/photos/2631746/pexels-photo-2631746.jpeg" alt="Modern Shared Apartment Maadi"><div _ngcontent-ng-c1571833741="" class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div><span _ngcontent-ng-c1571833741="" class="absolute top-3 left-3 px-3 py-1.5 bg-green-500 text-white text-xs font-bold rounded-full shadow-lg backdrop-blur-sm flex items-center gap-1 ng-star-inserted"><svg _ngcontent-ng-c1571833741="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-3 w-3"><path _ngcontent-ng-c1571833741="" fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg> Bills Included </span><!--container--><span _ngcontent-ng-c1571833741="" class="absolute top-3 right-3 px-3 py-1.5 bg-blue-500 text-white text-xs font-bold rounded-full shadow-lg backdrop-blur-sm animate-pulse flex items-center gap-1"><svg _ngcontent-ng-c1571833741="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-3 w-3"><path _ngcontent-ng-c1571833741="" d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"></path></svg> 4 Spots Available </span><span _ngcontent-ng-c1571833741="" class="absolute bottom-3 left-3 px-3 py-1.5 bg-amber-500 text-white text-xs font-bold rounded-full shadow-lg backdrop-blur-sm"> Ain Shams University </span></div><div _ngcontent-ng-c1571833741="" class="p-6"><h3 _ngcontent-ng-c1571833741="" class="font-bold text-xl mb-2 text-gray-900 dark:text-white line-clamp-2 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors duration-200"> Modern Shared Apartment Maadi </h3><p _ngcontent-ng-c1571833741="" class="text-sm text-gray-600 dark:text-gray-300 mb-4 line-clamp-1 flex items-center gap-1"><svg _ngcontent-ng-c1571833741="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4 text-red-500"><path _ngcontent-ng-c1571833741="" fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path></svg> Maadi, Cairo • Cairo </p><div _ngcontent-ng-c1571833741="" class="grid grid-cols-4 gap-2 mb-4 text-xs"><div _ngcontent-ng-c1571833741="" class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg text-center"><div _ngcontent-ng-c1571833741="" class="text-lg mb-1">🏠</div><div _ngcontent-ng-c1571833741="" class="text-gray-700 dark:text-gray-300 font-semibold"> 4 Rooms </div></div><div _ngcontent-ng-c1571833741="" class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg text-center"><div _ngcontent-ng-c1571833741="" class="text-lg mb-1">🛁</div><div _ngcontent-ng-c1571833741="" class="text-gray-700 dark:text-gray-300 font-semibold"> 2 Baths </div></div><div _ngcontent-ng-c1571833741="" class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg text-center"><div _ngcontent-ng-c1571833741="" class="text-lg mb-1">🛏️</div><div _ngcontent-ng-c1571833741="" class="text-gray-700 dark:text-gray-300 font-semibold"> 8 Beds </div></div><div _ngcontent-ng-c1571833741="" class="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg text-center"><div _ngcontent-ng-c1571833741="" class="text-lg mb-1">👥</div><div _ngcontent-ng-c1571833741="" class="text-gray-700 dark:text-gray-300 font-semibold text-xs"> Shared </div></div></div><div _ngcontent-ng-c1571833741="" class="flex flex-wrap gap-2 mb-4"><span _ngcontent-ng-c1571833741="" class="inline-flex items-center gap-1 px-3 py-1.5 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 text-sm font-semibold rounded-full"><svg _ngcontent-ng-c1571833741="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-3 w-3"><path _ngcontent-ng-c1571833741="" fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg> Males </span><span _ngcontent-ng-c1571833741="" class="inline-flex items-center gap-1 px-3 py-1.5 bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 text-sm font-semibold rounded-full ng-star-inserted"> 🐾 Pets OK </span><!--container--><span _ngcontent-ng-c1571833741="" class="inline-flex items-center gap-1 px-3 py-1.5 bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 text-sm font-semibold rounded-full ng-star-inserted"> 🚭 No Smoking </span><!--container--></div><div _ngcontent-ng-c1571833741="" class="flex justify-between items-center pt-4 border-t border-gray-100 dark:border-gray-700"><div _ngcontent-ng-c1571833741=""><p _ngcontent-ng-c1571833741="" class="font-bold text-2xl text-amber-600 dark:text-amber-400"> $380 </p><span _ngcontent-ng-c1571833741="" class="text-xs text-gray-500 dark:text-gray-400">/month</span></div><button _ngcontent-ng-c1571833741="" class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white px-6 py-3 rounded-xl text-sm font-bold transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 flex items-center gap-2"> View Details <svg _ngcontent-ng-c1571833741="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4"><path _ngcontent-ng-c1571833741="" fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg></button></div></div></article>
+</div>
 
-    <button
-      class="flex items-center gap-2 pb-2 transition"
-      [ngClass]="{ 'border-b-2 border-orange-500 text-orange-500 font-semibold dark:text-orange-400': activeTab === 'roommates' }"
-      (click)="changeTab('roommates')">👥 Roommates</button>
+<div *ngIf="activeTab === 'about'" class="mt-10 w-full max-w-3xl text-gray-700 dark:text-gray-300">
+  <h3 class="text-xl font-semibold mb-4">About Me</h3>
+  <p class="text-sm">Add personal information here...</p>
+</div>
 
-    <button
-      class="flex items-center gap-2 pb-2 transition"
-      [ngClass]="{ 'border-b-2 border-orange-500 text-orange-500 font-semibold dark:text-orange-400': activeTab === 'history' }"
-      (click)="changeTab('history')">🕘 History</button>
-  </div>
+<div *ngIf="activeTab === 'roommates'" class="mt-10 w-full max-w-3xl text-gray-700 dark:text-gray-300">
+  <h3 class="text-xl font-semibold mb-4">Roommates</h3>
+  <p class="text-sm">No roommates found.</p>
+</div>
 
-  <!-- Tab Contents -->
-  <div *ngIf="activeTab === 'favourites'" class="grid md:grid-cols-2 grid-cols-1 gap-6 mt-10 w-full max-w-5xl">
-    <!-- Add favourite cards here (مثل كودك السابق) -->
-  </div>
-
-  <div *ngIf="activeTab === 'about'" class="mt-10 w-full max-w-3xl text-gray-700 dark:text-gray-300">
-    <h3 class="text-xl font-semibold mb-4">About Me</h3>
-    <p class="text-sm">Add personal information here...</p>
-  </div>
-
-  <div *ngIf="activeTab === 'roommates'" class="mt-10 w-full max-w-3xl text-gray-700 dark:text-gray-300">
-    <h3 class="text-xl font-semibold mb-4">Roommates</h3>
-    <p class="text-sm">No roommates found.</p>
-  </div>
-
-  <div *ngIf="activeTab === 'history'" class="mt-10 w-full max-w-3xl text-gray-700 dark:text-gray-300">
-    <h3 class="text-xl font-semibold mb-4">History</h3>
-    <p class="text-sm">No history available.</p>
-  </div>
+<div *ngIf="activeTab === 'history'" class="mt-10 w-full max-w-3xl text-gray-700 dark:text-gray-300">
+  <h3 class="text-xl font-semibold mb-4">History</h3>
+  <p class="text-sm">No history available.</p>
+</div>
 
 </div>
