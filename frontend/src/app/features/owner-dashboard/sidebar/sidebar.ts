@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 interface MenuItem {
@@ -18,6 +18,7 @@ interface MenuItem {
 })
 export class Sidebar {
   @Input() isOpen = true;
+  @Output() isOpenChange = new EventEmitter<boolean>();
 
   menuItems: MenuItem[] = [
     {
@@ -70,4 +71,8 @@ export class Sidebar {
       route: '/owner-dashboard/settings',
     },
   ];
+  toggleSidebar() {
+    this.isOpen = !this.isOpen;
+    this.isOpenChange.emit(this.isOpen);
+  }
 }

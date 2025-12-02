@@ -74,6 +74,26 @@
           >
             {{ item.label }}
           </div>
+
+          <!-- Tooltip for collapsed state -->
+          <div
+            *ngIf="!isOpen"
+            class="hidden lg:block absolute left-full ml-4 px-3 py-2 bg-gray-800 dark:bg-gray-700 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap shadow-xl pointer-events-none z-50"
+          >
+            <div class="flex items-center gap-2">
+              {{ item.label }}
+              <span
+                *ngIf="item.badge"
+                class="bg-gradient-to-r from-[#FA9233] to-orange-600 text-xs px-1.5 py-0.5 rounded-full font-bold"
+              >
+                {{ item.badge }}
+              </span>
+            </div>
+            <!-- Tooltip Arrow -->
+            <div
+              class="absolute -left-0 top-1/2 -translate-y-1/2 w-2 h-2 bg-gray-800 dark:bg-gray-700 rotate-45"
+            ></div>
+          </div>
         </a>
       </li>
     </ul>
