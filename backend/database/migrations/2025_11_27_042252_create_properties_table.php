@@ -24,7 +24,7 @@ return new class extends Migration
             $table->decimal('price', 10, 2);
             $table->string('address');
 
-            $table->enum('gender_requirement', ['male', 'female', 'mixed'])->default('mixed');
+            $table->enum('gender_requirement', ['male', 'female'])->default('male');
             $table->boolean('smoking_allowed')->default(false);
             $table->boolean('pets_allowed')->default(false);
 
