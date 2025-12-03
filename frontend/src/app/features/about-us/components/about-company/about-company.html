@@ -1,0 +1,95 @@
+<div class="relative z-10 bg-white dark:bg-gray-900 transition-colors duration-500 px-8 py-12">
+
+  <div class="flex flex-col md:flex-row items-center justify-center gap-12 max-w-6xl mx-auto">
+
+    <!-- Left: Content -->
+    <div class="flex-1 flex flex-col items-center md:items-start text-center md:text-start gap-6">
+
+      <h2 class="text-3xl font-bold text-[#9233FA] animate-fade-in">
+        About Our Company
+      </h2>
+      <p class="text-gray-700 dark:text-gray-300 text-lg leading-relaxed animate-fade-in delay-200">
+        At <strong>Rahal Housing</strong>, we simplify student living. We provide verified, secure accommodations and help students find ideal roommates. Our platform ensures transparency, comfort, and convenience, so you can focus on your studies without stress.
+      </p>
+
+      <!-- Features with Icons -->
+      <div class="flex flex-col gap-4 mt-4">
+        <div class="flex items-center gap-3 animate-fade-in delay-400">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#9233FA] border border-gray-200  dark:border-gray-700 shadow-sm rounded-full m-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+          <span class="text-gray-700 dark:text-gray-300 text-lg">Verified and secure accommodations</span>
+        </div>
+        <div class="flex items-center gap-3 animate-fade-in delay-500">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#9233FA] border border-gray-200  dark:border-gray-700 shadow-sm rounded-full m-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3M16 7V3M4 11h16M4 15h16M4 19h16" />
+          </svg>
+          <span class="text-gray-700 dark:text-gray-300 text-lg">Find the perfect roommates</span>
+        </div>
+        <div class="flex items-center gap-3 animate-fade-in delay-600">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#9233FA] border border-gray-200  dark:border-gray-700 shadow-sm rounded-full m-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6h13M9 6H4m5 0v13" />
+          </svg>
+          <span class="text-gray-700 dark:text-gray-300 text-lg">24/7 support and assistance</span>
+        </div>
+        <div class="flex items-center gap-3 animate-fade-in delay-700">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-[#9233FA] border border-gray-200  dark:border-gray-700 shadow-sm rounded-full m-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c1.104 0 2-.896 2-2s-.896-2-2-2-2 .896-2 2 .896 2 2 2zM4 20v-2a4 4 0 014-4h8a4 4 0 014 4v2" />
+          </svg>
+          <span class="text-gray-700 dark:text-gray-300 text-lg">Flexible payment options</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right: Image -->
+    <div class="flex-1 relative w-full max-w-3xl">
+      <img
+        src="asset/about.jpg"
+        alt="About Us"
+        class="w-full h-72 md:h-96 object-cover rounded-xl mx-auto shadow-lg animate-fade-in"
+      />
+
+      <!-- Dots Left -->
+      <div class="absolute top-5 left-5 hidden md:block">
+        <svg width="60" height="60" fill="none" viewBox="0 0 60 60">
+          <defs>
+            <pattern id="dots-left" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
+              <circle cx="2" cy="2" r="2" class="fill-gray-300 dark:fill-gray-700"/>
+            </pattern>
+          </defs>
+          <rect width="60" height="60" fill="url(#dots-left)" />
+        </svg>
+      </div>
+
+      <!-- Dots Right -->
+      <div class="absolute top-5 right-5 hidden md:block">
+        <svg width="60" height="60" fill="none" viewBox="0 0 60 60">
+          <defs>
+            <pattern id="dots-right" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
+              <circle cx="2" cy="2" r="2" class="fill-gray-300 dark:fill-gray-700"/>
+            </pattern>
+          </defs>
+          <rect width="60" height="60" fill="url(#dots-right)" />
+        </svg>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Tailwind Animations -->
+<style>
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade-in {
+    animation: fadeIn 1s ease forwards;
+  }
+  .animate-fade-in.delay-200 { animation-delay: 0.2s; }
+  .animate-fade-in.delay-400 { animation-delay: 0.4s; }
+  .animate-fade-in.delay-500 { animation-delay: 0.5s; }
+  .animate-fade-in.delay-600 { animation-delay: 0.6s; }
+  .animate-fade-in.delay-700 { animation-delay: 0.7s; }
+</style>
