@@ -107,7 +107,7 @@ export class Navbar {
   }
 
   avatarUrl(): string {
-    if (!this.user) return '/assets/default-avatar.png';
+    if (!this.user) return '/assets/default-avatar.svg';
     if (this.user.avatar) {
       return `${this.auth.getBackendBase()}/storage/${this.user.avatar}`;
     }
