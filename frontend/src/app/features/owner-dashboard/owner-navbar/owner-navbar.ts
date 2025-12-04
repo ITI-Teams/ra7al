@@ -10,7 +10,7 @@ import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-owner-navbar',
-   imports: [CommonModule, RouterLink, NgClass, NgIf, ToastModule, ButtonModule],
+   imports: [CommonModule, RouterLink, NgIf, ToastModule, ButtonModule],
   providers: [MessageService], // ✅ Provide MessageService here
   templateUrl: './owner-navbar.html',
   styleUrl: './owner-navbar.css',
