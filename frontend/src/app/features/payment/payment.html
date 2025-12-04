@@ -1,0 +1,110 @@
+ <div class="w-full min-h-screen flex justify-center bg-gray-100 dark:bg-gray-900 py-12 px-4 bg-gradient-to-br from-orange-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 py-16 px-4 transition-colors duration-300">
+  <div class="w-full max-w-3xl bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-8 space-y-10">
+
+    <!-- Billing Frequency -->
+    <section>
+      <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200">Billing frequency</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-4">
+        <!-- Monthly -->
+        <button class="border rounded-xl p-5 bg-white hover:shadow-md transition text-left dark:bg-gray-700">
+          <p class="font-semibold text-gray-800 dark:text-gray-200">Pay monthly</p>
+          <p class="text-gray-500">$239/month</p>
+        </button>
+
+        <!-- Yearly -->
+        <button class="border-2 border-orange-400 rounded-xl p-5 bg-blue-50 dark:bg-blue-900/40 shadow-inner transition text-left">
+          <p class="font-semibold text-gray-800 dark:text-gray-200">Pay yearly</p>
+          <div class="flex items-center gap-2 mt-1">
+            <span class="text-gray-600 dark:text-gray-300">$189/month</span>
+            <span class="text-xs bg-green-500 text-white px-2 py-1 rounded">Save 20%</span>
+          </div>
+        </button>
+      </div>
+    </section>
+
+    <!-- Payment Method -->
+    <section>
+      <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200">Payment method</h2>
+      <div class="flex flex-wrap gap-4 mt-4">
+        <button class="px-4 py-2 border rounded-xl bg-white text-gray-700 hover:border-orange-400 hover:shadow-md transition dark:bg-gray-700 dark:text-gray-200">Credit / Debit Card</button>
+        <button class="px-4 py-2 border rounded-xl bg-white text-gray-700 hover:border-orange-400 hover:shadow-md transition dark:bg-gray-700 dark:text-gray-200">PayPal</button>
+        <button class="px-4 py-2 border rounded-xl bg-white text-gray-700 hover:border-orange-400 hover:shadow-md transition dark:bg-gray-700 dark:text-gray-200">Apple Pay</button>
+        <button class="px-4 py-2 border rounded-xl bg-white text-gray-700 hover:border-orange-400 hover:shadow-md transition dark:bg-gray-700 dark:text-gray-200">Google Pay</button>
+      </div>
+    </section>
+
+    <!-- Payment Information -->
+    <section>
+      <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200">Payment information</h2>
+
+      <!-- Card Logos -->
+      <div class="flex gap-3 mt-2">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png" class="h-7">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png" class="h-7">
+ <img src="https://cdn-icons-png.flaticon.com/512/825/825539.png" jsaction="" class="sFlh5c FyHeAf iPVvYb" style="max-width: 512px; height: 45px; margin: -10px 10px; width: 45px;" alt="American express - Free logo icons" jsname="kn3ccd">
+<img src="https://www.pymnts.com/wp-content/uploads/2014/03/Discover-logo-e1416429693676.jpg?w=457" jsaction="" class="sFlh5c FyHeAf iPVvYb" style="max-width: 457px; height: 45px; margin: -10px -4px; width: 45px;" alt="Innovating &quot;it&quot; : The Path To Discover's New Card" jsname="kn3ccd">
+      </div>
+
+      <!-- Card Inputs -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mt-6">
+        <input type="text" placeholder="0000 0000 0000 0000" class="col-span-2 w-full p-4 rounded-xl border border-gray-300 bg-gray-50 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-orange-400  focus:border-orange-400 outline-none transition dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-300 dark:focus:ring-orange-400" />
+        <input type="text" placeholder="MM/YY" class="w-full p-4 rounded-xl border border-gray-300 bg-gray-50 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-orange-400  focus:border-orange-400 outline-none transition dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-300 dark:focus:ring-orange-400" />
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mt-5">
+        <input type="text" placeholder="3-digit code" class="w-full p-4 rounded-xl border border-gray-300 bg-gray-50 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-orange-400  focus:border-orange-400 outline-none transition dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-300 dark:focus:ring-orange-400" />
+      </div>
+
+      <input type="text" placeholder="Name on card" class="w-full p-4 rounded-xl border border-gray-300 bg-gray-50 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-orange-400  focus:border-orange-400 outline-none transition mt-5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-300 dark:focus:ring-orange-400" />
+      <input type="text" placeholder="Street address" class="w-full p-4 rounded-xl border border-gray-300 bg-gray-50 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-orange-400  focus:border-orange-400 outline-none transition mt-5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-300 dark:focus:ring-orange-400" />
+      <input type="text" placeholder="Apt, suite, building (Optional)" class="w-full p-4 rounded-xl border border-gray-300 bg-gray-50 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-orange-400  focus:border-orange-400 outline-none transition mt-5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-300 dark:focus:ring-orange-400" />
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-5">
+        <input type="text" placeholder="City" class="w-full p-4 rounded-xl border border-gray-300 bg-gray-50 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-orange-400  focus:border-orange-400 outline-none transition dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-300 dark:focus:ring-orange-400" />
+        <input type="text" placeholder="State / Region" class="w-full p-4 rounded-xl border border-gray-300 bg-gray-50 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-orange-400  focus:border-orange-400 outline-none transition dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-300 dark:focus:ring-orange-400" />
+      </div>
+
+      <select class="w-full p-4 rounded-xl border border-gray-300 bg-gray-50 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-orange-400  focus:border-orange-400 outline-none transition mt-5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-300 dark:focus:ring-orange-400">
+        <option>Select country</option>
+        <option>Egypt</option>
+        <option>Saudi Arabia</option>
+        <option>UAE</option>
+      </select>
+    </section>
+
+
+
+    <section>
+  <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200">Student Information</h2>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-4">
+    <input type="text" placeholder="Student Name" class="w-full p-4 rounded-xl border border-gray-300 bg-gray-50 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-orange-400  focus:border-orange-400 outline-none transition dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-300 dark:focus:ring-orange-400" />
+
+    <input type="email" placeholder="Email" class="w-full p-4 rounded-xl border border-gray-300 bg-gray-50 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-orange-400  focus:border-orange-400 outline-none transition dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-300 dark:focus:ring-orange-400" />
+
+    <input type="tel" placeholder="Mobile Number" class="w-full p-4 rounded-xl border border-gray-300 bg-gray-50 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-orange-400  focus:border-orange-400 outline-none transition dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-300 dark:focus:ring-orange-400" />
+
+    <input type="date" placeholder="Date of Birth" class="w-full p-4 rounded-xl border border-gray-300 bg-gray-50 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-orange-400  focus:border-orange-400 outline-none transition dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-300 dark:focus:ring-orange-400" />
+  </div>
+
+  <!-- اختيار الجنس -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-4">
+    <select class="w-full p-4 rounded-xl border border-gray-300 bg-gray-50 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-orange-400  focus:border-orange-400 outline-none transition dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-300 dark:focus:ring-orange-400">
+      <option>Select Gender</option>
+      <option>Male</option>
+      <option>Female</option>
+      <option>Other</option>
+    </select>
+
+    <input type="text" placeholder="Class / Level" class="w-full p-4 rounded-xl border border-gray-300 bg-gray-50 text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-orange-400  focus:border-orange-400 outline-none transition dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-300 dark:focus:ring-orange-400" />
+  </div>
+</section>
+
+
+    <!-- Subscribe Button -->
+    <button class="w-full bg-orange-300 text-white py-3.5 rounded-xl text-lg font-medium hover:bg-orange-400 transition shadow-md">
+      Subscribe
+    </button>
+
+  </div>
+</div>

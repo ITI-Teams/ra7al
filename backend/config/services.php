@@ -34,5 +34,9 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
-
+    'rag' => [
+        'url' => env('RAG_SERVICE_URL', 'http://localhost:3000'),
+        'timeout' => env('RAG_SERVICE_TIMEOUT', 30),
+        'api_key' => env('RAG_SERVICE_API_KEY', null),
+    ],
 ];

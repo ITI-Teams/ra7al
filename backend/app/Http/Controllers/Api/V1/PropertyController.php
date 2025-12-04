@@ -44,6 +44,8 @@ class PropertyController extends Controller
             'activeRentals as active_rentals_count'
         ]);
 
+        $query->where('admin_approval_status', 'approved');
+
         if ($request->has('city_id')) {
             $query->where('properties.city_id', $request->city_id);
         }
@@ -165,7 +167,7 @@ class PropertyController extends Controller
             'city_id' => 'required|exists:cities,id',
             'area_id' => 'required|exists:areas,id',
 
-            'gender_requirement' => 'required|in:male,female,mixed',
+            'gender_requirement' => 'required|in:male,female',
             'smoking_allowed' => 'boolean',
             'pets_allowed' => 'boolean',
             'furnished' => 'boolean',
@@ -286,6 +288,17 @@ class PropertyController extends Controller
             ], 404);
         }
 
+        if ($property->admin_approval_status !== 'approved') {
+            $user = Auth::user();
+
+            if (!$user || ( $property->owner_id !== $user->id)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'This property is not available'
+                ], 403);
+            }
+        }
+
         $showFullDetails = false;
         $user = Auth::user();
 
@@ -344,7 +357,7 @@ class PropertyController extends Controller
             'city_id' => 'sometimes|exists:cities,id',
             'area_id' => 'sometimes|exists:areas,id',
 
-            'gender_requirement' => 'sometimes|in:male,female,mixed',
+            'gender_requirement' => 'sometimes|in:male,female',
             'smoking_allowed' => 'sometimes|boolean',
             'pets_allowed' => 'sometimes|boolean',
             'furnished' => 'sometimes|boolean',

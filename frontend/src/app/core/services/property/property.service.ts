@@ -207,7 +207,7 @@ export class PropertyService {
       smoking_allowed: false,
       pets_allowed: false,
       furnished: true,
-      total_rooms: 3,
+      rooms_count: 3,
       available_rooms: 2,
       bathrooms_count: 2,
       beds: 6,
@@ -224,7 +224,19 @@ export class PropertyService {
         area: {
           id: 1,
           name: 'Downtown',
+          city: {
+            id: 1,
+            name: 'Cairo',
+          }
         },
+      },
+      area: {
+        id: 1,
+        name: 'Downtown',
+        city: {
+          id: 1,
+          name: 'Cairo',
+        }
       },
       owner: {
         id: 1,
