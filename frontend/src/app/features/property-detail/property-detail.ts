@@ -3,10 +3,8 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import {
-  PropertyService,
-  Property,
-} from '../../core/services/property/property.service';
+import { PropertyService } from '../../core/services/property/property.service';
+import { Property } from '../../core/models/property.model';
 
 // PrimeNG Imports
 import { GalleriaModule } from 'primeng/galleria';
@@ -98,7 +96,7 @@ export class PropertyDetail implements OnInit {
     this.propertyService.getPropertyById(id).subscribe({
       next: (data) => {
         this.property.set(data);
-        this.isSaved.set(data.is_saved);
+        this.isSaved.set(data.is_saved ?? false);
         console.log('Property loaded:', data);
       },
       error: (error) => {
