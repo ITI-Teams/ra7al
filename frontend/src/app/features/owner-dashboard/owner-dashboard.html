@@ -1,14 +1,18 @@
-<div
-  class="min-h-screen w-full overflow-x-hidden bg-gradient-to-br from-slate-50 to-slate-100"
->
-  <!-- Sidebar -->
-  <app-sidebar [(isOpen)]="isSidebarOpen"></app-sidebar>
+<div class="min-h-screen w-full overflow-x-hidden">
+  <!-- Navbar -->
+  <app-navbar></app-navbar>
 
-  <!-- Main Content -->
-  <main
-    class="flex-1 p-6 transition-all duration-300"
-    [ngClass]="isSidebarOpen ? 'ml-72' : 'ml-20'"
-  >
-    <router-outlet></router-outlet>
-  </main>
+  <!-- Main Container -->
+  <div class="flex bg-linear-to-br from-slate-50 to-slate-100 dark:bg-gray-900">
+    <!-- Sidebar -->
+    <app-sidebar [(isOpen)]="isSidebarOpen"></app-sidebar>
+
+    <!-- Main Content -->
+    <main
+      class="flex-1 p-6 transition-all duration-300 pt-20"
+      [ngClass]="isSidebarOpen ? 'ml-72' : 'ml-20'"
+    >
+      <router-outlet></router-outlet>
+    </main>
+  </div>
 </div>

@@ -6,6 +6,8 @@ use App\Http\Controllers\Api\ProfileStudentController;
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\V1\PropertyController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Api\CityController;
+use App\Http\Controllers\Api\AmenityController;
 
 
 // profile student and owner
@@ -23,6 +25,11 @@ Route::post('/messages', [MessageController::class, 'store']);
 // Public auth routes for frontend
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
+
+// Location & amenities lists used by frontend
+Route::get('cities', [CityController::class, 'index']);
+Route::get('cities/{city}/areas', [CityController::class, 'areas']);
+Route::get('amenities', [AmenityController::class, 'index']);
 
 // Protected route example: logout
 Route::middleware('auth:sanctum')->post('logout', [AuthController::class, 'logout']);
