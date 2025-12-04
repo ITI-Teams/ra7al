@@ -16,7 +16,6 @@ import { NoAuthGuard } from './core/guards/noAuth.guard';
 import { UserRoleGuard } from './core/guards/userRole.guard';
 import { General } from './layouts/general/general';
 import { Dashboard } from './layouts/dashboard/dashboard';
-import { CreateApartment } from './features/owner-dashboard/components/create-apartment/create-apartment';
 import { PropertyDetail } from './features/property-detail/property-detail';
 
 export const routes: Routes = [
@@ -62,7 +61,6 @@ export const routes: Routes = [
   children: [
     { path: '', redirectTo: 'apartments', pathMatch: 'full' },
     { path: 'apartments', component: Apartments },
-    { path: 'create-apartment', component: CreateApartment }
   ]
 },
 
