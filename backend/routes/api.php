@@ -49,4 +49,13 @@ Route::prefix('properties')->group(function () {
 
         Route::post('/rentals/{id}/terminate', [PropertyController::class, 'terminateRental']);
     });
+
+    // Cities
+    Route::get('/cities', [LocationController::class, 'getCities'])->name('api.cities');
+
+    // Areas
+    Route::get('/areas', [LocationController::class, 'getAreas'])->name('api.areas');
+
+    // Universities
+    Route::get('/universities', [LocationController::class, 'getUniversities'])->name('api.universities');
 });
