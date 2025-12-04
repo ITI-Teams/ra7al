@@ -4,6 +4,7 @@ import { AboutUs } from './features/about-us/about-us';
 import { Contactus } from './features/contactus/contactus';
 import { OwnerDashboard } from './features/owner-dashboard/owner-dashboard';
 import { Apartments } from './features/owner-dashboard/components/apartments/apartments';
+import { CreateProperty } from './features/owner-dashboard/components/create-property/create-property';
 import { StudentProfile } from './features/student-profile/student-profile';
 import { OwnerProfile } from './features/owner-profile/owner-profile';
 import { FilterPage } from './features/filter-page/filter-page';
@@ -61,6 +62,7 @@ export const routes: Routes = [
   children: [
     { path: '', redirectTo: 'apartments', pathMatch: 'full' },
     { path: 'apartments', component: Apartments },
+    { path: 'create-property', component: CreateProperty },
   ]
 },
 
