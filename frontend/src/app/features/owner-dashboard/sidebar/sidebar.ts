@@ -29,7 +29,7 @@ export class Sidebar {
     {
       label: 'Offer for Rent',
       icon: 'fa-solid fa-handshake',
-      route: '/owner-dashboard/create-apartment',
+      route: '/owner-dashboard/create-property',
       badge: 2,
     },
     {
