@@ -8,7 +8,7 @@
   },
   "include": [
     "src/**/*.ts"
-  ],
+, "src/app/features/about-us/components/speakers/speakers.ts"  ],
   "exclude": [
     "src/**/*.spec.ts"
   ]
