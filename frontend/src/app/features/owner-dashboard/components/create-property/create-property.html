@@ -230,6 +230,7 @@
               <small *ngIf="f.available_rooms.touched && f.available_rooms.invalid" class="text-red-500 text-sm mt-1 block">
                 Required
               </small>
+              <small *ngIf="propertyForm.errors?.availableInvalid" class="text-red-500 text-sm mt-1 block">Available Rooms cannot exceed Total Rooms.</small>
               <small *ngIf="f.available_rooms.errors?.server" class="text-red-500 text-sm mt-1 block">{{ f.available_rooms.errors.server }}</small>
             </div>
             <div>
@@ -321,6 +322,7 @@
                 Required
               </small>
               <small *ngIf="f.available_from.errors?.server" class="text-red-500 text-sm mt-1 block">{{ f.available_from.errors.server }}</small>
+              <small *ngIf="propertyForm.errors?.fromPastDate" class="text-red-500 text-sm mt-1 block">Available From date cannot be in the past.</small>
             </div>
             <div>
               <label class="block text-sm text-gray-700 dark:text-gray-300 mb-2">Available Until</label>
@@ -332,7 +334,10 @@
               <small *ngIf="f.available_to.touched && f.available_to.invalid" class="text-red-500 text-sm mt-1 block">
                 Required
               </small>
+
               <small *ngIf="f.available_to.errors?.server" class="text-red-500 text-sm mt-1 block">{{ f.available_to.errors.server }}</small>
+              <small *ngIf="propertyForm.errors?.dateInvalid" class="text-red-500 text-sm mt-1 block">Available Until date must be after Available From date.</small>
+              <small *ngIf="propertyForm.errors?.toPastDate" class="text-red-500 text-sm mt-1 block">Available Until date cannot be in the past.</small>
             </div>
           </div>
         </div>
