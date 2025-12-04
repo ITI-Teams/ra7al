@@ -20,11 +20,9 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
-        $this->call(AdminSeeder::class);
-        // Seed cities, areas and amenities used by the frontend
         $this->call([
-            CitiesTableSeeder::class,
-            AmenitiesTableSeeder::class,
+            AdminSeeder::class,
+            RecommendationQuestionSeeder::class
         ]);
     }
 }
