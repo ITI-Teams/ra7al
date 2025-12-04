@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ProfileStudentController;
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\V1\PropertyController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Api\RecommendationController;
 
 
 // profile student and owner
@@ -50,3 +51,61 @@ Route::prefix('properties')->group(function () {
         Route::post('/rentals/{id}/terminate', [PropertyController::class, 'terminateRental']);
     });
 });
+/*
+|--------------------------------------------------------------------------
+| Recommendation API Routes
+|--------------------------------------------------------------------------
+|
+| These routes handle the AI-powered property recommendation system
+|
+*/
+
+Route::prefix('recommendations')->group(function () {
+
+    // Public route: Get all recommendation questions
+    // GET /api/recommendation-questions
+    Route::get('/questions', [RecommendationController::class, 'getQuestions'])
+        ->name('recommendations.questions');
+
+    // Protected routes: Require authentication
+    Route::middleware('auth:sanctum')->group(function () {
+
+        // POST /api/recommendations
+        // Submit answers and get AI recommendations
+        Route::post('/', [RecommendationController::class, 'getRecommendations'])
+            ->name('recommendations.generate');
+
+        // GET /api/recommendations/history
+        // Get user's past recommendation sessions
+        Route::get('/history', [RecommendationController::class, 'getHistory'])
+            ->name('recommendations.history');
+    });
+});
+
+/*
+|--------------------------------------------------------------------------
+| Route Testing Examples
+|--------------------------------------------------------------------------
+|
+| Test with these curl commands:
+|
+| 1. Get questions (no auth required):
+| curl -X GET http://localhost:8000/api/recommendations/questions
+|
+| 2. Submit answers and get recommendations (requires auth):
+| curl -X POST http://localhost:8000/api/recommendations \
+|   -H "Authorization: Bearer YOUR_TOKEN" \
+|   -H "Content-Type: application/json" \
+|   -d '{
+|     "answers": {
+|       "1": {"value": "Cairo"},
+|       "2": {"value": 3000},
+|       "3": {"value": ["WiFi", "Gym"]}
+|     }
+|   }'
+|
+| 3. Get history:
+| curl -X GET http://localhost:8000/api/recommendations/history \
+|   -H "Authorization: Bearer YOUR_TOKEN"
+|or use POSTMAN 
+*/
