@@ -53,7 +53,7 @@
                                     </a>
                                     <button
                                         type="button"
-                                        @click="$dispatch('confirm-delete', { url: '{{ route('roles.destroy', $role->id) }}' })"
+                                        @click="$dispatch('confirm-delete', { url: '{{ route('roles.destroy', $role->id) }}' , name:'role'})"
                                         class="px-3 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-500">
                                         Delete
                                     </button>

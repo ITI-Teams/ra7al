@@ -44,6 +44,8 @@ class PropertyController extends Controller
             'activeRentals as active_rentals_count'
         ]);
 
+        $query->where('admin_approval_status', 'approved');
+
         if ($request->has('city_id')) {
             $query->where('properties.city_id', $request->city_id);
         }
@@ -284,6 +286,17 @@ class PropertyController extends Controller
                 'success' => false,
                 'message' => 'Property not found'
             ], 404);
+        }
+
+        if ($property->admin_approval_status !== 'approved') {
+            $user = Auth::user();
+
+            if (!$user || ( $property->owner_id !== $user->id)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'This property is not available'
+                ], 403);
+            }
         }
 
         $showFullDetails = false;

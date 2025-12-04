@@ -1,10 +1,11 @@
 <div
-    x-data="{ open: false, actionUrl: '' }"
+    x-data="{ open: false, actionUrl: '' , nameAction: '' }"
     x-cloak
 >
     <!-- Trigger Event -->
     <div @confirm-delete.window="
         actionUrl = $event.detail.url;
+        nameAction = $event.detail.name;
         open = true;
     "></div>
 
@@ -23,7 +24,7 @@
             </h2>
 
             <p class="mb-6 text-gray-700 dark:text-gray-300">
-                Are you sure you want to delete this user?
+                Are you sure you want to delete this <span x-text="nameAction"></span>?
             </p>
 
             <div class="flex justify-end gap-3">
