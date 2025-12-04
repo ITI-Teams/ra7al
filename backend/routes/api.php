@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\V1\PropertyController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Api\V1\LocationController;
+use App\Http\Controllers\Api\V1\PropertySearchController;
 
 
 // message contact-us
@@ -50,3 +52,5 @@ Route::prefix('properties')->group(function () {
     // Universities
     Route::get('/universities', [LocationController::class, 'getUniversities'])->name('api.universities');
 });
+// Property Search
+Route::get('properties/search', [PropertySearchController::class, 'search']);
