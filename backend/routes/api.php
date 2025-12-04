@@ -6,7 +6,7 @@ use App\Http\Controllers\Api\ProfileStudentController;
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\V1\PropertyController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Api\RecommendationController;
+use App\Http\Controllers\Api\V1\RecommendationController;
 
 
 // profile student and owner
