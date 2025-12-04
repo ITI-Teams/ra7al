@@ -15,6 +15,7 @@ import { Register } from './features/auth/register/register';
 import { Unauthorized } from './features/unauthorized/unauthorized';
 import { NoAuthGuard } from './core/guards/noAuth.guard';
 import { UserRoleGuard } from './core/guards/userRole.guard';
+import { Payment } from './features/payment/payment';
 import { General } from './layouts/general/general';
 import { Dashboard } from './layouts/dashboard/dashboard';
 import { PropertyDetail } from './features/property-detail/property-detail';
@@ -76,6 +77,17 @@ export const routes: Routes = [
       { path: '', component: StudentProfile }
     ]
   },
+ {
+    path: 'payment',
+    component: Payment
+  },
+
+  // Unauthorized page
+  {
+    path: 'unauthorized',
+    component: Unauthorized
+  },
+  // MUST ALWAYS BE LAST
 
   // Catch-all error page
   { path: '**', component: ErrorPage },
