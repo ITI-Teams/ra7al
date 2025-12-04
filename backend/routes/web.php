@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Dashboard\PropertyController;
 use App\Http\Controllers\Dashboard\UserRoleController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Dashboard\DashboardController;
@@ -58,6 +59,12 @@ Route::middleware(['auth', 'role:super,admin'])->group(function () {
     // Assign Roles & Permissions to User
     Route::post('users/{user}/assign', [UserRoleController::class, 'update'])->name('users.assign.update');
     Route::get('assign/users', [UserRoleController::class, 'edit'])->name('users.assign');
+
+    // Properties
+    Route::get('/properties', [PropertyController::class, 'index'])->name('properties.index');
+    Route::post('/properties/{id}/approve', [PropertyController::class, 'approve'])->name('properties.approve');
+    Route::post('/properties/{id}/reject', [PropertyController::class, 'reject'])->name('properties.reject');
+    Route::delete('/properties/{id}', [PropertyController::class, 'destroy'])->name('properties.destroy');
 
 
 

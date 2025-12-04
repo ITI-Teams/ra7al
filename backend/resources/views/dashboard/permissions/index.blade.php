@@ -37,7 +37,7 @@
                                     </a>
                                     <button
                                         type="button"
-                                        @click="$dispatch('confirm-delete', { url: '{{ route('permissions.destroy', $permission) }}' })"
+                                        @click="$dispatch('confirm-delete', { url: '{{ route('permissions.destroy', $permission) }}' , name:'permission'})"
                                         class="px-3 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-500">
                                         Delete
                                     </button>
