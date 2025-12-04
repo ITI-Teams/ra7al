@@ -24,6 +24,7 @@ export interface City {
 export interface Area {
   id: number;
   name: string;
+  city: City;
   city_id?: number;
 }
 
@@ -58,6 +59,12 @@ export interface Roommate {
   name: string;
   avatar?: string;
   university: string;
+}
+
+export interface Bill {
+  id: number;
+  name: string;
+  icon?: string;
 }
 
 export interface ActiveRental {
@@ -97,7 +104,7 @@ export interface Property {
   smoking_allowed: boolean;
   pets_allowed: boolean;
   furnished: boolean;
-  total_rooms: number;
+  rooms_count: number;
   available_rooms: number;
   bathrooms_count: number;
   beds: number;
@@ -123,6 +130,9 @@ export interface Property {
   // Optional detailed fields (when fetching single property with permissions)
   rentals?: ActiveRental[];
   pending_requests?: RentalRequest[];
+  area: Area;
+  bills?: Bill[];
+  roommates?: Roommate[];
 }
 
 export interface PropertyResponse {
