@@ -22,7 +22,10 @@ class DatabaseSeeder extends Seeder
         // ]);
         $this->call([
             AdminSeeder::class,
-            RecommendationQuestionSeeder::class
+            RecommendationQuestionSeeder::class,
+            CitiesTableSeeder::class,
+            AmenitiesTableSeeder::class,
+
         ]);
     }
 }
