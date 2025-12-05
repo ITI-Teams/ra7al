@@ -11,7 +11,7 @@ import { ButtonModule } from 'primeng/button';
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterLink, NgClass, NgIf, ToastModule, ButtonModule],
+  imports: [CommonModule, RouterLink, NgClass, ToastModule, ButtonModule],
   providers: [MessageService], // ✅ Provide MessageService here
   templateUrl: './navbar.html',
 })
@@ -109,7 +109,7 @@ export class Navbar {
   avatarUrl(): string {
     if (!this.user) return '/assets/default-avatar.svg';
     if (this.user.avatar) {
-      return `${this.auth.getBackendBase()}/storage/${this.user.avatar}`;
+      return `${this.auth.getBackendBase()}/${this.user.avatar}`;
     }
     const name = (this.user.name || '').trim();
     let initials = '';

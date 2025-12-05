@@ -28,6 +28,21 @@ export interface Area {
   city_id?: number;
 }
 
+export interface University {
+  id: number;
+  name: string;
+  abbreviation?: string;
+  city_id?: number;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface UniversityResponse {
+  success: boolean;
+  data: University[];
+  message?: string;
+}
+
 export interface Location {
   city: City;
   area: Area;
@@ -104,14 +119,15 @@ export interface Property {
   smoking_allowed: boolean;
   pets_allowed: boolean;
   furnished: boolean;
-  rooms_count: number;
+  total_rooms: number;
   available_rooms: number;
   bathrooms_count: number;
   beds: number;
   available_spots: number;
   size?: number;
   accommodation_type?: string;
-  university?: string;
+  university_id?: number;
+  university?: University;
   available_from: string;
   available_to?: string;
   status: 'available' | 'partially_occupied' | 'fully_occupied' | 'maintenance' | 'inactive';
@@ -153,6 +169,7 @@ export interface PropertiesListResponse {
   filters?: {
     cities: City[];
     areas: Area[];
+    universities: University[];
     accommodation_types: string[];
     price_ranges: Array<{min: number; max: number; label: string}>;
     rooms_options: number[];
@@ -200,6 +217,7 @@ export interface CreatePropertyPayload {
   available_spots: number;
   size?: number;
   accommodation_type?: string;
+  university_id?: number;
   university?: string;
   available_from: string;
   available_to?: string;
@@ -207,4 +225,52 @@ export interface CreatePropertyPayload {
   payment_methods?: string[];
   images?: File[];
   owner_id: number;
+}
+export interface FilterState {
+  university_id?: number;
+  university?: string;
+  propertyType?: string;
+  accommodation_type?: string;
+  gender?: string;
+  gender_requirement?: 'male' | 'female' | 'mixed';
+  priceRange?: number[];
+  min_price?: number;
+  max_price?: number;
+  studentsRange?: number[];
+  min_available_spots?: number;
+  max_available_spots?: number;
+  bedsRange?: number[];
+  min_beds?: number;
+  max_beds?: number;
+  roomsRange?: number[];
+  min_rooms?: number;
+  max_rooms?: number;
+  pets_allowed?: boolean | null;
+  smoking_allowed?: boolean | null;
+  city_id?: number;
+  area_id?: number;
+  sort_by?: string;
+  sort_order?: string;
+  page?: number;
+  per_page?: number;
+}
+
+export interface FilterResponse {
+  success: boolean;
+  data: Property[];
+  filters: {
+    cities: City[];
+    areas: Area[];
+    universities: University[];
+    accommodation_types: string[];
+    price_ranges: Array<{min: number; max: number; label: string}>;
+    rooms_options: number[];
+    sort_options: Array<{value: string; label: string}>;
+  };
+  pagination: {
+    current_page: number;
+    last_page: number;
+    per_page: number;
+    total: number;
+  };
 }

@@ -44,8 +44,8 @@
           </label>
           <p-select
             [options]="universities"
-            [(ngModel)]="filters().university"
-            (ngModelChange)="onFilterChange()"
+            [(ngModel)]="filters().university_id"
+            (ngModelChange)="updateFilter('university_id', $event)"
             optionLabel="label"
             optionValue="value"
             placeholder="Select University"
@@ -63,9 +63,9 @@
             Accommodation Type
           </label>
           <p-select
-            [options]="propertyTypes"
+            [options]="propertyTypes()"
             [(ngModel)]="filters().propertyType"
-            (ngModelChange)="onFilterChange()"
+            (ngModelChange)="updateFilter('propertyType', $event)"
             optionLabel="label"
             optionValue="value"
             placeholder="Select Type"

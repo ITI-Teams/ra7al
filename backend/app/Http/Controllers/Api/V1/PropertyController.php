@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Models\Property;
+use App\Models\University;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\PropertyRental;
@@ -1080,5 +1081,133 @@ class PropertyController extends Controller
                 ['value' => 'available_spots', 'label' => 'Most Available Spots']
             ]
         ];
+    }
+
+
+    public function filterProperties(Request $request)
+    {
+        try {
+            $query = Property::with(['area.city', 'owner', 'images', 'amenities'])
+                ->where('admin_approval_status', 'approved');
+
+            if ($request->has('university_id') && $request->university_id) {
+                $query->where('university_id', $request->university_id);
+            }
+
+            if ($request->has('accommodation_type') && $request->accommodation_type) {
+                $query->where('accommodation_type', $request->accommodation_type);
+            }
+
+            if ($request->has('gender_requirement') && $request->gender_requirement) {
+                $query->where('gender_requirement', $request->gender_requirement);
+            }
+
+            if ($request->has('min_price') && $request->min_price) {
+                $query->where('price', '>=', $request->min_price);
+            }
+            if ($request->has('max_price') && $request->max_price) {
+                $query->where('price', '<=', $request->max_price);
+            }
+
+            if ($request->has('min_available_spots') && $request->min_available_spots) {
+                $query->where('available_spots', '>=', $request->min_available_spots);
+            }
+            if ($request->has('max_available_spots') && $request->max_available_spots) {
+                $query->where('available_spots', '<=', $request->max_available_spots);
+            }
+
+            if ($request->has('min_beds') && $request->min_beds) {
+                $query->where('beds', '>=', $request->min_beds);
+            }
+            if ($request->has('max_beds') && $request->max_beds) {
+                $query->where('beds', '<=', $request->max_beds);
+            }
+
+            if ($request->has('min_rooms') && $request->min_rooms) {
+                $query->where('total_rooms', '>=', $request->min_rooms);
+            }
+            if ($request->has('max_rooms') && $request->max_rooms) {
+                $query->where('total_rooms', '<=', $request->max_rooms);
+            }
+
+            if ($request->has('pets_allowed') && $request->pets_allowed !== null) {
+                $query->where('pets_allowed', $request->pets_allowed);
+            }
+
+            if ($request->has('smoking_allowed') && $request->smoking_allowed !== null) {
+                $query->where('smoking_allowed', $request->smoking_allowed);
+            }
+
+            if ($request->has('city_id') && $request->city_id) {
+                $query->whereHas('area.city', function ($q) use ($request) {
+                    $q->where('id', $request->city_id);
+                });
+            }
+
+            if ($request->has('area_id') && $request->area_id) {
+                $query->where('area_id', $request->area_id);
+            }
+
+            $sortBy = $request->get('sort_by', 'created_at');
+            $sortOrder = $request->get('sort_order', 'desc');
+
+            if ($sortBy === 'price_asc') {
+                $query->orderBy('price', 'asc');
+            } elseif ($sortBy === 'price_desc') {
+                $query->orderBy('price', 'desc');
+            } else {
+                $query->orderBy($sortBy, $sortOrder);
+            }
+
+            $perPage = $request->get('per_page', 12);
+            $properties = $query->paginate($perPage);
+
+            $cities = City::all();
+            $areas = Area::all();
+            $universities = University::all();
+            $accommodationTypes = Property::select('accommodation_type')
+                ->whereNotNull('accommodation_type')
+                ->distinct()
+                ->pluck('accommodation_type');
+
+            $response = [
+                'success' => true,
+                'data' => [
+                    'data' => $properties->items(),
+                    'current_page' => $properties->currentPage(),
+                    'last_page' => $properties->lastPage(),
+                    'per_page' => $properties->perPage(),
+                    'total' => $properties->total(),
+                ],
+                'filters' => [
+                    'cities' => $cities,
+                    'areas' => $areas,
+                    'universities' => $universities,
+                    'accommodation_types' => $accommodationTypes,
+                    'price_ranges' => [
+                        ['min' => 100, 'max' => 300, 'label' => '100-300'],
+                        ['min' => 300, 'max' => 500, 'label' => '300-500'],
+                        ['min' => 500, 'max' => 700, 'label' => '500-700'],
+                        ['min' => 700, 'max' => 1000, 'label' => '700+'],
+                    ],
+                    'rooms_options' => [1, 2, 3, 4, 5, 6],
+                    'sort_options' => [
+                        ['value' => 'price_asc', 'label' => 'Price: Low to High'],
+                        ['value' => 'price_desc', 'label' => 'Price: High to Low'],
+                        ['value' => 'created_at_desc', 'label' => 'Newest First'],
+                        ['value' => 'available_spots_desc', 'label' => 'Most Available Spots'],
+                    ]
+                ]
+            ];
+
+            return response()->json($response);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error filtering properties',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

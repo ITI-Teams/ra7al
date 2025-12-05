@@ -1,12 +1,16 @@
-import { Component, OnInit, signal, computed, effect } from '@angular/core';
+import { Component, OnInit, signal, computed, effect, inject } from '@angular/core'; // أضف inject
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SliderModule } from 'primeng/slider';
 import { SelectModule } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
+import { PropertyService } from '../../core/services/property/property.service';
+import { Property, University, PropertiesListResponse } from '../../core/models/property.model';
+import {environment} from '../../environments/environment';
 
 interface Listing {
+  id: number;
   title: string;
   location: string;
   rooms: number;
@@ -16,23 +20,30 @@ interface Listing {
   price: number;
   bitsIncluded: boolean;
   image: string;
-  university: string;
+  university_id?: number;
   accommodationType: string;
   petsAllowed: boolean;
   smokingAllowed: boolean;
   availableSpots: number;
+  area?: string;
+  city?: string;
 }
 
 interface FilterState {
-  university: string | null;
+  university_id: number | null;
   propertyType: string | null;
+  accommodation_type?: string | null;
   gender: string | null;
+  gender_requirement?: string | null;
   priceRange: number[];
   studentsRange: number[];
   bedsRange: number[];
   roomsRange: number[];
   petsAllowed: boolean | null;
   smokingAllowed: boolean | null;
+  city_id?: number | null;
+  area_id?: number | null;
+  sort_by?: string | null;
 }
 
 @Component({
@@ -50,11 +61,13 @@ interface FilterState {
   styleUrl: './filter-page.css',
 })
 export class FilterPage implements OnInit {
+  private propertyService = inject(PropertyService);
 
   showMoreFilters = signal(false);
+  isLoading = signal(false);
 
   filters = signal<FilterState>({
-    university: null,
+    university_id: null,
     propertyType: null,
     gender: null,
     priceRange: [100, 700],
@@ -63,23 +76,23 @@ export class FilterPage implements OnInit {
     roomsRange: [1, 6],
     petsAllowed: null,
     smokingAllowed: null,
+    city_id: null,
+    area_id: null,
+    sort_by: null
   });
 
-  universities = [
-    { label: 'Cairo University', value: 'CU' },
-    { label: 'Ain Shams University', value: 'ASU' },
-    { label: 'Alexandria University', value: 'AU' },
-  ];
-
-  propertyTypes = [
+  universities: any[] = [];
+  propertyTypes = signal<any[]>([
     { label: 'Shared Apartment', value: 'SHARED' },
     { label: 'Private Accommodation', value: 'PRIVATE' },
-  ];
+  ]);
+
+  cities: any[] = [];
+  areas: any[] = [];
 
   genders = [
     { label: 'Males', value: 'Males' },
     { label: 'Females', value: 'Females' },
-    { label: 'Mixed', value: 'Mixed' },
   ];
 
   booleanOptions = [
@@ -91,42 +104,25 @@ export class FilterPage implements OnInit {
   sortOptions = [
     { label: 'Price: Low to High', value: 'price_asc' },
     { label: 'Price: High to Low', value: 'price_desc' },
+    { label: 'Newest First', value: 'created_at_desc' },
+    { label: 'Most Available Spots', value: 'available_spots_desc' },
   ];
 
   currentPage = signal(1);
   rows = signal(6);
+  totalRecords = signal(0);
 
   selectedSort: string | null = null;
 
   allListings: Listing[] = [];
 
   filteredListings = computed(() => {
-    const filtered = this.applyFilters(this.allListings, this.filters());
-    return filtered;
-  });
-
-  sortedListings = computed(() => {
-    const list = [...this.filteredListings()];
-
-    if (this.selectedSort === 'price_asc') {
-      const sorted = list.sort((a, b) => a.price - b.price);
-      return sorted;
-    } else if (this.selectedSort === 'price_desc') {
-      const sorted = list.sort((a, b) => b.price - a.price);
-      return sorted;
-    }
-
-    return list;
+    return this.allListings;
   });
 
   paginatedListings = computed(() => {
-    const start = (this.currentPage() - 1) * this.rows();
-    const end = start + this.rows();
-    const result = this.sortedListings().slice(start, end);
-    return result;
+    return this.allListings;
   });
-
-  totalRecords = computed(() => this.filteredListings().length);
 
   constructor() {
     effect(() => {
@@ -134,198 +130,261 @@ export class FilterPage implements OnInit {
   }
 
   ngOnInit() {
-    this.loadListings();
+    this.loadFilterOptions();
+    this.loadPropertiesFromApi();
   }
 
-  loadListings() {
-    this.allListings = [
-      {
-        title: 'Shared Apartment (2/6 spots available)',
-        location: '7th District, Nasr City',
-        rooms: 3,
-        baths: 1,
-        beds: 6,
-        gender: 'Females',
-        price: 200,
-        bitsIncluded: true,
-        image: 'https://images.pexels.com/photos/271743/pexels-photo-271743.jpeg',
-        university: 'CU',
-        accommodationType: 'SHARED',
-        petsAllowed: false,
-        smokingAllowed: false,
-        availableSpots: 2,
+  loadFilterOptions() {
+    this.propertyService.getUniversities().subscribe({
+      next: (universities) => {
+        this.universities = universities.map(u => ({
+          label: u.name,
+          value: u.id,
+          abbreviation: u.abbreviation
+        }));
       },
-      {
-        title: 'Private Studio',
-        location: 'Downtown, Cairo',
-        rooms: 1,
-        baths: 1,
-        beds: 1,
-        gender: 'Mixed',
-        price: 500,
-        bitsIncluded: true,
-        image: 'https://images.pexels.com/photos/1457842/pexels-photo-1457842.jpeg',
-        university: 'CU',
-        accommodationType: 'PRIVATE',
-        petsAllowed: true,
-        smokingAllowed: false,
-        availableSpots: 1,
-      },
-      {
-        title: 'Luxury Shared Apartment',
-        location: 'Maadi, Cairo',
-        rooms: 4,
-        baths: 2,
-        beds: 8,
-        gender: 'Males',
-        price: 350,
-        bitsIncluded: true,
-        image: 'https://images.pexels.com/photos/2631746/pexels-photo-2631746.jpeg',
-        university: 'ASU',
-        accommodationType: 'SHARED',
-        petsAllowed: true,
-        smokingAllowed: false,
-        availableSpots: 3,
-      },
-      {
-        title: 'Room in Villa',
-        location: 'Rehab, Cairo',
-        rooms: 2,
-        baths: 1,
-        beds: 2,
-        gender: 'Females',
-        price: 400,
-        bitsIncluded: false,
-        image: 'https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg',
-        university: 'AU',
-        accommodationType: 'PRIVATE',
-        petsAllowed: false,
-        smokingAllowed: false,
-        availableSpots: 1,
-      },
-      {
-        title: 'Modern Apartment',
-        location: 'Zamalek, Cairo',
-        rooms: 2,
-        baths: 1,
-        beds: 2,
-        gender: 'Mixed',
-        price: 450,
-        bitsIncluded: true,
-        image: 'https://images.pexels.com/photos/276724/pexels-photo-276724.jpeg',
-        university: 'CU',
-        accommodationType: 'PRIVATE',
-        petsAllowed: true,
-        smokingAllowed: true,
-        availableSpots: 1,
-      },
-      {
-        title: 'Student Dormitory',
-        location: 'Giza, Cairo',
-        rooms: 5,
-        baths: 2,
-        beds: 10,
-        gender: 'Males',
-        price: 180,
-        bitsIncluded: true,
-        image: 'https://images.pexels.com/photos/1571468/pexels-photo-1571468.jpeg',
-        university: 'ASU',
-        accommodationType: 'SHARED',
-        petsAllowed: false,
-        smokingAllowed: false,
-        availableSpots: 4,
-      },
-      {
-        title: 'Cozy Studio',
-        location: 'Heliopolis, Cairo',
-        rooms: 1,
-        baths: 1,
-        beds: 1,
-        gender: 'Females',
-        price: 300,
-        bitsIncluded: true,
-        image: 'https://images.pexels.com/photos/271743/pexels-photo-271743.jpeg',
-        university: 'CU',
-        accommodationType: 'PRIVATE',
-        petsAllowed: false,
-        smokingAllowed: false,
-        availableSpots: 1,
-      },
-      {
-        title: 'Large Shared Apartment',
-        location: 'Mohandessin, Cairo',
-        rooms: 4,
-        baths: 2,
-        beds: 6,
-        gender: 'Males',
-        price: 250,
-        bitsIncluded: true,
-        image: 'https://images.pexels.com/photos/1457842/pexels-photo-1457842.jpeg',
-        university: 'ASU',
-        accommodationType: 'SHARED',
-        petsAllowed: true,
-        smokingAllowed: false,
-        availableSpots: 3,
-      },
-    ];
-  }
-
-  applyFilters(list: Listing[], filters: FilterState): Listing[] {
-
-    const result = list.filter(item => {
-      if (filters.university && item.university !== filters.university) {
-        return false;
+      error: (error) => {
+        console.error('Error loading universities:', error);
+        this.universities = [
+          { label: 'Cairo University', value: 1 },
+          { label: 'Ain Shams University', value: 2 },
+          { label: 'Alexandria University', value: 3 },
+        ];
       }
-
-      // Property Type
-      if (filters.propertyType && item.accommodationType !== filters.propertyType) {
-        return false;
-      }
-
-      // Gender
-      if (filters.gender && item.gender !== filters.gender) {
-        return false;
-      }
-
-      // Price Range
-      if (item.price < filters.priceRange[0] || item.price > filters.priceRange[1]) {
-        return false;
-      }
-
-      // Students Range
-      if (item.availableSpots < filters.studentsRange[0] || item.availableSpots > filters.studentsRange[1]) {
-        return false;
-      }
-
-      // Beds Range
-      if (item.beds < filters.bedsRange[0] || item.beds > filters.bedsRange[1]) {
-        return false;
-      }
-
-      // Rooms Range
-      if (item.rooms < filters.roomsRange[0] || item.rooms > filters.roomsRange[1]) {
-        return false;
-      }
-
-      if (filters.petsAllowed !== null && item.petsAllowed !== filters.petsAllowed) {
-        return false;
-      }
-
-      if (filters.smokingAllowed !== null && item.smokingAllowed !== filters.smokingAllowed) {
-        return false;
-      }
-      return true;
     });
-    return result;
+
+    this.propertyService.getCities().subscribe({
+      next: (cities) => {
+        this.cities = cities.map(c => ({
+          label: c.name,
+          value: c.id
+        }));
+      },
+      error: (error) => {
+        console.error('Error loading cities:', error);
+        this.cities = [
+          { label: 'Cairo', value: 1 },
+          { label: 'Alexandria', value: 2 },
+          { label: 'Giza', value: 3 },
+        ];
+      }
+    });
+  }
+
+  onCityChange(cityId: number) {
+    if (cityId) {
+      this.propertyService.getAreas(cityId).subscribe({
+        next: (areas) => {
+          this.areas = areas.map(a => ({
+            label: a.name,
+            value: a.id
+          }));
+        },
+        error: (error) => {
+          console.error('Error loading areas:', error);
+          this.areas = [];
+        }
+      });
+    } else {
+      this.areas = [];
+      this.filters.update(f => ({ ...f, area_id: null }));
+    }
+  }
+
+  loadPropertiesFromApi() {
+    this.isLoading.set(true);
+
+    const apiFilters = this.prepareFiltersForApi();
+    console.log('API Filters being sent:', apiFilters); // debug log
+
+    this.propertyService.filterProperties(apiFilters, this.currentPage(), this.rows())
+      .subscribe({
+        next: (response: PropertiesListResponse) => {
+          console.log('API Response:', response); // debug log
+          if (response.success) {
+            console.log('Properties data:', response.data.data); // debug log
+            this.allListings = this.convertPropertiesToListings(response.data.data);
+            console.log('Converted listings:', this.allListings); // debug log
+            this.currentPage.set(response.data.current_page);
+            this.totalRecords.set(response.data.total);
+
+            if (response.filters) {
+              this.updateAvailableFilters(response.filters);
+            }
+          }
+          this.isLoading.set(false);
+        },
+        error: (error) => {
+          console.error('Error loading properties:', error);
+          this.isLoading.set(false);
+          this.loadListings();
+        }
+      });
+  }
+
+  prepareFiltersForApi(): any {
+    const filters = { ...this.filters() };
+    const apiFilters: any = {};
+
+    if (filters.university_id) apiFilters.university_id = filters.university_id;
+    if (filters.propertyType) apiFilters.accommodation_type = filters.propertyType;
+    if (filters.gender) apiFilters.gender_requirement = filters.gender.toLowerCase();
+    if (filters.city_id) apiFilters.city_id = filters.city_id;
+    if (filters.area_id) apiFilters.area_id = filters.area_id;
+
+    if (filters.petsAllowed !== null && filters.petsAllowed !== undefined) {
+      apiFilters.pets_allowed = filters.petsAllowed;
+    }
+    if (filters.smokingAllowed !== null && filters.smokingAllowed !== undefined) {
+      apiFilters.smoking_allowed = filters.smokingAllowed;
+    }
+
+    const defaultPriceRange = [100, 700];
+    if (filters.priceRange &&
+      (filters.priceRange[0] !== defaultPriceRange[0] ||
+        filters.priceRange[1] !== defaultPriceRange[1])) {
+      apiFilters.min_price = filters.priceRange[0];
+      apiFilters.max_price = filters.priceRange[1];
+    }
+
+    const defaultStudentsRange = [1, 8];
+    if (filters.studentsRange &&
+      (filters.studentsRange[0] !== defaultStudentsRange[0] ||
+        filters.studentsRange[1] !== defaultStudentsRange[1])) {
+      apiFilters.min_available_spots = filters.studentsRange[0];
+      apiFilters.max_available_spots = filters.studentsRange[1];
+    }
+
+    const defaultBedsRange = [1, 10];
+    if (filters.bedsRange &&
+      (filters.bedsRange[0] !== defaultBedsRange[0] ||
+        filters.bedsRange[1] !== defaultBedsRange[1])) {
+      apiFilters.min_beds = filters.bedsRange[0];
+      apiFilters.max_beds = filters.bedsRange[1];
+    }
+
+    const defaultRoomsRange = [1, 6];
+    if (filters.roomsRange &&
+      (filters.roomsRange[0] !== defaultRoomsRange[0] ||
+        filters.roomsRange[1] !== defaultRoomsRange[1])) {
+      apiFilters.min_rooms = filters.roomsRange[0];
+      apiFilters.max_rooms = filters.roomsRange[1];
+    }
+
+    if (this.selectedSort) {
+      apiFilters.sort_by = this.selectedSort;
+    }
+
+    return apiFilters;
+  }
+
+  convertPropertiesToListings(properties: Property[]): Listing[] {
+    return properties.map(property => ({
+      id: property.id,
+      title: property.title,
+      location: `${property.area?.name || ''}, ${property.location?.city?.name || property.area?.city?.name || ''}`.trim(),
+      rooms: property.total_rooms,
+      baths: property.bathrooms_count,
+      beds: property.beds,
+      gender: this.formatGender(property.gender_requirement),
+      price: parseFloat(property.price.toString()),
+      bitsIncluded: property.payment_methods?.includes('electricity') || false,
+      image: this.getPropertyImage(property.images?.[0]),
+      university_id: property.university_id,
+      accommodationType: property.accommodation_type || 'UNKNOWN',
+      petsAllowed: property.pets_allowed,
+      smokingAllowed: property.smoking_allowed,
+      availableSpots: property.available_spots,
+      area: property.area?.name,
+      city: property.location?.city?.name || property.area?.city?.name
+    }));
+  }
+
+  formatGender(gender: string): string {
+    const genderMap: {[key: string]: string} = {
+      'male': 'Males',
+      'female': 'Females',
+      'mixed': 'Mixed'
+    };
+    return genderMap[gender] || this.capitalizeFirstLetter(gender);
+  }
+
+  getPropertyImage(image: any): string {
+    if (!image) return 'https://via.placeholder.com/800x600';
+
+    if (image.url) return image.url;
+
+    if (image.path) {
+      return `${environment.imageUrl}/storage/${image.path}`;
+    }
+
+    return 'https://via.placeholder.com/800x600';
+  }
+
+  capitalizeFirstLetter(string: string): string {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
+  updateAvailableFilters(filters: any) {
+    if (filters.accommodation_types) {
+      this.propertyTypes.set(filters.accommodation_types.map((type: string) => ({
+        label: this.formatAccommodationType(type),
+        value: type
+      })));
+    }
+
+    if (filters.universities && filters.universities.length > 0) {
+      this.universities = filters.universities.map((u: any) => ({
+        label: u.name,
+        value: u.id,
+        abbreviation: u.abbreviation
+      }));
+    } else {
+      this.universities = [
+        { label: 'Cairo University', value: 1 },
+        { label: 'Ain Shams University', value: 2 },
+        { label: 'Alexandria University', value: 3 },
+      ];
+    }
+
+    if (filters.cities) {
+      this.cities = filters.cities.map((c: any) => ({
+        label: c.name,
+        value: c.id
+      }));
+    }
+  }
+
+  formatAccommodationType(type: string): string {
+    const typeMap: {[key: string]: string} = {
+      'apartment': 'Apartment',
+      'shared': 'Shared Room',
+      'private': 'Private Room',
+      'studio': 'Studio',
+      'villa': 'Villa',
+      'SHARED': 'Shared Apartment',
+      'PRIVATE': 'Private Accommodation'
+    };
+    return typeMap[type] || type;
   }
 
   onFilterChange() {
     this.currentPage.set(1);
-    this.forceUpdate()
+    this.loadPropertiesFromApi();
   }
 
   updateFilter(key: keyof FilterState, value: any) {
     this.filters.update(current => ({ ...current, [key]: value }));
+
+    if (key === 'city_id') {
+      if (value) {
+        this.onCityChange(value);
+      } else {
+        this.areas = [];
+        this.filters.update(f => ({ ...f, area_id: null }));
+      }
+    }
+
     this.onFilterChange();
   }
 
@@ -334,20 +393,21 @@ export class FilterPage implements OnInit {
   }
 
   onSortChange() {
+    this.filters.update(f => ({ ...f, sort_by: this.selectedSort }));
     this.currentPage.set(1);
-    this.filters.update(current => ({ ...current }));
-    this.forceUpdate();
+    this.loadPropertiesFromApi();
   }
 
   onPageChange(e: PaginatorState) {
     this.currentPage.set((e.page ?? 0) + 1);
     this.rows.set(e.rows ?? 6);
+    this.loadPropertiesFromApi();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   resetFilters() {
     this.filters.set({
-      university: null,
+      university_id: null,
       propertyType: null,
       gender: null,
       priceRange: [100, 700],
@@ -356,14 +416,28 @@ export class FilterPage implements OnInit {
       roomsRange: [1, 6],
       petsAllowed: null,
       smokingAllowed: null,
+      city_id: null,
+      area_id: null,
+      sort_by: null
     });
+
     this.selectedSort = null;
     this.currentPage.set(1);
+    this.areas = [];
+
+    this.propertyTypes.set([
+      { label: 'Shared Apartment', value: 'SHARED' },
+      { label: 'Private Accommodation', value: 'PRIVATE' },
+    ]);
+
+    this.loadPropertiesFromApi();
   }
 
   forceUpdate() {
     this.filters.update(current => ({ ...current }));
+    this.loadPropertiesFromApi();
   }
+
   getOptionIcon(value: any): string {
     switch(value) {
       case true:
@@ -373,5 +447,47 @@ export class FilterPage implements OnInit {
       default:
         return 'pi pi-circle text-gray-500';
     }
+  }
+
+  loadListings() {
+    this.allListings = [
+      {
+        id: 1,
+        title: 'Shared Apartment (2/6 spots available)',
+        location: '7th District, Nasr City',
+        rooms: 3,
+        baths: 1,
+        beds: 6,
+        gender: 'Females',
+        price: 200,
+        bitsIncluded: true,
+        image: 'https://images.pexels.com/photos/271743/pexels-photo-271743.jpeg',
+        university_id: 1,
+        accommodationType: 'SHARED',
+        petsAllowed: false,
+        smokingAllowed: false,
+        availableSpots: 2,
+      },
+      {
+        id: 2,
+        title: 'Private Studio',
+        location: 'Downtown, Cairo',
+        rooms: 1,
+        baths: 1,
+        beds: 1,
+        gender: 'Mixed',
+        price: 500,
+        bitsIncluded: true,
+        image: 'https://images.pexels.com/photos/1457842/pexels-photo-1457842.jpeg',
+        university_id: 1,
+        accommodationType: 'PRIVATE',
+        petsAllowed: true,
+        smokingAllowed: false,
+        availableSpots: 1,
+      },
+    ];
+
+    this.totalRecords.set(this.allListings.length);
+    this.currentPage.set(1);
   }
 }
