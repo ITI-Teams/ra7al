@@ -22,6 +22,9 @@
         <li><a routerLink="/" class="hover:text-[#FA9233] dark:hover:text-white">Home</a></li>
         <li><a routerLink="/filter" class="hover:text-[#FA9233] dark:hover:text-white">Roommates</a></li>
         <li><a routerLink="/Recommended" class="hover:text-[#FA9233] dark:hover:text-white">Recommended</a></li>
+        <ng-container *ngIf="isLoggedIn">
+          <li><a routerLink="/Recommended" class="hover:text-[#FA9233] dark:hover:text-white">Recommended</a></li>
+        </ng-container>
         <li><a routerLink="/aboutus" class="hover:text-[#FA9233] dark:hover:text-white">About</a></li>
         <li><a routerLink="/contactus" class="hover:text-[#FA9233] dark:hover:text-white">Contact</a></li>
       </ul>
@@ -74,11 +77,11 @@
           <!-- Avatar -->
           <div class="relative" [class.z-50]="profileOpen">
             <button (click)="toggleProfile()">
-              <img [src]="avatarUrl()" class="w-10 h-10 rounded-full object-cover cursor-pointer" />
+              <img [src]="avatarUrl()" class="w-10 h-10 flex items-center justify-center rounded-full object-cover cursor-pointer" />
             </button>
 
             <!-- DROPDOWN MENU -->
-            <div *ngIf="profileOpen"
+            <div *ngIf="profileOpen" (click)="toggleProfile()"
               class="absolute right-0 mt-3 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700">
 
               <a routerLink="/" class="block px-4 py-2 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
@@ -144,7 +147,11 @@
       <ul class="flex flex-col space-y-4 text-zinc-700 dark:text-zinc-200 uppercase text-sm font-semibold">
         <li><a routerLink="/" class="hover:text-[#FA9233] dark:hover:text-white">Home</a></li>
         <li><a routerLink="/Roommates" class="hover:text-[#FA9233] dark:hover:text-white">Roommates</a></li>
+         <ng-container *ngIf="isLoggedIn">
+          <li><a routerLink="/Recommended" class="hover:text-[#FA9233] dark:hover:text-white">Recommended</a></li>
+        </ng-container>
         <li><a routerLink="/aboutus" class="hover:text-[#FA9233] dark:hover:text-white">About</a></li>
+
         <li><a routerLink="/contactus" class="hover:text-[#FA9233] dark:hover:text-white">Contact</a></li>
 
         <!-- LOGIN REGISTER -->

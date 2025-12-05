@@ -54,9 +54,10 @@ export const routes: Routes = [
     path: 'payment',
     component: Payment
   },
+      { path: 'properties/:id', component: PropertyDetail },
     ]
   },
-  { path: 'properties/:id', component: PropertyDetail },
+
 
   // Dashboard layout routes (no navbar & footer)
 {
