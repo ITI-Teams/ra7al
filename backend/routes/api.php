@@ -6,10 +6,12 @@ use App\Http\Controllers\Api\ProfileStudentController;
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\V1\PropertyController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Api\V1\LocationController;
+use App\Http\Controllers\Api\V1\PropertySearchController;
 use App\Http\Controllers\Api\CityController;
 use App\Http\Controllers\Api\AmenityController;
 use App\Http\Controllers\Api\V1\RecommendationController;
-use App\Http\Controllers\Api\V1\LocationController;
+
 
 
 // profile student and owner
@@ -41,14 +43,13 @@ Route::prefix('properties')->group(function () {
     // Route::get('/filters', function() {
     //     return (new PropertyController)->getFilters();
     // });
-
+    Route::get('/{id}', [PropertyController::class, 'show']);
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', [PropertyController::class, 'store']);
         Route::get('/my-properties', [PropertyController::class, 'getOwnerProperties']);
         Route::get('/my-rentals', [PropertyController::class, 'getTenantProperties']);
         Route::get('/statistics', [PropertyController::class, 'getOwnerStatistics']);
 
-        Route::get('/{id}', [PropertyController::class, 'show']);
         Route::put('/{id}', [PropertyController::class, 'update']);
         Route::delete('/{id}', [PropertyController::class, 'destroy']);
 
@@ -68,6 +69,8 @@ Route::prefix('properties')->group(function () {
     // Universities
     Route::get('/universities', [LocationController::class, 'getUniversities'])->name('api.universities');
 });
+// Property Search
+Route::get('properties/search', [PropertySearchController::class, 'search']);
 /*
 |--------------------------------------------------------------------------
 | Recommendation API Routes
@@ -124,5 +127,5 @@ Route::prefix('recommendations')->group(function () {
 | 3. Get history:
 | curl -X GET http://localhost:8000/api/recommendations/history \
 |   -H "Authorization: Bearer YOUR_TOKEN"
-|or use POSTMAN 
+|or use POSTMAN
 */
