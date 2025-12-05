@@ -121,7 +121,7 @@ export class CreateProperty implements OnInit {
       area_id: ['', [Validators.required]],
       gender_requirement: ['mixed', [Validators.required]],
       total_rooms: ['', [Validators.required, Validators.min(1)]],
-      available_rooms: ['', [Validators.required, Validators.min(1)]],
+      available_rooms: ['', [Validators.required, Validators.min(1) , ]],
       bathrooms_count: ['', [Validators.required, Validators.min(1)]],
       beds: ['', [Validators.required, Validators.min(1)]],
       available_spots: ['', [Validators.required, Validators.min(1)]],
@@ -141,12 +141,59 @@ export class CreateProperty implements OnInit {
       images: [null as File[] | null],
       amenities: [[] as number[]],
       payment_methods: [[] as string[]],
-    });
+    },
+  {
+    validators: [this.dateCompareValidator, this.availableCompareValidator],
+  }
+  );
   }
 
   get f() {
     return this.propertyForm.controls;
   }
+
+dateCompareValidator(form: FormGroup) {
+  const from = form.get('available_from')?.value;
+  const to = form.get('available_to')?.value;
+
+  // If either is missing ⇒ no error
+  if (!from || !to) return null;
+
+  const fromDate = new Date(from);
+  const toDate = new Date(to);
+  const today = new Date();
+  today.setHours(0,0,0,0); // normalize
+
+  // If invalid dates => do nothing
+  if (isNaN(fromDate.getTime()) || isNaN(toDate.getTime())) return null;
+
+  // ❌ from < today
+  if (fromDate < today) {
+    return { fromPastDate: true };
+  }
+
+  // ❌ to < today
+  if (toDate < today) {
+    return { toPastDate: true };
+  }
+
+  // ❌ to < from
+  if (toDate < fromDate) {
+    return { dateInvalid: true };
+  }
+
+  return null;
+}
+
+ availableCompareValidator(form: FormGroup) {
+  const total = form.get('total_rooms')?.value;
+  const available = form.get('available_rooms')?.value;
+
+  if (!total || !available) return null;
+
+  return available > total ? { availableInvalid: true } : null;
+}
+
 
   onFileChange(event: any) {
     const files = event.target.files;

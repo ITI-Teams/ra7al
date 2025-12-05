@@ -39,5 +39,4 @@ return [
         'timeout' => env('RAG_SERVICE_TIMEOUT', 30),
         'api_key' => env('RAG_SERVICE_API_KEY', null),
     ],
-
 ];

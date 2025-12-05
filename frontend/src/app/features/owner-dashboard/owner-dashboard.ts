@@ -17,4 +17,5 @@ export class OwnerDashboard {
   toggleSidebar() {
     this.isSidebarOpen = !this.isSidebarOpen;
   }
+  
 }
