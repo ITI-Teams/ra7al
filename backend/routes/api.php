@@ -43,12 +43,19 @@ Route::get('amenities', [AmenityController::class, 'index']);
 Route::middleware('auth:sanctum')->post('logout', [AuthController::class, 'logout']);
 // Property Search
 Route::get('properties/search', [PropertySearchController::class, 'search']);
-
+Route::get('properties/filter', [PropertyController::class, 'filterProperties']);
 Route::prefix('properties')->group(function () {
+    // Cities
+    Route::get('/cities', [LocationController::class, 'getCities'])->name('api.cities');
+
+    // Areas
+    Route::get('/areas', [LocationController::class, 'getAreas'])->name('api.areas');
+
+    // Universities
+    Route::get('/universities', [LocationController::class, 'getUniversities'])->name('api.universities');
+    Route::get('/universities/{id}', [LocationController::class, 'getUniversitiesByCity']);
     Route::get('/', [PropertyController::class, 'index']);
-    // Route::get('/filters', function() {
-    //     return (new PropertyController)->getFilters();
-    // });
+
     Route::get('/{id}', [PropertyController::class, 'show']);
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', [PropertyController::class, 'store']);
@@ -66,14 +73,7 @@ Route::prefix('properties')->group(function () {
         Route::post('/rentals/{id}/terminate', [PropertyController::class, 'terminateRental']);
     });
 
-    // Cities
-    Route::get('/cities', [LocationController::class, 'getCities'])->name('api.cities');
 
-    // Areas
-    Route::get('/areas', [LocationController::class, 'getAreas'])->name('api.areas');
-
-    // Universities
-    Route::get('/universities', [LocationController::class, 'getUniversities'])->name('api.universities');
 });
 /*
 |--------------------------------------------------------------------------

@@ -18,6 +18,7 @@ return new class extends Migration
 
             $table->foreignId('city_id')->constrained('cities')->restrictOnDelete();
             $table->foreignId('area_id')->constrained('areas')->restrictOnDelete();
+            $table->foreignId('university_id')->constrained('universities')->restrictOnDelete();
 
             $table->string('title');
             $table->text('description');
@@ -38,7 +39,6 @@ return new class extends Migration
             $table->integer('size')->nullable();
 
             $table->string('accommodation_type')->nullable();
-            $table->string('university')->nullable();
 
             $table->date('available_from');
             $table->date('available_to')->nullable();
