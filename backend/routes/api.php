@@ -43,14 +43,13 @@ Route::prefix('properties')->group(function () {
     // Route::get('/filters', function() {
     //     return (new PropertyController)->getFilters();
     // });
-
+    Route::get('/{id}', [PropertyController::class, 'show']);
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', [PropertyController::class, 'store']);
         Route::get('/my-properties', [PropertyController::class, 'getOwnerProperties']);
         Route::get('/my-rentals', [PropertyController::class, 'getTenantProperties']);
         Route::get('/statistics', [PropertyController::class, 'getOwnerStatistics']);
 
-        Route::get('/{id}', [PropertyController::class, 'show']);
         Route::put('/{id}', [PropertyController::class, 'update']);
         Route::delete('/{id}', [PropertyController::class, 'destroy']);
 
@@ -128,5 +127,5 @@ Route::prefix('recommendations')->group(function () {
 | 3. Get history:
 | curl -X GET http://localhost:8000/api/recommendations/history \
 |   -H "Authorization: Bearer YOUR_TOKEN"
-|or use POSTMAN 
+|or use POSTMAN
 */
