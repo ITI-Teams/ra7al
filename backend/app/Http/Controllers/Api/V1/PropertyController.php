@@ -24,17 +24,17 @@ class PropertyController extends Controller
             ->select('properties.*')
             ->with([
                 'owner:id,name,phone,avatar',
-                'city' => function($query) {
+                'city' => function ($query) {
                     $query->select('id', 'name');
                 },
-                'area' => function($query) {
+                'area' => function ($query) {
                     $query->select('id', 'name');
                 },
-                'images' => function($q) {
+                'images' => function ($q) {
                     $q->orderBy('priority');
                 },
                 'amenities',
-                'activeRentals' => function($query) {
+                'activeRentals' => function ($query) {
                     $query->select('property_rentals.*')
                         ->with(['tenant:id,name,avatar']);
                 },
@@ -100,7 +100,7 @@ class PropertyController extends Controller
 
         if ($request->has('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('properties.title', 'like', '%' . $search . '%')
                     ->orWhere('properties.description', 'like', '%' . $search . '%')
                     ->orWhere('properties.address', 'like', '%' . $search . '%');
@@ -109,7 +109,7 @@ class PropertyController extends Controller
 
         if (Auth::check() && $request->user()->is_owner) {
             $query->withCount([
-                'rentalRequests as pending_requests_count' => function($query) {
+                'rentalRequests as pending_requests_count' => function ($query) {
                     $query->where('status', 'pending');
                 }
             ]);
@@ -136,7 +136,7 @@ class PropertyController extends Controller
         $perPage = $request->get('per_page', 12);
         $properties = $query->paginate($perPage);
 
-        $properties->getCollection()->transform(function($property) {
+        $properties->getCollection()->transform(function ($property) {
             return $this->formatProperty($property);
         });
 
@@ -254,7 +254,6 @@ class PropertyController extends Controller
                 'data' => $this->formatProperty($property->load(['images', 'amenities', 'city', 'area'])),
                 'message' => 'Property created successfully'
             ], 201);
-
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
@@ -267,17 +266,17 @@ class PropertyController extends Controller
     public function show($id)
     {
         $property = Property::with([
-            'owner:id,name,phone,avatar,email,rating',
+            'owner:id,name,phone,avatar,email',
             'city:id,name',
             'area:id,name',
-            'images' => function($q) {
+            'images' => function ($q) {
                 $q->orderBy('priority');
             },
             'amenities',
             'activeRentals.tenant:id,name,avatar',
-            'rentalRequests' => function($q) {
+            'rentalRequests' => function ($q) {
                 $q->where('status', 'pending')
-                  ->with('user:id,name,avatar');
+                    ->with('user:id,name,avatar');
             }
         ])->find($id);
 
@@ -291,12 +290,12 @@ class PropertyController extends Controller
         if ($property->admin_approval_status !== 'approved') {
             $user = Auth::user();
 
-            if (!$user || ( $property->owner_id !== $user->id)) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'This property is not available'
-                ], 403);
-            }
+            // if (!$user || ($property->owner_id !== $user->id)) {
+            //     return response()->json([
+            //         'success' => false,
+            //         'message' => 'This property is not available'
+            //     ], 403);
+            // }
         }
 
         $showFullDetails = false;
@@ -305,8 +304,7 @@ class PropertyController extends Controller
         if ($user) {
             if ($property->owner_id === $user->id) {
                 $showFullDetails = true;
-            }
-            elseif ($property->activeRentals->contains('tenant_id', $user->id)) {
+            } elseif ($property->activeRentals->contains('tenant_id', $user->id)) {
                 $showFullDetails = true;
             }
         }
@@ -319,7 +317,7 @@ class PropertyController extends Controller
             'permissions' => [
                 'can_edit' => $user && $property->owner_id === $user->id,
                 'can_rent' => $user && $property->status === 'available' &&
-                             $property->available_spots > 0,
+                    $property->available_spots > 0,
                 'can_view_tenants' => $showFullDetails,
                 'can_view_requests' => $user && $property->owner_id === $user->id
             ]
@@ -398,13 +396,28 @@ class PropertyController extends Controller
 
         try {
             $property->update($request->only([
-                'title', 'description', 'price', 'address',
-                'city_id', 'area_id', 'gender_requirement',
-                'smoking_allowed', 'pets_allowed', 'furnished', 'total_rooms',
-                'available_rooms', 'bathrooms_count', 'beds',
-                'available_spots', 'size', 'accommodation_type',
-                'university', 'available_from', 'available_to',
-                'status', 'payment_methods'
+                'title',
+                'description',
+                'price',
+                'address',
+                'city_id',
+                'area_id',
+                'gender_requirement',
+                'smoking_allowed',
+                'pets_allowed',
+                'furnished',
+                'total_rooms',
+                'available_rooms',
+                'bathrooms_count',
+                'beds',
+                'available_spots',
+                'size',
+                'accommodation_type',
+                'university',
+                'available_from',
+                'available_to',
+                'status',
+                'payment_methods'
             ]));
 
             if ($request->has('images_to_delete')) {
@@ -438,7 +451,6 @@ class PropertyController extends Controller
                 'data' => $this->formatProperty($property->load(['images', 'amenities', 'city', 'area'])),
                 'message' => 'Property updated successfully'
             ]);
-
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
@@ -638,7 +650,6 @@ class PropertyController extends Controller
                 ],
                 'message' => 'Rental request approved successfully'
             ]);
-
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
@@ -708,20 +719,20 @@ class PropertyController extends Controller
             ->with([
                 'city:id,name',
                 'area:id,name',
-                'images' => function($q) {
+                'images' => function ($q) {
                     $q->orderBy('priority')->limit(1);
                 },
                 'activeRentals.tenant:id,name,avatar',
-                'rentalRequests' => function($q) {
+                'rentalRequests' => function ($q) {
                     $q->where('status', 'pending')
-                      ->with('user:id,name,avatar');
+                        ->with('user:id,name,avatar');
                 }
             ])
             ->withCount(['activeRentals', 'rentalRequests as pending_requests'])
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
-        $properties->getCollection()->transform(function($property) {
+        $properties->getCollection()->transform(function ($property) {
             return [
                 'id' => $property->id,
                 'title' => $property->title,
@@ -753,12 +764,12 @@ class PropertyController extends Controller
 
         $rentals = PropertyRental::where('tenant_id', $user->id)
             ->with([
-                'property' => function($q) {
+                'property' => function ($q) {
                     $q->with([
                         'owner:id,name,phone,avatar',
                         'city:id,name',
                         'area:id,name',
-                        'images' => function($q) {
+                        'images' => function ($q) {
                             $q->orderBy('priority')->limit(1);
                         }
                     ]);
@@ -767,7 +778,7 @@ class PropertyController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
-        $rentals->getCollection()->transform(function($rental) {
+        $rentals->getCollection()->transform(function ($rental) {
             return [
                 'id' => $rental->id,
                 'property_id' => $rental->property_id,
@@ -813,9 +824,9 @@ class PropertyController extends Controller
             ->where('status', 'active')
             ->count();
 
-        $pendingRequests = RentalRequest::whereHas('property', function($q) use ($user) {
-                $q->where('owner_id', $user->id);
-            })
+        $pendingRequests = RentalRequest::whereHas('property', function ($q) use ($user) {
+            $q->where('owner_id', $user->id);
+        })
             ->where('status', 'pending')
             ->count();
 
@@ -882,8 +893,8 @@ class PropertyController extends Controller
                 'end_date' => $request->termination_date,
                 'status' => 'terminated',
                 'notes' => ($rental->notes ? $rental->notes . "\n" : '') .
-                         'Terminated on ' . now()->format('Y-m-d') .
-                         '. Reason: ' . $request->reason
+                    'Terminated on ' . now()->format('Y-m-d') .
+                    '. Reason: ' . $request->reason
             ]);
 
             $property = $rental->property;
@@ -903,7 +914,6 @@ class PropertyController extends Controller
                 'success' => true,
                 'message' => 'Rental terminated successfully'
             ]);
-
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
@@ -916,7 +926,7 @@ class PropertyController extends Controller
     private function formatProperty($property, $detailed = false)
     {
         // دالة مساعدة للتحقق من العلاقات
-        $safeCount = function($relation) use ($property) {
+        $safeCount = function ($relation) use ($property) {
             if (isset($property->{$relation . '_count'})) {
                 return $property->{$relation . '_count'};
             }
@@ -928,7 +938,7 @@ class PropertyController extends Controller
             return 0;
         };
 
-        $safeMap = function($relation, $callback) use ($property) {
+        $safeMap = function ($relation, $callback) use ($property) {
             if ($property->relationLoaded($relation) && isset($property->{$relation})) {
                 return $property->{$relation}->map($callback);
             }
@@ -936,7 +946,7 @@ class PropertyController extends Controller
             return [];
         };
 
-        $safeGet = function($value, $default = null) use ($property) {
+        $safeGet = function ($value, $default = null) use ($property) {
             if (isset($property->{$value})) {
                 return $property->{$value};
             }
@@ -965,7 +975,7 @@ class PropertyController extends Controller
             'available_to' => $property->available_to ? $property->available_to->format('Y-m-d') : null,
             'status' => $property->status,
             'created_at' => $property->created_at ? $property->created_at->diffForHumans() : null,
-            'images' => $safeMap('images', function($image) {
+            'images' => $safeMap('images', function ($image) {
                 return [
                     'id' => $image->id,
                     'url' => asset('storage/' . $image->path),
@@ -990,7 +1000,7 @@ class PropertyController extends Controller
                     'name' => $property->area->name ?? ''
                 ]
             ],
-            'amenities' => $safeMap('amenities', function($amenity) {
+            'amenities' => $safeMap('amenities', function ($amenity) {
                 return [
                     'id' => $amenity->id,
                     'name' => $amenity->name,
@@ -1002,7 +1012,7 @@ class PropertyController extends Controller
 
         if ($detailed) {
             $detailedData = [
-                'rentals' => $safeMap('activeRentals', function($rental) {
+                'rentals' => $safeMap('activeRentals', function ($rental) {
                     return [
                         'id' => $rental->id,
                         'tenant' => $rental->tenant ? [
@@ -1017,7 +1027,7 @@ class PropertyController extends Controller
                         'next_payment_date' => $rental->next_payment_date
                     ];
                 }),
-                'pending_requests' => $safeMap('rentalRequests', function($request) {
+                'pending_requests' => $safeMap('rentalRequests', function ($request) {
                     return [
                         'id' => $request->id,
                         'user' => $request->user ? [
@@ -1048,7 +1058,12 @@ class PropertyController extends Controller
             'cities' => $cities,
             'areas' => $areas,
             'accommodation_types' => [
-                'apartment', 'villa', 'studio', 'shared_room', 'private_room', 'hostel'
+                'apartment',
+                'villa',
+                'studio',
+                'shared_room',
+                'private_room',
+                'hostel'
             ],
             'price_ranges' => [
                 ['min' => 0, 'max' => 1000, 'label' => '0 - 1,000'],
