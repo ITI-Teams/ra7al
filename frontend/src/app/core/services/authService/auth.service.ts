@@ -44,14 +44,16 @@ export class AuthService {
     this.userSubject.next(user); // 🔥 إشعار الـ navbar
   }
 
+  refreshUser(): Observable<any> {
+    return this.http.get(`${this.apiBase}/me`, { withCredentials: true });
+  }
+
   getUser(): any | null {
-    const v = localStorage.getItem('user');
-    if (!v) return null;
-    try {
-      return JSON.parse(v);
-    } catch (e) {
-      return null;
+    const user = localStorage.getItem('user');
+    if (user) {
+      return JSON.parse(user);
     }
+    return null;
   }
 
   clearUser() {

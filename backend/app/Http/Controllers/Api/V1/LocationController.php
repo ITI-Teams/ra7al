@@ -41,4 +41,25 @@ class LocationController extends Controller
         $universities = $query->latest()->paginate(10);
         return UniversityResource::collection($universities);
     }
+
+    public function getUniversitiesByCity($cityId)
+    {
+        try {
+            $universities = University::where('city_id', $cityId)
+                ->orderBy('name')
+                ->get();
+
+            return response()->json([
+                'success' => true,
+                'data' => $universities
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error retrieving universities for city',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }
