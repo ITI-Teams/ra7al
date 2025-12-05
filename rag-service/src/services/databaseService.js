@@ -63,9 +63,9 @@ class DatabaseService {
           AVG(pc.rating) as average_rating,
           COUNT(DISTINCT pc.id) as reviews_count
         FROM properties p
-        INNER JOIN areas a ON p.location_id = a.id
+        INNER JOIN areas a ON p.area_id = a.id
         INNER JOIN cities c ON a.city_id = c.id
-        INNER JOIN users u ON p.user_id = u.id
+        INNER JOIN users u ON p.owner_id = u.id
         LEFT JOIN property_amenities pa ON p.id = pa.property_id
         LEFT JOIN amenities am ON pa.amenity_id = am.id
         LEFT JOIN property_comments pc ON p.id = pc.property_id
@@ -112,11 +112,11 @@ class DatabaseService {
 
       // Rooms count
       if (filters.minRooms) {
-        query += ` AND p.rooms_count >= ?`;
+        query += ` AND p.total_rooms >= ?`;
         params.push(filters.minRooms);
       }
       if (filters.maxRooms) {
-        query += ` AND p.rooms_count <= ?`;
+        query += ` AND p.total_rooms <= ?`;
         params.push(filters.maxRooms);
       }
 

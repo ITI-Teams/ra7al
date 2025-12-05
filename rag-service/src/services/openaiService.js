@@ -3,6 +3,7 @@
 
 import OpenAI from "openai";
 import { logger } from "../utils/logger.js";
+import "dotenv/config";
 
 /**
  * OpenAI Service Class
