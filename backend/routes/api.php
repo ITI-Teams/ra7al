@@ -38,6 +38,8 @@ Route::get('amenities', [AmenityController::class, 'index']);
 
 // Protected route example: logout
 Route::middleware('auth:sanctum')->post('logout', [AuthController::class, 'logout']);
+// Property Search
+Route::get('properties/search', [PropertySearchController::class, 'search']);
 
 Route::prefix('properties')->group(function () {
     Route::get('/', [PropertyController::class, 'index']);
@@ -70,8 +72,6 @@ Route::prefix('properties')->group(function () {
     // Universities
     Route::get('/universities', [LocationController::class, 'getUniversities'])->name('api.universities');
 });
-// Property Search
-Route::get('properties/search', [PropertySearchController::class, 'search']);
 /*
 |--------------------------------------------------------------------------
 | Recommendation API Routes
