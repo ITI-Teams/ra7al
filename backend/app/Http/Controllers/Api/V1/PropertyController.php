@@ -44,6 +44,8 @@ class PropertyController extends Controller
             'activeRentals as active_rentals_count'
         ]);
 
+        $query->where('admin_approval_status', 'approved');
+
         if ($request->has('city_id')) {
             $query->where('properties.city_id', $request->city_id);
         }
@@ -165,9 +167,10 @@ class PropertyController extends Controller
             'city_id' => 'required|exists:cities,id',
             'area_id' => 'required|exists:areas,id',
 
-            'gender_requirement' => 'required|in:male,female,mixed',
+            'gender_requirement' => 'required|in:male,female',
             'smoking_allowed' => 'boolean',
             'pets_allowed' => 'boolean',
+            'furnished' => 'boolean',
 
             'total_rooms' => 'required|integer|min:1',
             'available_rooms' => 'required|integer|min:1|lte:total_rooms',
@@ -187,6 +190,8 @@ class PropertyController extends Controller
 
             'amenities' => 'nullable|array',
             'amenities.*' => 'exists:amenities,id',
+            'payment_methods' => 'nullable|array',
+            'payment_methods.*' => 'string|in:cash,bank_transfer,vodafone_cash',
             'owner_id' => 'required',
         ]);
 
@@ -211,6 +216,7 @@ class PropertyController extends Controller
                 'gender_requirement' => $request->gender_requirement,
                 'smoking_allowed' => $request->boolean('smoking_allowed'),
                 'pets_allowed' => $request->boolean('pets_allowed'),
+                'furnished' => $request->boolean('furnished'),
                 'total_rooms' => $request->total_rooms,
                 'available_rooms' => $request->available_rooms,
                 'bathrooms_count' => $request->bathrooms_count,
@@ -221,6 +227,7 @@ class PropertyController extends Controller
                 'university' => $request->university,
                 'available_from' => $request->available_from,
                 'available_to' => $request->available_to,
+                'payment_methods' => $request->has('payment_methods') ? $request->payment_methods : [],
                 'status' => 'available'
             ]);
 
@@ -281,6 +288,17 @@ class PropertyController extends Controller
             ], 404);
         }
 
+        if ($property->admin_approval_status !== 'approved') {
+            $user = Auth::user();
+
+            if (!$user || ( $property->owner_id !== $user->id)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'This property is not available'
+                ], 403);
+            }
+        }
+
         $showFullDetails = false;
         $user = Auth::user();
 
@@ -339,9 +357,10 @@ class PropertyController extends Controller
             'city_id' => 'sometimes|exists:cities,id',
             'area_id' => 'sometimes|exists:areas,id',
 
-            'gender_requirement' => 'sometimes|in:male,female,mixed',
+            'gender_requirement' => 'sometimes|in:male,female',
             'smoking_allowed' => 'sometimes|boolean',
             'pets_allowed' => 'sometimes|boolean',
+            'furnished' => 'sometimes|boolean',
 
             'total_rooms' => 'sometimes|integer|min:1',
             'available_rooms' => 'sometimes|integer|min:0|lte:total_rooms',
@@ -364,6 +383,8 @@ class PropertyController extends Controller
 
             'amenities' => 'nullable|array',
             'amenities.*' => 'exists:amenities,id',
+            'payment_methods' => 'nullable|array',
+            'payment_methods.*' => 'string|in:cash,bank_transfer,vodafone_cash',
         ]);
 
         if ($validator->fails()) {
@@ -379,11 +400,11 @@ class PropertyController extends Controller
             $property->update($request->only([
                 'title', 'description', 'price', 'address',
                 'city_id', 'area_id', 'gender_requirement',
-                'smoking_allowed', 'pets_allowed', 'total_rooms',
+                'smoking_allowed', 'pets_allowed', 'furnished', 'total_rooms',
                 'available_rooms', 'bathrooms_count', 'beds',
                 'available_spots', 'size', 'accommodation_type',
                 'university', 'available_from', 'available_to',
-                'status'
+                'status', 'payment_methods'
             ]));
 
             if ($request->has('images_to_delete')) {

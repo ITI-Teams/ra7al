@@ -34,6 +34,18 @@
                 </a>
             </li>
             <li>
+                <a href="{{ route('properties.index') }}"
+                   class="sidebar-item {{ request()->routeIs('properties.*') ? 'active' : '' }}">
+                    <i class="fas fa-home"></i>
+                    <span x-show="$store.sidebar.open"
+                          x-transition:enter="transition ease-out duration-300"
+                          x-transition:enter-start="opacity-0 transform -translate-x-2"
+                          x-transition:enter-end="opacity-100 transform translate-x-0">
+                        Properties
+                    </span>
+                </a>
+            </li>
+            <li>
                 <a href="{{ route('messages.index') }}"
                     class="sidebar-item {{ request()->routeIs('messages.*') ? 'active' : '' }}">
                     <i class="fas fa-message"></i>

@@ -1,0 +1,313 @@
+/* src/app/components/property-detail/property-detail.component.css */
+/* NOW WITH DARK MODE SUPPORT! */
+
+/* Custom PrimeNG overrides for Galleria */
+::ng-deep .p-galleria {
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+::ng-deep .p-galleria-item-wrapper {
+  border-radius: 1rem;
+}
+
+::ng-deep .p-galleria-thumbnail-container {
+  background: rgba(0, 0, 0, 0.7);
+  padding: 1rem;
+}
+
+::ng-deep .dark .p-galleria-thumbnail-container {
+  background: rgba(0, 0, 0, 0.9);
+}
+
+::ng-deep .p-galleria-thumbnail-item {
+  margin: 0 0.25rem;
+}
+
+::ng-deep .p-galleria-thumbnail-item-content {
+  border-radius: 0.5rem;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+::ng-deep .p-galleria-thumbnail-item-content:hover {
+  transform: scale(1.1);
+}
+
+::ng-deep
+  .p-galleria-thumbnail-item-current
+  .p-galleria-thumbnail-item-content {
+  border: 2px solid #f97316;
+}
+
+/* Tab View Customization - Light Mode */
+::ng-deep .p-tabview-nav {
+  border-bottom: 2px solid #e5e7eb;
+  background: transparent !important;
+}
+
+::ng-deep .dark .p-tabview-nav {
+  border-bottom: 2px solid #374151;
+}
+
+::ng-deep .p-tabview-nav-link {
+  color: #6b7280 !important;
+  font-weight: 500;
+  padding: 1rem 1.5rem !important;
+  transition: all 0.2s;
+  background: transparent !important;
+  border: none !important;
+}
+
+::ng-deep .dark .p-tabview-nav-link {
+  color: #9ca3af !important;
+}
+
+::ng-deep .p-tabview-nav-link:hover {
+  color: #f97316 !important;
+  background: transparent !important;
+}
+
+::ng-deep .dark .p-tabview-nav-link:hover {
+  color: #fb923c !important;
+}
+
+::ng-deep .p-highlight .p-tabview-nav-link {
+  color: #f97316 !important;
+  border-bottom: 2px solid #f97316 !important;
+  background: transparent !important;
+}
+
+::ng-deep .dark .p-highlight .p-tabview-nav-link {
+  color: #fb923c !important;
+  border-bottom: 2px solid #fb923c !important;
+}
+
+::ng-deep .p-tabview-panels {
+  padding: 1.5rem 0 !important;
+  background: transparent !important;
+}
+
+/* Avatar customization */
+::ng-deep .p-avatar {
+  background-color: #e5e7eb;
+}
+
+::ng-deep .dark .p-avatar {
+  background-color: #374151;
+}
+
+/* Tag customization - Light Mode */
+::ng-deep .p-tag {
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+}
+
+::ng-deep .p-tag.p-tag-success {
+  background-color: #dcfce7;
+  color: #16a34a;
+}
+
+::ng-deep .dark .p-tag.p-tag-success {
+  background-color: rgba(22, 163, 74, 0.2);
+  color: #4ade80;
+}
+
+::ng-deep .p-tag.p-tag-danger {
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+
+::ng-deep .dark .p-tag.p-tag-danger {
+  background-color: rgba(220, 38, 38, 0.2);
+  color: #f87171;
+}
+
+/* Divider styling */
+::ng-deep .p-divider {
+  margin: 1.5rem 0;
+}
+
+::ng-deep .p-divider.p-divider-horizontal:before {
+  border-top: 1px solid #e5e7eb;
+}
+
+::ng-deep .dark .p-divider.p-divider-horizontal:before {
+  border-top: 1px solid #374151;
+}
+
+/* Toast positioning and dark mode */
+::ng-deep .p-toast {
+  z-index: 9999;
+}
+
+::ng-deep .p-toast-message {
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+::ng-deep .dark .p-toast-message {
+  background-color: #1f2937;
+  border: 1px solid #374151;
+  color: #f9fafb;
+}
+
+::ng-deep .dark .p-toast-message-success {
+  background-color: rgba(22, 163, 74, 0.1);
+  border-color: #16a34a;
+}
+
+::ng-deep .dark .p-toast-message-error {
+  background-color: rgba(220, 38, 38, 0.1);
+  border-color: #dc2626;
+}
+
+::ng-deep .dark .p-toast-message-info {
+  background-color: rgba(59, 130, 246, 0.1);
+  border-color: #3b82f6;
+}
+
+/* Smooth transitions */
+.transition-all {
+  transition: all 0.3s ease;
+}
+
+/* Hover effects for cards */
+.hover\:shadow-lg:hover {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.dark .hover\:shadow-lg:hover {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.hover\:shadow-xl:hover {
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+.dark .hover\:shadow-xl:hover {
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+}
+
+/* Custom scrollbar for content areas */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #475569;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  ::ng-deep .p-galleria-item-wrapper {
+    height: 300px !important;
+  }
+
+  ::ng-deep .p-tabview-nav-link {
+    padding: 0.75rem 1rem !important;
+    font-size: 0.875rem;
+  }
+}
+
+/* Loading spinner animation */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.pi-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Image gallery navigation buttons */
+::ng-deep .p-galleria-item-nav {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+::ng-deep .dark .p-galleria-item-nav {
+  background: rgba(31, 41, 55, 0.9);
+}
+
+::ng-deep .p-galleria-item-nav:hover {
+  background: white;
+  transform: scale(1.1);
+}
+
+::ng-deep .dark .p-galleria-item-nav:hover {
+  background: #1f2937;
+}
+
+::ng-deep .p-galleria-item-prev {
+  left: 1rem;
+}
+
+::ng-deep .p-galleria-item-next {
+  right: 1rem;
+}
+
+/* Dark mode background transitions */
+.dark {
+  background-color: #111827;
+  color: #f9fafb;
+}
+
+/* Accessibility focus states */
+button:focus,
+a:focus {
+  outline: 2px solid #f97316;
+  outline-offset: 2px;
+}
+
+.dark button:focus,
+.dark a:focus {
+  outline-color: #fb923c;
+}
+
+/* Print styles */
+@media print {
+  .sticky,
+  button {
+    display: none !important;
+  }
+
+  .dark {
+    background-color: white !important;
+    color: black !important;
+  }
+}

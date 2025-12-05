@@ -1,13 +1,13 @@
 import { Component, signal } from '@angular/core';
-import { Layout } from './layout/layout';
 import { Loader } from './shared/loader/loader';
 import { Toast } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
+import { RouterModule } from "@angular/router";
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [Layout, Loader, Toast],
+  imports: [Loader, Toast, RouterModule],
   templateUrl: './app.html',
   styleUrls: ['./app.css'], // صححت هنا
 })

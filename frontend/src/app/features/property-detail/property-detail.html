@@ -1,0 +1,466 @@
+<!-- src/app/components/property-detail/property-detail.component.html -->
+<p-toast></p-toast>
+
+@if (property(); as prop) {
+<div class="max-w-7xl mx-auto p-4 md:p-6">
+  <!-- Main Grid Layout -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Left Column: Property Details -->
+    <div class="lg:col-span-2">
+      <!-- Image Gallery -->
+      <div
+        class="relative rounded-2xl overflow-hidden shadow-lg dark:shadow-gray-800 mb-6"
+      >
+        <p-galleria
+          [value]="prop.images"
+          [responsiveOptions]="galleriaResponsiveOptions"
+          [containerStyle]="{ 'max-width': '100%' }"
+          [numVisible]="5"
+          [circular]="true"
+          [showItemNavigators]="true"
+          [showThumbnails]="true"
+          [activeIndex]="activeImageIndex()"
+          (activeIndexChange)="activeImageIndex.set($event)"
+        >
+          <ng-template pTemplate="item" let-item>
+            <img
+              [src]="item.path"
+              [alt]="prop.title"
+              class="w-full h-[400px] md:h-[500px] object-cover"
+            />
+          </ng-template>
+          <ng-template pTemplate="thumbnail" let-item>
+            <img
+              [src]="item.path"
+              [alt]="prop.title"
+              class="w-16 h-16 object-cover rounded-lg cursor-pointer"
+            />
+          </ng-template>
+        </p-galleria>
+
+        <!-- Heart Button Overlay -->
+        <button
+          (click)="onToggleSave()"
+          class="absolute top-4 right-4 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full p-3 shadow-lg transition-all duration-200"
+          [attr.aria-label]="isSaved() ? 'Remove from saved' : 'Save property'"
+        >
+          <i
+            [class]="isSaved() ? 'pi pi-heart-fill text-red-500' : 'pi pi-heart text-gray-600 dark:text-gray-300'"
+            class="text-xl"
+          ></i>
+        </button>
+      </div>
+
+      <!-- Property Title & Location -->
+      <div class="mb-6">
+        <div
+          class="flex items-center gap-2 text-purple-600 dark:text-purple-400 mb-2"
+        >
+          <i class="pi pi-map-marker"></i>
+          <span class="text-sm font-medium"
+            >{{ prop.location.area.name }}, inner city, {{ prop.location.city.name }}</span
+          >
+        </div>
+
+        <h1
+          class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4"
+        >
+          {{ prop.title }}
+        </h1>
+
+        <!-- Property Stats -->
+        <div
+          class="flex flex-wrap items-center gap-6 text-gray-600 dark:text-gray-400"
+        >
+          <div class="flex items-center gap-2">
+            <i class="pi pi-home"></i>
+            <span>{{ prop.rooms_count }} Rooms</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <i class="pi pi-star-fill text-yellow-400"></i>
+            <span>{{ prop.average_rating }}</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <i class="pi pi-th-large"></i>
+            <span>{{ prop.size }} m²</span>
+          </div>
+        </div>
+      </div>
+
+      <p-divider></p-divider>
+
+      <!-- Property Information Tabs -->
+      <div class="mb-6">
+        <p-tabs>
+          <!-- Details Tab -->
+          <p-tabpanel header="Details">
+            <div class="space-y-4">
+              <h3
+                class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-3"
+              >
+                Details
+              </h3>
+
+              <p
+                class="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line"
+              >
+                {{ prop.description }}
+              </p>
+
+              <!-- Property Specs Grid -->
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+                <div class="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+                  <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                    Gender requirement
+                  </p>
+                  <p
+                    class="font-semibold text-gray-900 dark:text-gray-100 capitalize"
+                  >
+                    {{ prop.gender_requirement }}
+                  </p>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+                  <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                    Furnishings
+                  </p>
+                  <p class="font-semibold text-gray-900 dark:text-gray-100">
+                    Furnished
+                  </p>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+                  <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                    Lease duration
+                  </p>
+                  <p class="font-semibold text-gray-900 dark:text-gray-100">
+                    1 year of 18 month
+                  </p>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+                  <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                    Availability
+                  </p>
+                  <p class="font-semibold text-gray-900 dark:text-gray-100">
+                    {{ formatDate(prop.available_from) }}
+                  </p>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+                  <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                    Type of rental
+                  </p>
+                  <p class="font-semibold text-gray-900 dark:text-gray-100">
+                    {{ prop.rooms_count }} out of 4 vacant
+                  </p>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+                  <p class="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                    Tenant insurance
+                  </p>
+                  <p class="font-semibold text-gray-900 dark:text-gray-100">
+                    1 month
+                  </p>
+                </div>
+              </div>
+            </div>
+          </p-tabpanel>
+
+          <!-- Amenities Tab -->
+          <p-tabpanel header="Amenities">
+            <div class="space-y-4">
+              <h3
+                class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4"
+              >
+                Amenities
+              </h3>
+              <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                @for (amenity of prop.amenities; track amenity.id) {
+                <div
+                  class="flex items-center gap-3 bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg shadow-sm hover:shadow-md transition-shadow"
+                >
+                  <i
+                    class="pi pi-check-circle text-blue-600 dark:text-blue-400 text-xl"
+                  ></i>
+                  <span class="text-gray-700 dark:text-gray-300 font-medium"
+                    >{{ amenity.name }}</span
+                  >
+                </div>
+                }
+              </div>
+            </div>
+          </p-tabpanel>
+
+          <!-- Location Tab -->
+          <p-tabpanel header="Location">
+            <div class="space-y-4">
+              <h3
+                class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4"
+              >
+                Location
+              </h3>
+              <p class="text-gray-600 dark:text-gray-400 mb-4">
+                You can view places of interests like spots, markets,
+                restaurants
+              </p>
+
+              <div
+                class="bg-gray-200 dark:bg-gray-800 rounded-lg h-[400px] flex items-center justify-center"
+              >
+                <div class="text-center">
+                  <i
+                    class="pi pi-map text-6xl text-gray-400 dark:text-gray-600 mb-4"
+                  ></i>
+                  <p class="text-gray-500 dark:text-gray-400">
+                    Map integration coming soon
+                  </p>
+                  <p class="text-sm text-gray-400 dark:text-gray-500 mt-2">
+                    {{ prop.address }}
+                  </p>
+                </div>
+              </div>
+
+              <div
+                class="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg mt-4"
+              >
+                <p class="text-sm text-gray-700 dark:text-gray-300">
+                  <strong>5.5km from university</strong>
+                </p>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                  Easy commute within 15-20 minutes
+                </p>
+              </div>
+            </div>
+          </p-tabpanel>
+
+          <!-- Active Rentals Tab -->
+          <p-tabpanel header="Tenants">
+            <div class="space-y-4">
+              <h3
+                class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4"
+              >
+                Currently active rentals
+              </h3>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                @for (rental of prop.rentals; track rental.id) {
+                <div
+                  class="border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 rounded-xl p-6 hover:shadow-lg dark:hover:shadow-gray-900 transition-shadow"
+                >
+                  <div class="flex items-center gap-4 mb-4">
+                    <p-avatar
+                      [image]="rental.tenant.avatar"
+                      size="xlarge"
+                      shape="circle"
+                    ></p-avatar>
+                    <div>
+                      <h4
+                        class="font-semibold text-gray-900 dark:text-gray-100"
+                      >
+                        {{ rental.tenant.name }}
+                      </h4>
+                      <p class="text-sm text-gray-500 dark:text-gray-400">
+                        Since {{ formatDate(rental.start_date) }}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    (click)="viewRoommateProfile(rental.tenant.id)"
+                    class="w-full py-2 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium text-gray-700 dark:text-gray-300"
+                  >
+                    Know more
+                  </button>
+                </div>
+                }
+              </div>
+            </div>
+          </p-tabpanel>
+
+          <!-- Reviews Tab -->
+          <p-tabpanel header="Reviews">
+            <div class="space-y-6">
+              <h3
+                class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4"
+              >
+                Reviews ({{ prop.comments?.length }})
+              </h3>
+
+              @for (comment of prop.comments; track comment.id) {
+              <div class="border-b border-gray-200 dark:border-gray-700 pb-6">
+                <div class="flex items-start gap-4">
+                  <p-avatar
+                    [image]="comment.user.avatar"
+                    size="large"
+                    shape="circle"
+                  ></p-avatar>
+
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between mb-2">
+                      <div>
+                        <h4
+                          class="font-semibold text-gray-900 dark:text-gray-100"
+                        >
+                          {{ comment.user.name }}
+                        </h4>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                          {{ comment.created_at }}
+                        </p>
+                      </div>
+                      <div class="flex gap-1">
+                        @for (star of getStars(comment.rating); track $index) {
+                        <i class="pi pi-star-fill text-yellow-400 text-sm"></i>
+                        }
+                      </div>
+                    </div>
+                    <p class="text-gray-700 dark:text-gray-300">
+                      {{ comment.comment }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              }
+            </div>
+          </p-tabpanel>
+        </p-tabs>
+      </div>
+
+      <!-- Rules Section -->
+      <div class="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 mb-6">
+        <h3 class="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
+          Rules
+        </h3>
+        <div class="space-y-3">
+          <div
+            class="flex items-center gap-3 bg-gray-100 dark:bg-gray-700 p-3 rounded-lg"
+          >
+            <i
+              class="pi"
+              [ngClass]="prop.smoking_allowed ? 'pi-check-circle text-green-600' : 'pi-times-circle text-red-600'"
+            ></i>
+            <span class="text-gray-800 dark:text-gray-200"
+              >{{ prop.smoking_allowed ? 'Smoking allowed' : 'No smoking'
+              }}</span
+            >
+          </div>
+          <div
+            class="flex items-center gap-3 bg-gray-100 dark:bg-gray-700 p-3 rounded-lg"
+          >
+            <i class="pi pi-check-circle text-green-600"></i>
+            <span class="text-gray-800 dark:text-gray-200">Pets allowed</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Booking Card (Sticky) -->
+    <div class="lg:col-span-1">
+      <div class="sticky top-6">
+        <div
+          class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl dark:shadow-gray-900 p-6 border border-gray-100 dark:border-gray-700"
+        >
+          <!-- Occupancy Status -->
+          <div class="mb-4">
+            <p-tag
+              [value]="availabilityStatus().label"
+              [severity]="availabilityStatus().severity"
+              styleClass="text-sm"
+            ></p-tag>
+          </div>
+
+          <!-- Price -->
+          <div class="mb-6">
+            <div class="text-4xl font-bold text-gray-900 dark:text-gray-100">
+              {{ formattedPrice() }}
+            </div>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">/ month</p>
+          </div>
+
+          <!-- Book Button -->
+          <button
+            (click)="onBook()"
+            class="w-full bg-orange-500 hover:bg-orange-600 dark:bg-orange-600 dark:hover:bg-orange-700 text-white font-semibold py-3 rounded-lg transition-colors mb-3"
+          >
+            Book
+          </button>
+
+          <p class="text-center text-sm text-gray-500 dark:text-gray-400 mb-6">
+            You won't be charged yet
+          </p>
+
+          <p-divider></p-divider>
+
+          <!-- Action Buttons -->
+          <div class="space-y-3">
+            <button
+              (click)="onToggleSave()"
+              class="w-full flex items-center justify-center gap-2 py-3 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            >
+              <i
+                [class]="isSaved() ? 'pi pi-heart-fill text-red-500' : 'pi pi-heart text-gray-700 dark:text-gray-300'"
+              ></i>
+              <span class="font-medium text-gray-700 dark:text-gray-300"
+                >Save profile</span
+              >
+            </button>
+
+            <button
+              (click)="on360Tour()"
+              class="w-full flex items-center justify-center gap-2 py-3 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            >
+              <i class="pi pi-video text-gray-700 dark:text-gray-300"></i>
+              <span class="font-medium text-gray-700 dark:text-gray-300"
+                >360 tour</span
+              >
+            </button>
+
+            <button
+              (click)="onScheduleVisit()"
+              class="w-full flex items-center justify-center gap-2 py-3 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            >
+              <i class="pi pi-calendar text-gray-700 dark:text-gray-300"></i>
+              <span class="font-medium text-gray-700 dark:text-gray-300"
+                >Schedule a visit</span
+              >
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Similar Listings -->
+  <div class="mt-12">
+    <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">
+      Similar listings
+    </h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      @for (item of [1,2,3,4]; track item) {
+      <div
+        class="bg-white dark:bg-gray-800 rounded-xl shadow-md dark:shadow-gray-900 overflow-hidden hover:shadow-xl dark:hover:shadow-gray-900 transition-shadow border border-gray-100 dark:border-gray-700"
+      >
+        <div class="h-48 bg-gray-300 dark:bg-gray-700"></div>
+        <div class="p-4">
+          <h3 class="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+            Similar Property {{ item }}
+          </h3>
+          <p class="text-orange-600 dark:text-orange-400 font-bold">
+            EGP 3,200<span class="text-sm text-gray-500 dark:text-gray-400"
+              >/month</span
+            >
+          </p>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+</div>
+} @else {
+<!-- Loading State -->
+<div
+  class="flex items-center justify-center min-h-screen bg-white dark:bg-gray-900"
+>
+  <div class="text-center">
+    <i class="pi pi-spin pi-spinner text-6xl text-orange-500 mb-4"></i>
+    <p class="text-gray-600 dark:text-gray-400 text-lg">
+      Loading property details...
+    </p>
+  </div>
+</div>
+}
