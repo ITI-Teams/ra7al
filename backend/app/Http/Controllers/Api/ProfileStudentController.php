@@ -21,8 +21,8 @@ class ProfileStudentController extends Controller
         if (!$profile) {
             $user = Auth::user();
             $avatar = $user->avatar
-                ? asset("storage/{$user->avatar}")
-                : asset("storage/default-avatar.png");
+                ? asset("{$user->avatar}")
+                : asset("images/users/avatar/default-avatar.png");
 
             return response()->json([
                 'profile' => [
@@ -43,8 +43,8 @@ class ProfileStudentController extends Controller
 
         $user = Auth::user();
         $avatar = $user->avatar
-            ? asset("storage/{$user->avatar}")
-            : asset("storage/default-avatar.png");
+            ? asset("{$user->avatar}")
+            : asset("images/users/avatar/default-avatar.png");
 
         return response()->json([
             'profile' => [
@@ -60,9 +60,6 @@ class ProfileStudentController extends Controller
                 'smoking' => $profile->smoking,
                 'pets' => $profile->pets,
                 'bio' => $profile->bio,
-
-
-
             ]
         ]);
     }
@@ -93,14 +90,34 @@ class ProfileStudentController extends Controller
 
         $userId = Auth::id();
 
+        if (!empty($data['avatar']) && strpos($data['avatar'], 'data:image') === 0) {
+
+            preg_match('/data:image\/(\w+);base64,/', $data['avatar'], $matches);
+            $extension = $matches[1] ?? 'png';
+            $base64Str = substr($data['avatar'], strpos($data['avatar'], ',') + 1);
+            $image = base64_decode($base64Str);
+            $fileName = 'avatar_' . Auth::id() . '_' . time() . '.' . $extension;
+            $folder = public_path('images/users/avatar');
+            if (!file_exists($folder)) {
+                mkdir($folder, 0777, true);
+            }
+            file_put_contents($folder . '/' . $fileName, $image);
+            $data['avatar'] = 'images/users/avatar/' . $fileName;
+        } else {
+            unset($data['avatar']);
+        }
+
         User::where('id', $userId)->update([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => !empty($data['password'])
                 ? Hash::make($data['password'])
-                : User::find($userId)->password
+                : User::find($userId)->password,
+            'avatar' => $data['avatar']
         ]);
-        unset($data['name'], $data['email'], $data['password']);
+        unset($data['name'], $data['email'], $data['password'], $data['avatar']);
+
+
         $profile = student_profile::updateOrCreate(
 
 

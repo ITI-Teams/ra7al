@@ -13,6 +13,7 @@ import { ProfileService } from '../../core/services/profile/profile-service';
 
 @Component({
   selector: 'app-student-profile',
+  standalone: true,
   imports:  [FormsModule,NgClass,NgIf,ReactiveFormsModule,CommonModule],
   templateUrl: './student-profile.html',
   styleUrl: './student-profile.css',
@@ -33,10 +34,10 @@ showToast: boolean = false;
 
   constructor(private fb: FormBuilder, private profileSrv: ProfileService,private cdr: ChangeDetectorRef) {
   this.profileForm = this.fb.group({
-  name: ['', [Validators.required, Validators.pattern(/^(?!\s*$)[\p{L}\s]+$/u)]],
+    name: ['', [Validators.required, Validators.pattern(/^(?!\s*$)[\p{L}\s]+$/u)]],
     email: ['', [Validators.required, Validators.email]],
- password: ['', [Validators.minLength(6), Validators.maxLength(20)]],
-gender:['',Validators.required],
+    password: ['', [Validators.minLength(6), Validators.maxLength(20)]],
+    gender:['',Validators.required],
     age: ['', [Validators.required, Validators.min(5), Validators.max(113)]],
     habits: [''],
     preferences: [''],

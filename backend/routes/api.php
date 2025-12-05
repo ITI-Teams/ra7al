@@ -20,7 +20,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('profile', [ProfileStudentController::class, 'storeOrUpdate']);
 });
 
-
+Route::middleware('auth:sanctum')->get('/me', function (Request $request) {
+    return response()->json([
+        'user' => $request->user()
+    ]);
+});
 
 // message contact-us
 Route::get('/messages', [MessageController::class, 'index']);
