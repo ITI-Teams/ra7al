@@ -30,7 +30,7 @@ class Property extends Model
         'available_spots',
         'size',
         'accommodation_type',
-        'university',
+        'university_id',
         'available_from',
         'available_to',
         'status',

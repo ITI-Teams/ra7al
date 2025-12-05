@@ -292,17 +292,34 @@
           </div>
 
           <!-- University -->
-          <div class="mb-4">
-            <input
-              type="text"
-              placeholder="Nearest University"
-              formControlName="university"
-              class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#5e1fbf]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#5e1fbf] outline-none transition"
-            />
-            <small *ngIf="f.university.touched && f.university.invalid" class="text-red-500 text-sm mt-1 block">
+          <div class="relative w-full mb-4" [class.z-30]="universityOpen">
+            <button
+              type="button"
+              (click)="universityOpen = !universityOpen"
+              [disabled]="!selectedCityId"
+              class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#5e1fbf]/40 text-gray-900 dark:text-white shadow-sm flex justify-between items-center focus:ring-2 focus:ring-[#5e1fbf] outline-none transition text-left disabled:opacity-50">
+              {{ selectedUniversityName || 'Select University' }}
+              <i class="fa" [ngClass]="universityOpen ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+            </button>
+
+            <ul
+              *ngIf="universityOpen && universities.length > 0"
+              class="absolute w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-xl shadow-lg overflow-hidden z-30 max-h-60 overflow-y-auto">
+              <li
+                *ngFor="let uni of universities"
+                (click)="selectUniversity(uni)"
+                class="px-5 py-3 hover:bg-purple-100 dark:hover:bg-gray-700 cursor-pointer text-gray-900 dark:text-white flex items-center gap-2">
+                <span>{{ uni.name }}</span>
+                <span *ngIf="uni.abbreviation" class="text-xs text-gray-500">({{ uni.abbreviation }})</span>
+              </li>
+            </ul>
+
+            <small *ngIf="f.university_id.touched && f.university_id.invalid" class="text-red-500 text-sm mt-1 block">
               University is required
             </small>
-            <small *ngIf="f.university.errors?.server" class="text-red-500 text-sm mt-1 block">{{ f.university.errors.server }}</small>
+            <small *ngIf="f.university_id.errors?.server" class="text-red-500 text-sm mt-1 block">
+              {{ f.university_id.errors.server }}
+            </small>
           </div>
         </div>
 

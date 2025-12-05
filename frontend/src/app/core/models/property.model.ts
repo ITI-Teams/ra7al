@@ -127,7 +127,7 @@ export interface Property {
   size?: number;
   accommodation_type?: string;
   university_id?: number;
-  university?: University;
+  //university?: University;
   available_from: string;
   available_to?: string;
   status: 'available' | 'partially_occupied' | 'fully_occupied' | 'maintenance' | 'inactive';
@@ -218,7 +218,7 @@ export interface CreatePropertyPayload {
   size?: number;
   accommodation_type?: string;
   university_id?: number;
-  university?: string;
+  //university?: string;
   available_from: string;
   available_to?: string;
   amenities?: number[];
@@ -228,7 +228,7 @@ export interface CreatePropertyPayload {
 }
 export interface FilterState {
   university_id?: number;
-  university?: string;
+  //university?: string;
   propertyType?: string;
   accommodation_type?: string;
   gender?: string;

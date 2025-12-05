@@ -58,10 +58,16 @@ export class CreateProperty implements OnInit {
   areas: AreaData[] = [];
   amenities: AmenityData[] = [];
 
-  genderOptions = ['male', 'female', 'mixed'];
+  genderOptions = ['male', 'female'];
   accommodationTypes = ['Studio', 'Apartment', 'Villa', 'Shared'];
   paymentMethods = ['cash', 'bank_transfer', 'vodafone_cash'];
   selectedPaymentMethods: string[] = [];
+
+
+  universities: any[] = [];
+  selectedUniversityId: number | null = null;
+  selectedUniversityName: string | null = null;
+  universityOpen = false;
 
   constructor(
     private fb: FormBuilder,
@@ -129,7 +135,7 @@ export class CreateProperty implements OnInit {
       minimum_stay_months: ['1', [Validators.required, Validators.min(1)]],
       security_deposit: ['', [Validators.required, Validators.min(0)]],
       accommodation_type: ['Apartment', [Validators.required]],
-      university: ['', [Validators.required]],
+      university_id: ['', [Validators.required]],
       available_from: ['', [Validators.required]],
       available_to: ['', [Validators.required]],
       smoking_allowed: [false],
@@ -250,11 +256,26 @@ dateCompareValidator(form: FormGroup) {
     this.selectedAreaId = null;
     this.selectedAreaName = null;
     this.propertyForm.patchValue({ area_id: '' });
+    // Reset University when city changes
+    this.selectedUniversityId = null;
+    this.selectedUniversityName = null;
+    this.propertyForm.patchValue({ university_id: '' });
 
     // fetch areas for selected city
     this.propertyService.getAreas(city.id).subscribe((list) => {
       this.areas = list || [];
     });
+    // fetch University for selected city
+    this.propertyService.getUniversitiesByCity(city.id).subscribe((list) => {
+      this.universities = list || [];
+    });
+  }
+
+  selectUniversity(university: any) {
+    this.selectedUniversityId = university.id;
+    this.selectedUniversityName = university.name;
+    this.propertyForm.patchValue({ university_id: university.id });
+    this.universityOpen = false;
   }
 
   selectArea(area: AreaData) {
@@ -278,6 +299,14 @@ dateCompareValidator(form: FormGroup) {
 
   getAreaOptions(): AreaData[] {
     return this.areas;
+  }
+
+  onUniversitySelect(university: any) {
+    this.propertyForm.patchValue({
+      university_id: university.id
+    });
+
+    this.selectedUniversityId = university.id;
   }
 
   submit() {
@@ -307,7 +336,10 @@ dateCompareValidator(form: FormGroup) {
     formData.append('available_spots', formValue.available_spots);
     formData.append('size', formValue.size);
     formData.append('accommodation_type', formValue.accommodation_type);
-    formData.append('university', formValue.university);
+    formData.append(
+      'university_id',
+      this.selectedUniversityId?.toString() || formValue.university_id
+    );
     formData.append('available_from', formValue.available_from);
     formData.append('available_to', formValue.available_to);
     formData.append('smoking_allowed', formValue.smoking_allowed ? '1' : '0');
