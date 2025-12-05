@@ -8,6 +8,7 @@ import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 import { PropertyService } from '../../core/services/property/property.service';
 import { Property, University, PropertiesListResponse } from '../../core/models/property.model';
 import {environment} from '../../environments/environment';
+import { Router } from '@angular/router';
 
 interface Listing {
   id: number;
@@ -114,17 +115,17 @@ export class FilterPage implements OnInit {
 
   selectedSort: string | null = null;
 
-  allListings: Listing[] = [];
+  allListings = signal<Listing[]>([]);
 
   filteredListings = computed(() => {
-    return this.allListings;
+    return this.allListings();
   });
 
   paginatedListings = computed(() => {
-    return this.allListings;
+    return this.allListings();
   });
 
-  constructor() {
+  constructor(private router: Router) {
     effect(() => {
     });
   }
@@ -203,7 +204,7 @@ export class FilterPage implements OnInit {
           console.log('API Response:', response); // debug log
           if (response.success) {
             console.log('Properties data:', response.data.data); // debug log
-            this.allListings = this.convertPropertiesToListings(response.data.data);
+            this.allListings.set(this.convertPropertiesToListings(response.data.data));
             console.log('Converted listings:', this.allListings); // debug log
             this.currentPage.set(response.data.current_page);
             this.totalRecords.set(response.data.total);
@@ -450,44 +451,48 @@ export class FilterPage implements OnInit {
   }
 
   loadListings() {
-    this.allListings = [
-      {
-        id: 1,
-        title: 'Shared Apartment (2/6 spots available)',
-        location: '7th District, Nasr City',
-        rooms: 3,
-        baths: 1,
-        beds: 6,
-        gender: 'Females',
-        price: 200,
-        bitsIncluded: true,
-        image: 'https://images.pexels.com/photos/271743/pexels-photo-271743.jpeg',
-        university_id: 1,
-        accommodationType: 'SHARED',
-        petsAllowed: false,
-        smokingAllowed: false,
-        availableSpots: 2,
-      },
-      {
-        id: 2,
-        title: 'Private Studio',
-        location: 'Downtown, Cairo',
-        rooms: 1,
-        baths: 1,
-        beds: 1,
-        gender: 'Mixed',
-        price: 500,
-        bitsIncluded: true,
-        image: 'https://images.pexels.com/photos/1457842/pexels-photo-1457842.jpeg',
-        university_id: 1,
-        accommodationType: 'PRIVATE',
-        petsAllowed: true,
-        smokingAllowed: false,
-        availableSpots: 1,
-      },
-    ];
+    // this.allListings = [
+    //   {
+    //     id: 1,
+    //     title: 'Shared Apartment (2/6 spots available)',
+    //     location: '7th District, Nasr City',
+    //     rooms: 3,
+    //     baths: 1,
+    //     beds: 6,
+    //     gender: 'Females',
+    //     price: 200,
+    //     bitsIncluded: true,
+    //     image: 'https://images.pexels.com/photos/271743/pexels-photo-271743.jpeg',
+    //     university_id: 1,
+    //     accommodationType: 'SHARED',
+    //     petsAllowed: false,
+    //     smokingAllowed: false,
+    //     availableSpots: 2,
+    //   },
+    //   {
+    //     id: 2,
+    //     title: 'Private Studio',
+    //     location: 'Downtown, Cairo',
+    //     rooms: 1,
+    //     baths: 1,
+    //     beds: 1,
+    //     gender: 'Mixed',
+    //     price: 500,
+    //     bitsIncluded: true,
+    //     image: 'https://images.pexels.com/photos/1457842/pexels-photo-1457842.jpeg',
+    //     university_id: 1,
+    //     accommodationType: 'PRIVATE',
+    //     petsAllowed: true,
+    //     smokingAllowed: false,
+    //     availableSpots: 1,
+    //   },
+    // ];
 
     this.totalRecords.set(this.allListings.length);
     this.currentPage.set(1);
+  }
+
+  goToDetails(id: number) {
+    this.router.navigate(['/properties', id]);
   }
 }
