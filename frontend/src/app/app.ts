@@ -16,8 +16,9 @@ export class App {
   protected readonly title = signal('frontend');
 
 
-  constructor(private auth: AuthService ,private messageService: MessageService) {
-    if (this.auth.isLoggedIn()) {
+  constructor(private auth: AuthService, private messageService: MessageService) {
+    const token = this.auth.getToken();
+    if (token) {
       this.auth.refreshUser().subscribe({
         next: (res) => this.auth.storeUser(res.user),
         error: () => this.auth.clearUser()
