@@ -50,9 +50,10 @@ export const routes: Routes = [
         path: 'unauthorized',
         component: Unauthorized
       },
+      { path: 'properties/:id', component: PropertyDetail },
     ]
   },
-  { path: 'properties/:id', component: PropertyDetail },
+
 
   // Dashboard layout routes (no navbar & footer)
 {
