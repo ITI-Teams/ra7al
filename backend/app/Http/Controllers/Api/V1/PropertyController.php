@@ -290,12 +290,12 @@ class PropertyController extends Controller
         if ($property->admin_approval_status !== 'approved') {
             $user = Auth::user();
 
-            // if (!$user || ($property->owner_id !== $user->id)) {
-            //     return response()->json([
-            //         'success' => false,
-            //         'message' => 'This property is not available'
-            //     ], 403);
-            // }
+            if (!$user || ($property->owner_id !== $user->id)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'This property is not available'
+                ], 403);
+            }
         }
 
         $showFullDetails = false;
