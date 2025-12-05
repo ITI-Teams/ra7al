@@ -50,6 +50,10 @@ export const routes: Routes = [
         path: 'unauthorized',
         component: Unauthorized
       },
+       {
+    path: 'payment',
+    component: Payment
+  },
       { path: 'properties/:id', component: PropertyDetail },
     ]
   },
@@ -78,10 +82,7 @@ export const routes: Routes = [
       { path: '', component: StudentProfile }
     ]
   },
- {
-    path: 'payment',
-    component: Payment
-  },
+
 
   // Unauthorized page
   {

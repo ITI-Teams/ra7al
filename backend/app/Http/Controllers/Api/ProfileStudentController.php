@@ -59,6 +59,8 @@ class ProfileStudentController extends Controller
                 'cleanliness_level' => $profile->cleanliness_level,
                 'smoking' => $profile->smoking,
                 'pets' => $profile->pets,
+                'bio' => $profile->bio,
+
 
 
             ]
@@ -79,6 +81,7 @@ class ProfileStudentController extends Controller
             'cleanliness_level' => 'required|integer|min:0|max:9',
             'smoking' => 'required|boolean',
             'pets' => 'required|boolean',
+            'bio' => 'required',
             'avatar' => 'nullable',
         ]);
 

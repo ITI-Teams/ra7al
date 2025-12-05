@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class student_profile extends Model
 {
-    protected $fillable = ['user_id', 'age', 'gender', 'habits', 'preferences', 'roommate_style', 'cleanliness_level', 'smoking', 'pets'];
+    protected $fillable = ['user_id', 'age', 'gender', 'habits', 'preferences', 'roommate_style', 'cleanliness_level', 'smoking', 'pets', 'bio'];
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
