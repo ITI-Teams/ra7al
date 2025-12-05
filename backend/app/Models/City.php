@@ -29,7 +29,6 @@ class City extends Model
             Property::class,
             Area::class,
             'city_id',      // Foreign key on areas table
-            'location_id',  // Foreign key on properties table
             'id',           // Local key on cities table
             'id'            // Local key on areas table
         );
