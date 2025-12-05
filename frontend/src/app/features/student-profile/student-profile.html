@@ -206,9 +206,26 @@
             </div>
           </div>
         </div>
+      <label class="block text-gray-700 dark:text-gray-300 mb-2 font-medium">About Me</label>
+
+<textarea
+  class="w-full h-30 p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 dark:bg-gray-700 dark:border-gray-600"
+  placeholder="About me"
+  formControlName="bio">
+</textarea>
+
+<div class="text-red-500 text-sm"
+     *ngIf="profileForm.get('bio')?.invalid && profileForm.get('bio')?.touched">
+  <div *ngIf="profileForm.get('bio')?.errors?.['required']">
+    About Me field is required.
+  </div>
+</div>
 
 
-        
+
+
+
+
         <!-- Buttons -->
         <div class="flex justify-end gap-4 mt-6">
           <button type="button"
