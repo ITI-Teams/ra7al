@@ -367,7 +367,7 @@
             </span>
 
             <!-- Quick View Button (appears on hover) -->
-            <button
+            <button (click)="goToDetails(item.id)"
               class="absolute bottom-3 left-1/2 transform -translate-x-1/2
                      bg-white dark:bg-gray-800 text-gray-900 dark:text-white px-4 py-2 rounded-full
                      opacity-0 group-hover:opacity-100 transition-all duration-300
