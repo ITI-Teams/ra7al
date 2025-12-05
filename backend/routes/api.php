@@ -6,10 +6,12 @@ use App\Http\Controllers\Api\ProfileStudentController;
 use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\V1\PropertyController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Api\V1\LocationController;
+use App\Http\Controllers\Api\V1\PropertySearchController;
 use App\Http\Controllers\Api\CityController;
 use App\Http\Controllers\Api\AmenityController;
 use App\Http\Controllers\Api\V1\RecommendationController;
-use App\Http\Controllers\Api\V1\LocationController;
+
 
 
 // profile student and owner
@@ -68,6 +70,8 @@ Route::prefix('properties')->group(function () {
     // Universities
     Route::get('/universities', [LocationController::class, 'getUniversities'])->name('api.universities');
 });
+// Property Search
+Route::get('properties/search', [PropertySearchController::class, 'search']);
 /*
 |--------------------------------------------------------------------------
 | Recommendation API Routes
