@@ -145,7 +145,6 @@ export class FilterPage implements OnInit {
         }));
       },
       error: (error) => {
-        console.error('Error loading universities:', error);
         this.universities = [
           { label: 'Cairo University', value: 1 },
           { label: 'Ain Shams University', value: 2 },
@@ -162,7 +161,6 @@ export class FilterPage implements OnInit {
         }));
       },
       error: (error) => {
-        console.error('Error loading cities:', error);
         this.cities = [
           { label: 'Cairo', value: 1 },
           { label: 'Alexandria', value: 2 },
@@ -182,7 +180,6 @@ export class FilterPage implements OnInit {
           }));
         },
         error: (error) => {
-          console.error('Error loading areas:', error);
           this.areas = [];
         }
       });
@@ -196,16 +193,12 @@ export class FilterPage implements OnInit {
     this.isLoading.set(true);
 
     const apiFilters = this.prepareFiltersForApi();
-    console.log('API Filters being sent:', apiFilters); // debug log
 
     this.propertyService.filterProperties(apiFilters, this.currentPage(), this.rows())
       .subscribe({
         next: (response: PropertiesListResponse) => {
-          console.log('API Response:', response); // debug log
           if (response.success) {
-            console.log('Properties data:', response.data.data); // debug log
             this.allListings.set(this.convertPropertiesToListings(response.data.data));
-            console.log('Converted listings:', this.allListings); // debug log
             this.currentPage.set(response.data.current_page);
             this.totalRecords.set(response.data.total);
 
@@ -216,7 +209,6 @@ export class FilterPage implements OnInit {
           this.isLoading.set(false);
         },
         error: (error) => {
-          console.error('Error loading properties:', error);
           this.isLoading.set(false);
           this.loadListings();
         }

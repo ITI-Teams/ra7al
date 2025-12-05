@@ -95,8 +95,8 @@ class PropertyController extends Controller
             $query->where('properties.status', 'available');
         }
 
-        if ($request->has('university')) {
-            $query->where('properties.university', 'like', '%' . $request->university . '%');
+        if ($request->has('university_id')) {
+            $query->where('properties.university_id',  $request->university_id);
         }
 
         if ($request->has('search')) {
@@ -181,7 +181,7 @@ class PropertyController extends Controller
             'size' => 'nullable|integer|min:0',
 
             'accommodation_type' => 'nullable|string|max:100',
-            'university' => 'nullable|string|max:255',
+            'university_id' => 'required|exists:universities,id',
 
             'available_from' => 'required|date',
             'available_to' => 'nullable|date|after:available_from',
@@ -225,7 +225,7 @@ class PropertyController extends Controller
                 'available_spots' => $request->available_spots,
                 'size' => $request->size,
                 'accommodation_type' => $request->accommodation_type,
-                'university' => $request->university,
+                'university_id' => $request->university_id,
                 'available_from' => $request->available_from,
                 'available_to' => $request->available_to,
                 'payment_methods' => $request->has('payment_methods') ? $request->payment_methods : [],
@@ -369,7 +369,7 @@ class PropertyController extends Controller
             'size' => 'nullable|integer|min:0',
 
             'accommodation_type' => 'nullable|string|max:100',
-            'university' => 'nullable|string|max:255',
+            'university_id' => 'required|exists:universities,id',
 
             'available_from' => 'sometimes|date',
             'available_to' => 'nullable|date|after:available_from',
@@ -414,7 +414,7 @@ class PropertyController extends Controller
                 'available_spots',
                 'size',
                 'accommodation_type',
-                'university',
+                'university_id',
                 'available_from',
                 'available_to',
                 'status',
@@ -971,7 +971,7 @@ class PropertyController extends Controller
             'available_spots' => (int)$property->available_spots,
             'size' => (int)$property->size,
             'accommodation_type' => $property->accommodation_type,
-            'university' => $property->university,
+            'university_id' => $property->university_id,
             'available_from' => $property->available_from ? $property->available_from->format('Y-m-d') : null,
             'available_to' => $property->available_to ? $property->available_to->format('Y-m-d') : null,
             'status' => $property->status,
