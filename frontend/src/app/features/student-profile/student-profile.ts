@@ -44,6 +44,7 @@ gender:['',Validators.required],
     cleanliness_level: ['', [Validators.required, Validators.pattern(/^[0-9]$/)]],
     smoking: ['', Validators.required],
     pets: ['', Validators.required],
+    bio:['',Validators.required],
     avatar: ['']
 });
 }
@@ -92,7 +93,7 @@ if (profile.gender !== 'male' && profile.gender !== 'female') {
 
 
 
-      this.profile = profile;
+this.profile = profile;
 
 
      this.profileForm.patchValue({
@@ -136,7 +137,8 @@ saveData() {
   cleanliness_level: raw.cleanliness_level ? Number(raw.cleanliness_level) : null,
   smoking: raw.smoking === 'yes' ? 1 : 0,
   pets: raw.pets === 'yes' ? 1 : 0,
- gender: raw.gender || null,  
+  bio:raw.bio,
+ gender: raw.gender || null,
   habits: Array.isArray(raw.habits) ? raw.habits : raw.habits?.split(',').map((h:string) => h.trim()) || [],
   preferences: Array.isArray(raw.preferences) ? raw.preferences : raw.preferences?.split(',').map((p:string) => p.trim()) || [],
 };
