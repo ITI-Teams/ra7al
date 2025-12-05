@@ -66,7 +66,7 @@ class DatabaseService {
         INNER JOIN areas a ON p.area_id = a.id
         INNER JOIN cities c ON a.city_id = c.id
         INNER JOIN users u ON p.owner_id = u.id
-        LEFT JOIN property_amenities pa ON p.id = pa.property_id
+        LEFT JOIN property_amenity pa ON p.id = pa.property_id
         LEFT JOIN amenities am ON pa.amenity_id = am.id
         LEFT JOIN property_comments pc ON p.id = pc.property_id
         WHERE p.status = 'available'
