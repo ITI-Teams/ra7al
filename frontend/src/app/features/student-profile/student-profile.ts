@@ -20,7 +20,7 @@ import { FavouriteService } from '../../core/services/favourite/favourite-servic
   styleUrl: './student-profile.css',
 })
 export class StudentProfile {
-  favourites: any[] = [];
+  properties: any[] = [];
 
 toastMessage: string = '';
 toastType: 'success' | 'error' = 'success';
@@ -62,7 +62,7 @@ showToast: boolean = false;
   ngOnInit(): void {
       this.cdr.detectChanges();
     this.loadProfile();
-      // this.loadFavourites();
+      this.loadFavourites();
   }
 
 loadProfile() {
@@ -154,7 +154,8 @@ saveData() {
 
 
 
-this.showToastMessage('تم حفظ البيانات بنجاح','success');
+this.showToastMessage('Data saved successfully', 'success');
+
       // this.isEditing = false;
 
 
@@ -196,7 +197,11 @@ onAvatarChange(event: Event) {
 }
 
 
-
+ loadFavourites(){
+    this.favouriteService.getMyFavourites().subscribe(res => {
+      console.log(this.properties = res);
+    });
+  }
 
 
 
