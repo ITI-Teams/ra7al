@@ -3,11 +3,20 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { PropertyService,BookingRequest,BookingResponse } from '../../core/services/property/property.service';
+import {
+  PropertyService,
+  BookingRequest,
+  BookingResponse,
+} from '../../core/services/property/property.service';
 import { Property } from '../../core/models/property.model';
 import { DialogModule } from 'primeng/dialog';
 import { TextareaModule } from 'primeng/textarea';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
 
 // PrimeNG Imports
 import { GalleriaModule } from 'primeng/galleria';
@@ -22,7 +31,6 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { FormsModule } from '@angular/forms';
 import { InputNumberModule } from 'primeng/inputnumber';
-
 
 @Component({
   selector: 'app-property-detail',
@@ -67,7 +75,7 @@ export class PropertyDetail implements OnInit {
 
   // Using Angular 20 Signals for reactive state management
   property = signal<Property | null>(null);
-  activeImageIndex = signal<number>(0);
+  activeIndex = 0;
   isSaved = signal<boolean>(false);
 
   // Computed signal for formatted price
@@ -118,19 +126,20 @@ export class PropertyDetail implements OnInit {
 
   private initBookingForm(): void {
     this.bookingForm = this.fb.group({
-      desired_start_date: [this.todayStr, [
-        Validators.required,
-        this.futureDateValidator
-      ]],
-      duration_months: [6, [
-        Validators.required,
-        Validators.min(1),
-        Validators.max(60),
-        Validators.pattern('^[0-9]+$')
-      ]],
-      message: ['', [
-        Validators.maxLength(1000)
-      ]]
+      desired_start_date: [
+        this.todayStr,
+        [Validators.required, this.futureDateValidator],
+      ],
+      duration_months: [
+        6,
+        [
+          Validators.required,
+          Validators.min(1),
+          Validators.max(60),
+          Validators.pattern('^[0-9]+$'),
+        ],
+      ],
+      message: ['', [Validators.maxLength(1000)]],
     });
   }
 
@@ -194,7 +203,7 @@ export class PropertyDetail implements OnInit {
     this.bookingForm.reset({
       desired_start_date: this.todayStr,
       duration_months: 6,
-      message: ''
+      message: '',
     });
     this.bookingDialogVisible.set(true);
   }
@@ -202,7 +211,11 @@ export class PropertyDetail implements OnInit {
   submitBooking(): void {
     if (this.bookingForm.invalid) {
       this.markFormGroupTouched(this.bookingForm);
-      this.showMessage('warn', 'Validation Error', 'Please fill all required fields correctly');
+      this.showMessage(
+        'warn',
+        'Validation Error',
+        'Please fill all required fields correctly'
+      );
       return;
     }
 
@@ -212,27 +225,34 @@ export class PropertyDetail implements OnInit {
     const bookingData: BookingRequest = {
       desired_start_date: this.bookingForm.value.desired_start_date,
       duration_months: this.bookingForm.value.duration_months,
-      message: this.bookingForm.value.message?.trim() || undefined
+      message: this.bookingForm.value.message?.trim() || undefined,
     };
 
     this.isSubmitting.set(true);
 
     this.propertyService.requestBooking(prop.id, bookingData).subscribe({
       next: (response: BookingResponse) => {
-        this.showMessage('success', 'Success!', response.message || 'Booking request sent successfully!');
+        this.showMessage(
+          'success',
+          'Success!',
+          response.message || 'Booking request sent successfully!'
+        );
         this.bookingDialogVisible.set(false);
         this.isSubmitting.set(false);
       },
       error: (error) => {
         console.error('Booking error:', error);
-        const errorMsg = error.error?.message || error.message || 'Failed to send booking request';
+        const errorMsg =
+          error.error?.message ||
+          error.message ||
+          'Failed to send booking request';
         this.showMessage('error', 'Error', errorMsg);
         this.isSubmitting.set(false);
-      }
+      },
     });
   }
   private markFormGroupTouched(formGroup: FormGroup): void {
-    Object.values(formGroup.controls).forEach(control => {
+    Object.values(formGroup.controls).forEach((control) => {
       control.markAsTouched();
       if (control instanceof FormGroup) {
         this.markFormGroupTouched(control);
@@ -254,7 +274,8 @@ export class PropertyDetail implements OnInit {
     if (errors['min']) return `Minimum value is ${errors['min'].min}`;
     if (errors['max']) return `Maximum value is ${errors['max'].max}`;
     if (errors['pattern']) return 'Please enter a valid number';
-    if (errors['maxlength']) return `Maximum length is ${errors['maxlength'].requiredLength} characters`;
+    if (errors['maxlength'])
+      return `Maximum length is ${errors['maxlength'].requiredLength} characters`;
 
     return 'Invalid value';
   }
