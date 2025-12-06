@@ -19,6 +19,17 @@ import {
   FilterState
 } from '../../models/property.model';
 
+export interface BookingRequest {
+  desired_start_date: string;
+  duration_months: number;
+  message?: string;
+}
+export interface BookingResponse {
+  success: boolean;
+  message: string;
+  booking_id?: number;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -602,5 +613,13 @@ export class PropertyService {
         { value: 'available_spots_desc', label: 'Most Available Spots' }
       ]
     };
+  }
+
+
+  requestBooking(propertyId: number, bookingData: BookingRequest): Observable<BookingResponse> {
+    return this.http.post<BookingResponse>(
+      `${this.apiUrl}/${propertyId}/request`,
+      bookingData
+    );
   }
 }
