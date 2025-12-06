@@ -1,174 +1,6 @@
 <!-- src/app/components/property-detail/property-detail.component.html -->
 <p-toast></p-toast>
 
-<!-- Booking Modal -->
-<p-dialog
-  [(visible)]="bookingDialogVisible"
-  [modal]="true"
-  [style]="{ width: '92vw', maxWidth: '520px' }"
-  [draggable]="false"
-  [resizable]="false"
-  header="Book This Property"
-  (onHide)="bookingForm.reset()"
-  contentStyleClass="dark:bg-gray-900 bg-white rounded-xl">
-
-  <form [formGroup]="bookingForm" (ngSubmit)="submitBooking()" class="space-y-5">
-
-    <!-- Start Date -->
-    <div class="field">
-      <label for="desired_start_date"
-             class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-        Desired Start Date <span class="text-red-500">*</span>
-      </label>
-
-      <div class="relative">
-        <input
-          type="date"
-          id="desired_start_date"
-          formControlName="desired_start_date"
-          [min]="todayStr"
-          class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-700
-            bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100
-            focus:ring-2 focus:ring-orange-500 focus:border-orange-500
-            transition-all duration-200"
-        />
-
-        <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none">
-          <i class="pi pi-calendar text-gray-400"></i>
-        </div>
-      </div>
-
-      @if (isFieldInvalid('desired_start_date')) {
-        <small class="p-error block mt-1 text-xs">{{ getFieldError('desired_start_date') }}</small>
-      }
-    </div>
-
-    <!-- Duration -->
-    <div class="field">
-      <label for="duration_months"
-             class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-        Duration (Months) <span class="text-red-500">*</span>
-      </label>
-
-      <p-inputNumber
-        id="duration_months"
-        formControlName="duration_months"
-        [showButtons]="true"
-        [min]="1"
-        [max]="60"
-        class="w-full"
-        [inputStyle]="{ width: '100%' }"
-        placeholder="Enter duration">
-        <ng-template pTemplate="incrementbuttonicon"><i class="pi pi-plus"></i></ng-template>
-        <ng-template pTemplate="decrementbuttonicon"><i class="pi pi-minus"></i></ng-template>
-      </p-inputNumber>
-
-      @if (isFieldInvalid('duration_months')) {
-        <small class="p-error block mt-1 text-xs">{{ getFieldError('duration_months') }}</small>
-      }
-
-      <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-        Minimum 1 month, maximum 60 months (5 years)
-      </p>
-    </div>
-
-    <!-- Message -->
-    <div class="field">
-      <label for="message"
-             class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-        Message to Owner (Optional)
-      </label>
-
-      <textarea
-        id="message"
-        pInputTextarea
-        formControlName="message"
-        rows="4"
-        [autoResize]="true"
-        placeholder="Tell the owner about yourself..."
-        class="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-lg
-               bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
-      </textarea>
-
-      @if (isFieldInvalid('message')) {
-        <small class="p-error block mt-1 text-xs">{{ getFieldError('message') }}</small>
-      }
-
-      <div class="flex justify-between mt-1">
-        <p class="text-xs text-gray-500 dark:text-gray-400">
-          {{ bookingForm.get('message')?.value?.length || 0 }}/1000 characters
-        </p>
-
-        @if (bookingForm.get('message')?.value?.length > 1000) {
-          <p class="text-xs text-red-500">Character limit exceeded</p>
-        }
-      </div>
-    </div>
-
-    <!-- Booking Summary -->
-    @if (property()) {
-      <div class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg border border-gray-200 dark:border-gray-700">
-        <h4 class="font-semibold text-gray-900 dark:text-gray-100 mb-3">Booking Summary</h4>
-
-        <div class="space-y-2 text-sm">
-
-          <div class="flex justify-between">
-            <span class="text-gray-600 dark:text-gray-400">Monthly Rent:</span>
-            <span class="font-medium">{{ formattedPrice() }}/month</span>
-          </div>
-
-          <div class="flex justify-between">
-            <span class="text-gray-600 dark:text-gray-400">Duration:</span>
-            <span class="font-medium">{{ bookingForm.value.duration_months || 0 }} months</span>
-          </div>
-
-          <div class="flex justify-between border-t border-gray-300 dark:border-gray-700 pt-2 mt-2">
-            <span class="text-gray-600 dark:text-gray-400">Estimated Total:</span>
-
-            <span class="font-bold text-lg text-orange-600 dark:text-orange-400">
-              EGP {{ formatNumber(estimatedTotal) }}
-            </span>
-          </div>
-
-        </div>
-      </div>
-    }
-
-    <!-- Info Note -->
-    <div class="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg text-xs text-blue-700 dark:text-blue-300">
-      <i class="pi pi-info-circle mr-1"></i>
-      Your booking request will be sent to the property owner for approval.
-    </div>
-
-    <!-- Action Buttons -->
-    <div class="flex gap-3 pt-4">
-      <button
-        type="button"
-        pButton
-        label="Cancel"
-        class="p-button-outlined flex-1"
-        (click)="bookingDialogVisible.set(false)"
-        [disabled]="isSubmitting()">
-      </button>
-
-      <button
-        type="submit"
-        pButton
-        label="{{ isSubmitting() ? 'Sending...' : 'Submit Request' }}"
-        icon="pi pi-send"
-        class="p-button-primary flex-1"
-        [disabled]="bookingForm.invalid || isSubmitting()">
-        @if (isSubmitting()) {
-          <i class="pi pi-spin pi-spinner ml-2"></i>
-        }
-      </button>
-    </div>
-
-  </form>
-</p-dialog>
-
-
-
 @if (property(); as prop) {
 <div class="max-w-7xl mx-auto p-4 md:p-6">
   <!-- Main Grid Layout -->
@@ -187,19 +19,18 @@
           [circular]="true"
           [showItemNavigators]="true"
           [showThumbnails]="true"
-          [activeIndex]="activeImageIndex()"
-          (activeIndexChange)="activeImageIndex.set($event)"
+          [activeIndex]="activeIndex"
         >
           <ng-template pTemplate="item" let-item>
             <img
-              [src]="item.path"
+              [src]="item.url"
               [alt]="prop.title"
               class="w-full h-[400px] md:h-[500px] object-cover"
             />
           </ng-template>
           <ng-template pTemplate="thumbnail" let-item>
             <img
-              [src]="item.path"
+              [src]="item.thumbnail"
               [alt]="prop.title"
               class="w-16 h-16 object-cover rounded-lg cursor-pointer"
             />
@@ -226,7 +57,8 @@
         >
           <i class="pi pi-map-marker"></i>
           <span class="text-sm font-medium"
-            >{{ prop.location.area.name }}, inner city, {{ prop.location.city.name }}</span
+            >{{ prop.location.area.name }}, inner city, {{
+            prop.location.city.name }}</span
           >
         </div>
 
