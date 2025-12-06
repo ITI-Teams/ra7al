@@ -13,60 +13,20 @@ class PropertySearchController extends Controller
 
     public function search(PropertySearchRequest $request)
     {
-        $filters = $request->validated();
+        $keyword = $request->keyword;
 
-        $query = Property::query()
-            ->with(['city', 'area', 'primaryImage']);
+        $properties = Property::query()
+            ->where('admin_approval_status', 'approved')
+            ->where(function ($q) use ($keyword) {
+                $q->where('title', 'LIKE', "%{$keyword}%")
+                    ->orWhere('description', 'LIKE', "%{$keyword}%")
+                    ->orWhereHas('city', fn($city) => $city->where('name', 'LIKE', "%{$keyword}%"))
+                    ->orWhereHas('area', fn($area) => $area->where('name', 'LIKE', "%{$keyword}%"));
+                //->orWhereHas('university', fn($uni) => $uni->where('name', 'LIKE', "%{$keyword}%"));
+            })
+            ->paginate(10);
 
-        if (!empty($filters['keyword'])) {
-            $query->where(function ($q) use ($filters) {
-                $q->where('title', 'LIKE', "%{$filters['keyword']}%")
-                    ->orWhere('description', 'LIKE', "%{$filters['keyword']}%");
-            });
-        }
-
-        if (!empty($filters['city_id'])) {
-            $query->where('city_id', $filters['city_id']);
-        }
-
-        if (!empty($filters['area_id'])) {
-            $query->where('area_id', $filters['area_id']);
-        }
-
-        if (!empty($filters['gender_requirement'])) {
-            $query->where('gender_requirement', $filters['gender_requirement']);
-        }
-
-        if (!empty($filters['price_min'])) {
-            $query->where('price', '>=', $filters['price_min']);
-        }
-
-        if (!empty($filters['price_max'])) {
-            $query->where('price', '<=', $filters['price_max']);
-        }
-
-        if (!empty($filters['accommodation_type'])) {
-            $query->where('accommodation_type', $filters['accommodation_type']);
-        }
-
-        if (!empty($filters['university'])) {
-            $query->where('university', $filters['university']);
-        }
-
-        if (!empty($filters['beds'])) {
-            $query->where('beds', $filters['beds']);
-        }
-
-        if (!empty($filters['bathrooms_count'])) {
-            $query->where('bathrooms_count', $filters['bathrooms_count']);
-        }
-
-        if (!empty($filters['is_featured'])) {
-            $query->where('is_featured', true);
-        }
-
-        return PropertyResource::collection(
-            $query->paginate(10)
-        );
+        return PropertyResource::collection($properties);
+        // return response()->json($properties);
     }
 }

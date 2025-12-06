@@ -24,17 +24,7 @@ class PropertySearchRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'city_id' => 'nullable|integer|exists:cities,id',
-            'area_id' => 'nullable|integer|exists:areas,id',
-            'gender_requirement' => 'nullable|string|in:male,female,mixed',
-            'price_min' => 'nullable|numeric|min:0',
-            'price_max' => 'nullable|numeric|min:0',
-            'accommodation_type' => 'nullable|string',
-            'university' => 'nullable|string',
-            'beds' => 'nullable|integer|min:1',
-            'bathrooms_count' => 'nullable|integer|min:1',
-            'keyword' => 'nullable|string|max:255',
-            'is_featured' => 'nullable|boolean',
+            'keyword' => 'required|string|max:255',
         ];
     }
 }

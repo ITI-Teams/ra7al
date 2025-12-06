@@ -26,6 +26,10 @@ class PropertyResource extends JsonResource
             'is_featured' => $this->is_featured,
 
             'image' => $this->primaryImage?->url ?? null,
+
+            'admin_approval_status' => $this->admin_approval_status,
+            'approved_at' => $this->approved_at,
+            'approved_by' => $this->approved_by ? $this->approvedBy?->name : null,
         ];
     }
 }
