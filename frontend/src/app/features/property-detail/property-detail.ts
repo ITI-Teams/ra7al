@@ -3,8 +3,11 @@
 import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { PropertyService } from '../../core/services/property/property.service';
+import { PropertyService,BookingRequest,BookingResponse } from '../../core/services/property/property.service';
 import { Property } from '../../core/models/property.model';
+import { DialogModule } from 'primeng/dialog';
+import { TextareaModule } from 'primeng/textarea';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 
 // PrimeNG Imports
 import { GalleriaModule } from 'primeng/galleria';
@@ -18,6 +21,8 @@ import { CardModule } from 'primeng/card';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { FormsModule } from '@angular/forms';
+import { InputNumberModule } from 'primeng/inputnumber';
+
 
 @Component({
   selector: 'app-property-detail',
@@ -34,12 +39,32 @@ import { FormsModule } from '@angular/forms';
     TabsModule,
     CardModule,
     ToastModule,
+    DialogModule,
+    TextareaModule,
+    ReactiveFormsModule,
+    InputNumberModule,
   ],
   providers: [MessageService],
   templateUrl: './property-detail.html',
   styleUrls: ['./property-detail.css'],
 })
 export class PropertyDetail implements OnInit {
+  // Booking modal
+  bookingDialogVisible = signal(false);
+  bookingForm!: FormGroup;
+  // Date configurations
+  minDate = new Date();
+  todayStr = new Date().toISOString().split('T')[0];
+
+  // State signals
+  isSubmitting = signal<boolean>(false);
+
+  get estimatedTotal() {
+    const months = this.bookingForm.get('duration_months')?.value || 0;
+    const price = this.property()?.price || 0;
+    return months * price;
+  }
+
   // Using Angular 20 Signals for reactive state management
   property = signal<Property | null>(null);
   activeImageIndex = signal<number>(0);
@@ -80,13 +105,46 @@ export class PropertyDetail implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private propertyService: PropertyService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private fb: FormBuilder
   ) {}
 
   ngOnInit(): void {
+    this.initBookingForm();
     // Get property ID from route parameters
     const propertyId = Number(this.route.snapshot.paramMap.get('id') || 1);
     this.loadProperty(propertyId);
+  }
+
+  private initBookingForm(): void {
+    this.bookingForm = this.fb.group({
+      desired_start_date: [this.todayStr, [
+        Validators.required,
+        this.futureDateValidator
+      ]],
+      duration_months: [6, [
+        Validators.required,
+        Validators.min(1),
+        Validators.max(60),
+        Validators.pattern('^[0-9]+$')
+      ]],
+      message: ['', [
+        Validators.maxLength(1000)
+      ]]
+    });
+  }
+
+  private futureDateValidator(control: any): { [key: string]: boolean } | null {
+    if (!control.value) return null;
+
+    const selectedDate = new Date(control.value);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (selectedDate < today) {
+      return { pastDate: true };
+    }
+    return null;
   }
 
   /**
@@ -133,7 +191,72 @@ export class PropertyDetail implements OnInit {
    * Handle booking action
    */
   onBook(): void {
-    this.showMessage('info', 'Booking', 'Booking functionality coming soon!');
+    this.bookingForm.reset({
+      desired_start_date: this.todayStr,
+      duration_months: 6,
+      message: ''
+    });
+    this.bookingDialogVisible.set(true);
+  }
+
+  submitBooking(): void {
+    if (this.bookingForm.invalid) {
+      this.markFormGroupTouched(this.bookingForm);
+      this.showMessage('warn', 'Validation Error', 'Please fill all required fields correctly');
+      return;
+    }
+
+    const prop = this.property();
+    if (!prop) return;
+
+    const bookingData: BookingRequest = {
+      desired_start_date: this.bookingForm.value.desired_start_date,
+      duration_months: this.bookingForm.value.duration_months,
+      message: this.bookingForm.value.message?.trim() || undefined
+    };
+
+    this.isSubmitting.set(true);
+
+    this.propertyService.requestBooking(prop.id, bookingData).subscribe({
+      next: (response: BookingResponse) => {
+        this.showMessage('success', 'Success!', response.message || 'Booking request sent successfully!');
+        this.bookingDialogVisible.set(false);
+        this.isSubmitting.set(false);
+      },
+      error: (error) => {
+        console.error('Booking error:', error);
+        const errorMsg = error.error?.message || error.message || 'Failed to send booking request';
+        this.showMessage('error', 'Error', errorMsg);
+        this.isSubmitting.set(false);
+      }
+    });
+  }
+  private markFormGroupTouched(formGroup: FormGroup): void {
+    Object.values(formGroup.controls).forEach(control => {
+      control.markAsTouched();
+      if (control instanceof FormGroup) {
+        this.markFormGroupTouched(control);
+      }
+    });
+  }
+  isFieldInvalid(fieldName: string): boolean {
+    const field = this.bookingForm.get(fieldName);
+    return field ? field.invalid && (field.dirty || field.touched) : false;
+  }
+  getFieldError(fieldName: string): string {
+    const field = this.bookingForm.get(fieldName);
+    if (!field || !field.errors) return '';
+
+    const errors = field.errors;
+
+    if (errors['required']) return 'This field is required';
+    if (errors['pastDate']) return 'Date must be today or later';
+    if (errors['min']) return `Minimum value is ${errors['min'].min}`;
+    if (errors['max']) return `Maximum value is ${errors['max'].max}`;
+    if (errors['pattern']) return 'Please enter a valid number';
+    if (errors['maxlength']) return `Maximum length is ${errors['maxlength'].requiredLength} characters`;
+
+    return 'Invalid value';
   }
 
   /**
@@ -184,5 +307,9 @@ export class PropertyDetail implements OnInit {
     return Array(5)
       .fill(0)
       .map((_, i) => (i < Math.floor(rating) ? 1 : 0));
+  }
+
+  formatNumber(num: number): string {
+    return num.toLocaleString('en-US');
   }
 }
