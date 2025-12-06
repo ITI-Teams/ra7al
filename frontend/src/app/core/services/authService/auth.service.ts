@@ -24,6 +24,8 @@ export class AuthService {
   }
 
   logout(): Observable<any> {
+    this.clearToken();
+    this.clearUser();
     return this.http.post(`${this.apiBase}/logout`, {}, { withCredentials: true });
   }
 
@@ -41,7 +43,7 @@ export class AuthService {
 
   storeUser(user: any) {
     localStorage.setItem('user', JSON.stringify(user));
-    this.userSubject.next(user); // 🔥 إشعار الـ navbar
+    this.userSubject.next(user);
   }
 
   refreshUser(): Observable<any> {

@@ -510,6 +510,13 @@ class PropertyController extends Controller
 
         $user = Auth::user();
 
+        if ($user->role !== 'student') {
+            return response()->json([
+                'success' => false,
+                'message' => 'this user cant booking!'
+            ], 400);
+        }
+
         if ($property->status !== 'available') {
             return response()->json([
                 'success' => false,
@@ -547,17 +554,6 @@ class PropertyController extends Controller
                 'success' => false,
                 'errors' => $validator->errors()
             ], 422);
-        }
-
-        // التحقق من متطلبات الجنس إذا كانت محددة
-        if ($property->gender_requirement !== 'mixed') {
-            // هنا يمكنك التحقق من جنس المستخدم
-            // if ($user->gender !== $property->gender_requirement) {
-            //     return response()->json([
-            //         'success' => false,
-            //         'message' => 'This property is for ' . $property->gender_requirement . ' only'
-            //     ], 400);
-            // }
         }
 
         $rentalRequest = RentalRequest::create([
