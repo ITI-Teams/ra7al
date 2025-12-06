@@ -231,7 +231,7 @@
 
         <!-- Heart Button Overlay -->
         <button
-          (click)="onToggleSave()"
+          (click)="onToggleSave(prop.id)"
           class="absolute top-4 right-4 bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full p-3 shadow-lg transition-all duration-200"
           [attr.aria-label]="isSaved() ? 'Remove from saved' : 'Save property'"
         >
@@ -240,6 +240,7 @@
             class="text-xl"
           ></i>
         </button>
+
       </div>
 
       <!-- Property Title & Location -->
@@ -581,7 +582,7 @@
           <!-- Action Buttons -->
           <div class="space-y-3">
             <button
-              (click)="onToggleSave()"
+              (click)="onToggleSave(prop.id)"
               class="w-full flex items-center justify-center gap-2 py-3 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             >
               <i

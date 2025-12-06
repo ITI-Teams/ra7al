@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use Google\Service\Dfareporting\Resource\Cities;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -20,6 +21,7 @@ class DatabaseSeeder extends Seeder
             AdminSeeder::class,
             RecommendationQuestionSeeder::class,
             CitiesTableSeeder::class,
+
             AmenitiesTableSeeder::class,
             PropertiesSeeder::class,
         ]);

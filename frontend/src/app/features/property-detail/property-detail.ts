@@ -1,6 +1,6 @@
 // src/app/components/property-detail/property-detail.component.ts
 
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, signal, computed, Input  } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import {
@@ -30,6 +30,7 @@ import { CardModule } from 'primeng/card';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { FormsModule } from '@angular/forms';
+import { FavouriteService } from '../../core/services/favourite/favourite-service';
 import { InputNumberModule } from 'primeng/inputnumber';
 
 @Component({
@@ -57,6 +58,8 @@ import { InputNumberModule } from 'primeng/inputnumber';
   styleUrls: ['./property-detail.css'],
 })
 export class PropertyDetail implements OnInit {
+
+    @Input() propertys: any;
   // Booking modal
   bookingDialogVisible = signal(false);
   bookingForm!: FormGroup;
@@ -77,6 +80,9 @@ export class PropertyDetail implements OnInit {
   property = signal<Property | null>(null);
   activeIndex = 0;
   isSaved = signal<boolean>(false);
+
+
+
 
   // Computed signal for formatted price
   formattedPrice = computed(() => {
@@ -112,6 +118,9 @@ export class PropertyDetail implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+
+    private favouriteService: FavouriteService,
+
     private propertyService: PropertyService,
     private messageService: MessageService,
     private fb: FormBuilder
@@ -176,25 +185,87 @@ export class PropertyDetail implements OnInit {
   /**
    * Toggle save/favorite status
    */
-  onToggleSave(): void {
-    const prop = this.property();
-    if (!prop) return;
+  onToggleSave(id:number) {
+    // const prop = this.property();
+    // if (!prop) return;
 
-    this.propertyService.toggleSaved(prop.id).subscribe({
-      next: (response) => {
-        this.isSaved.set(response.saved);
-        this.showMessage(
-          'success',
-          response.saved ? 'Saved!' : 'Removed',
-          response.message
-        );
-      },
-      error: (error) => {
-        console.error('Error toggling save:', error);
-        this.showMessage('error', 'Error', 'Failed to update saved status');
-      },
-    });
+    // this.propertyService.toggleSaved(prop.id).subscribe({
+    //   next: (response) => {
+    //     this.isSaved.set(response.saved);
+    //     this.showMessage(
+    //       'success',
+    //       response.saved ? 'Saved!' : 'Removed',
+    //       response.message
+    //     );
+    //   },
+    //   error: (error) => {
+    //     console.error('Error toggling save:', error);
+    //     this.showMessage('error', 'Error', 'Failed to update saved status');
+    //   },
+//     });
+// this.favouriteService.toggleFavourite(id).subscribe(() => {
+
+//   console.log('is_favourite قبل التغيير:', this.propertys?.is_favourite);
+// });
+// this.favouriteService.toggleFavourite(id).subscribe((res:any) => {
+//   this.propertys!.is_favourite = res.is_favourite;
+// });
+
+// this.favouriteService.toggleFavourite(id).subscribe((res: any) => {
+//   // نحفظ القيمة الجديدة فورًا في signal
+//   this.isSaved.set(!this.propertys?.is_favourite);
+
+//   // نزامن propertys مع القيمة الجديدة
+//   if (this.propertys) {
+//     this.propertys.is_favourite = this.isSaved();
+//   }
+
+  // console يطبع القيمة بعد التغيير
+//   console.log('is_favourite بعد التغيير:', this.propertys?.is_favourite);
+// });
+
+//   }
+
+//   }
+
+
+// this.favouriteService.toggleFavourite(id).subscribe((res: any) => {
+//   // نحفظ القيمة الجديدة فورًا في signal
+//   this.isSaved.set(!this.propertys?.is_favourite);
+
+//   // نزامن propertys مع القيمة الجديدة
+//   if (this.propertys) {
+//     this.propertys.is_favourite = this.isSaved();
+//   }
+
+//   // console يطبع القيمة بعد التغيير
+//   console.log('is_favourite بعد التغيير:', this.propertys?.is_favourite);
+// });
+
+ this.favouriteService.toggleFavourite(id).subscribe((res: any) => {
+
+  this.isSaved.set(!this.propertys?.is_favourite);
+
+
+  if (this.propertys) {
+    this.propertys.is_favourite = this.isSaved();
   }
+
+
+  console.log('is_favourite بعد التغيير:', this.propertys?.is_favourite);
+});
+
+
+
+
+
+
+
+
+  }
+
+
+
 
   /**
    * Handle booking action

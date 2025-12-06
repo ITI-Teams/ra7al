@@ -10,6 +10,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ProfileService } from '../../core/services/profile/profile-service';
+import { FavouriteService } from '../../core/services/favourite/favourite-service';
 
 @Component({
   selector: 'app-student-profile',
@@ -19,7 +20,7 @@ import { ProfileService } from '../../core/services/profile/profile-service';
   styleUrl: './student-profile.css',
 })
 export class StudentProfile {
-
+  properties: any[] = [];
 
 toastMessage: string = '';
 toastType: 'success' | 'error' = 'success';
@@ -32,7 +33,7 @@ showToast: boolean = false;
     isEditing = false;
   activeTab: string = 'favourites';
 
-  constructor(private fb: FormBuilder, private profileSrv: ProfileService,private cdr: ChangeDetectorRef) {
+  constructor(private fb: FormBuilder, private profileSrv: ProfileService,private cdr: ChangeDetectorRef,   private favouriteService: FavouriteService) {
   this.profileForm = this.fb.group({
     name: ['', [Validators.required, Validators.pattern(/^(?!\s*$)[\p{L}\s]+$/u)]],
     email: ['', [Validators.required, Validators.email]],
@@ -61,6 +62,7 @@ showToast: boolean = false;
   ngOnInit(): void {
       this.cdr.detectChanges();
     this.loadProfile();
+      this.loadFavourites();
   }
 
 loadProfile() {
@@ -152,7 +154,8 @@ saveData() {
 
 
 
-this.showToastMessage('تم حفظ البيانات بنجاح','success');
+this.showToastMessage('Data saved successfully', 'success');
+
       // this.isEditing = false;
 
 
@@ -194,7 +197,11 @@ onAvatarChange(event: Event) {
 }
 
 
-
+ loadFavourites(){
+    this.favouriteService.getMyFavourites().subscribe(res => {
+      console.log(this.properties = res);
+    });
+  }
 
 
 
