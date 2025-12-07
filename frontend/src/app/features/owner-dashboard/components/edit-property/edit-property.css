@@ -1,0 +1,36 @@
+/* Edit Property Component Styles */
+
+:host ::ng-deep {
+  .p-toast {
+    top: 20px;
+    right: 20px;
+  }
+
+  .p-button {
+    transition: all 0.3s ease;
+  }
+
+  .p-button:hover {
+    transform: translateY(-2px);
+  }
+}
+
+/* Line clamp utilities for text truncation */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Loading spinner animation */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}

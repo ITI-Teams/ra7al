@@ -1,11 +1,125 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule, Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
+import { ButtonModule } from 'primeng/button';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
+import { PropertyService } from '../../../../core/services/property/property.service';
+import { AuthService } from '../../../../core/services/authService/auth.service';
+import { Property } from '../../../../core/models/property.model';
 
 @Component({
   selector: 'app-apartments',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule, RouterModule, ToastModule, ButtonModule, ConfirmDialogModule],
+  providers: [MessageService, ConfirmationService],
   templateUrl: './apartments.html',
   styleUrl: './apartments.css',
 })
-export class Apartments {
+export class Apartments implements OnInit {
+  properties: any[] = [];
+  isLoading = false;
+  userId: number | null = null;
 
+  constructor(
+    private propertyService: PropertyService,
+    private authService: AuthService,
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService,
+    private router: Router
+  ) {}
+
+  ngOnInit() {
+    const user = this.authService.getUser();
+    this.userId = user?.id || null;
+    this.loadProperties();
+  }
+
+  loadProperties() {
+    this.isLoading = true;
+    // Fetch owner's properties using dedicated endpoint
+    this.propertyService.getOwnerProperties(1, 100).subscribe({
+      next: (response) => {
+        // Handle paginated response from backend
+        console.log('Response received:', response);
+
+        if (response && response.data) {
+          // response.data could be either:
+          // 1. Direct array if backend returns array
+          // 2. Paginated object with 'data' property
+          if (Array.isArray(response.data)) {
+            this.properties = response.data;
+          } else if (response.data.data && Array.isArray(response.data.data)) {
+            this.properties = response.data.data;
+          } else {
+            this.properties = [];
+          }
+        } else {
+          this.properties = [];
+        }
+
+        console.log('Properties loaded:', this.properties);
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Failed to load properties:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to load properties: ' + (error.error?.message || error.message),
+          life: 3000
+        });
+        this.isLoading = false;
+      }
+    });
+  }
+
+  editProperty(property: any) {
+    this.router.navigate(['/owner-dashboard/edit-property', property.id]);
+  }
+
+  deleteProperty(property: any) {
+    this.confirmationService.confirm({
+      message: `Are you sure you want to delete "${property.title}"? This action cannot be undone.`,
+      header: 'Confirm Deletion',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.performDelete(property);
+      }
+    });
+  }
+
+  private performDelete(property: any) {
+    this.propertyService.deleteProperty(property.id).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Property deleted successfully',
+          life: 3000
+        });
+        // Remove property from list
+        this.properties = this.properties.filter(p => p.id !== property.id);
+      },
+      error: (error) => {
+        console.error('Failed to delete property:', error);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error.error?.message || 'Failed to delete property',
+          life: 3000
+        });
+      }
+    });
+  }
+
+  viewProperty(property: any) {
+    this.router.navigate(['/properties', property.id]);
+  }
+
+  createNewProperty() {
+    this.router.navigate(['/owner-dashboard/create-property']);
+  }
 }

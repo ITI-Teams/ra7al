@@ -356,7 +356,7 @@ class PropertyController extends Controller
             'city_id' => 'sometimes|exists:cities,id',
             'area_id' => 'sometimes|exists:areas,id',
 
-            'gender_requirement' => 'sometimes|in:male,female',
+            'gender_requirement' => 'sometimes|in:male,female,mixed',
             'smoking_allowed' => 'sometimes|boolean',
             'pets_allowed' => 'sometimes|boolean',
             'furnished' => 'sometimes|boolean',
@@ -367,9 +367,11 @@ class PropertyController extends Controller
             'beds' => 'sometimes|integer|min:1',
             'available_spots' => 'sometimes|integer|min:0',
             'size' => 'nullable|integer|min:0',
+            'minimum_stay_months' => 'sometimes|integer|min:1',
+            'security_deposit' => 'sometimes|numeric|min:0',
 
             'accommodation_type' => 'nullable|string|max:100',
-            'university_id' => 'required|exists:universities,id',
+            'university_id' => 'sometimes|exists:universities,id',
 
             'available_from' => 'sometimes|date',
             'available_to' => 'nullable|date|after:available_from',
@@ -413,6 +415,8 @@ class PropertyController extends Controller
                 'beds',
                 'available_spots',
                 'size',
+                'minimum_stay_months',
+                'security_deposit',
                 'accommodation_type',
                 'university_id',
                 'available_from',
@@ -752,6 +756,41 @@ class PropertyController extends Controller
         return response()->json([
             'success' => true,
             'data' => $properties
+        ]);
+    }
+
+    public function getOwnerProperty($id)
+    {
+        $user = Auth::user();
+
+        $property = Property::where('id', $id)
+            ->where('owner_id', $user->id)
+            ->with([
+                'owner:id,name,phone,avatar,email',
+                'city:id,name',
+                'area:id,name',
+                'images' => function ($q) {
+                    $q->orderBy('priority');
+                },
+                'amenities',
+                'activeRentals.tenant:id,name,avatar',
+                'rentalRequests' => function ($q) {
+                    $q->where('status', 'pending')
+                        ->with('user:id,name,avatar');
+                }
+            ])
+            ->first();
+
+        if (!$property) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Property not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $property
         ]);
     }
 

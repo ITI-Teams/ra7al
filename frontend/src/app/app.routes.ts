@@ -5,6 +5,7 @@ import { Contactus } from './features/contactus/contactus';
 import { OwnerDashboard } from './features/owner-dashboard/owner-dashboard';
 import { Apartments } from './features/owner-dashboard/components/apartments/apartments';
 import { CreateProperty } from './features/owner-dashboard/components/create-property/create-property';
+import { EditProperty } from './features/owner-dashboard/components/edit-property/edit-property';
 import { StudentProfile } from './features/student-profile/student-profile';
 import { OwnerProfile } from './features/owner-profile/owner-profile';
 import { FilterPage } from './features/filter-page/filter-page';
@@ -69,6 +70,7 @@ export const routes: Routes = [
     { path: '', redirectTo: 'apartments', pathMatch: 'full' },
     { path: 'apartments', component: Apartments },
     { path: 'create-property', component: CreateProperty },
+    { path: 'edit-property/:id', component: EditProperty },
   ]
 },
 

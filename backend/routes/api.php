@@ -57,10 +57,10 @@ Route::prefix('properties')->group(function () {
     Route::get('/universities/{id}', [LocationController::class, 'getUniversitiesByCity']);
     Route::get('/', [PropertyController::class, 'index']);
 
-    Route::get('/{id}', [PropertyController::class, 'show']);
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', [PropertyController::class, 'store']);
         Route::get('/my-properties', [PropertyController::class, 'getOwnerProperties']);
+        Route::get('/my-properties/{id}', [PropertyController::class, 'getOwnerProperty']);
         Route::get('/my-rentals', [PropertyController::class, 'getTenantProperties']);
         Route::get('/statistics', [PropertyController::class, 'getOwnerStatistics']);
 
@@ -74,7 +74,8 @@ Route::prefix('properties')->group(function () {
         Route::post('/rentals/{id}/terminate', [PropertyController::class, 'terminateRental']);
     });
 
-
+    // This route must come AFTER specific routes like /my-properties to avoid shadowing them
+    Route::get('/{id}', [PropertyController::class, 'show']);
 });
 /*
 |--------------------------------------------------------------------------

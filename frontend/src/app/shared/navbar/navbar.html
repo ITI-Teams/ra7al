@@ -20,7 +20,7 @@
       <!-- DESKTOP MENU -->
       <ul class="hidden md:flex items-center space-x-6 text-sm font-semibold text-zinc-700 dark:text-zinc-200 uppercase">
         <li><a routerLink="/" class="hover:text-[#FA9233] dark:hover:text-white">Home</a></li>
-        <li><a routerLink="/filter" class="hover:text-[#FA9233] dark:hover:text-white">Roommates</a></li>
+        <li><a routerLink="/filter" class="hover:text-[#FA9233] dark:hover:text-white">Apartments</a></li>
         <ng-container *ngIf="isLoggedIn">
           <li><a routerLink="/Recommended" class="hover:text-[#FA9233] dark:hover:text-white">Recommended</a></li>
         </ng-container>
@@ -58,18 +58,6 @@
                 d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12
                 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6
                 0v1a3 3 0 11-6 0v-1m6 0H9" />
-            </svg>
-          </button>
-
-          <!-- Chat -->
-          <button class="p-2 rounded-full hover:bg-zinc-200 dark:hover:bg-zinc-700 transition">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9
-                8a9.863 9.863 0 01-4-.8L3
-                20l1.2-4.2A7.963 7.963 0 013
-                12c0-4.418 4.03-8 9-8s9 3.582 9
-                8z" />
             </svg>
           </button>
 
@@ -141,58 +129,91 @@
   </div>
 
   <!-- MOBILE MENU -->
-  @if (menuOpen) {
-    <div class="md:hidden bg-white dark:bg-gray-900 border-t border-zinc-200 dark:border-gray-700 px-6 py-4">
-      <ul class="flex flex-col space-y-4 text-zinc-700 dark:text-zinc-200 uppercase text-sm font-semibold">
-        <li><a routerLink="/" class="hover:text-[#FA9233] dark:hover:text-white">Home</a></li>
-        <li><a routerLink="/Roommates" class="hover:text-[#FA9233] dark:hover:text-white">Roommates</a></li>
-         <ng-container *ngIf="isLoggedIn">
-          <li><a routerLink="/Recommended" class="hover:text-[#FA9233] dark:hover:text-white">Recommended</a></li>
-        </ng-container>
-        <li><a routerLink="/aboutus" class="hover:text-[#FA9233] dark:hover:text-white">About</a></li>
+<div *ngIf="menuOpen" class="md:hidden bg-white text-center dark:bg-gray-900 border-t border-zinc-200 dark:border-gray-700 px-6 py-4">
 
-        <li><a routerLink="/contactus" class="hover:text-[#FA9233] dark:hover:text-white">Contact</a></li>
+  <!-- USER MOBILE -->
+  <ng-container *ngIf="isLoggedIn">
+    <div class="flex items-center justify-center mb-6">
+      <div class="flex items-center space-x-3">
+        <!-- Notification / Icon Button -->
+        <button class="p-2 rounded-full bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 transition">
+          <svg class="w-5 h-5 text-gray-700 dark:text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15 17h5l-1.405-1.405A2.032
+              2.032 0 0118 14.158V11a6 6 0 10-12
+              0v3.159c0 .538-.214 1.055-.595
+              1.436L4 17h5m6 0v1a3 3 0 11-6
+              0v-1m6 0H9" />
+          </svg>
+        </button>
 
-        <!-- LOGIN REGISTER -->
-        <ng-container *ngIf="!isLoggedIn">
-          <li>
-            <button routerLink="/login"
-              class="border w-full  border-zinc-500 px-5 py-2 rounded-md hover:bg-[#852EE4] hover:text-white">
-              Login
-            </button>
-          </li>
-          <li>
-            <button routerLink="/register"
-              class="bg-[#852EE4] w-full  text-white px-5 py-2 rounded-md hover:opacity-90">
-              Register
-            </button>
-          </li>
-        </ng-container>
-
-        <!-- USER MOBILE -->
-        <ng-container *ngIf="isLoggedIn">
-          <li>
-            <div class="flex items-center space-x-3">
-              <button class="p-2 rounded-full bg-gray-200 dark:bg-gray-900">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M15 17h5l-1.405-1.405A2.032
-                    2.032 0 0118 14.158V11a6 6 0 10-12
-                    0v3.159c0 .538-.214 1.055-.595
-                    1.436L4 17h5m6 0v1a3 3 0 11-6
-                    0v-1m6 0H9" />
-                </svg>
-              </button>
-
-              <a [routerLink]="user?.role === 'owner' ? '/profile-owner' : '/profile-student'">
-                <img [src]="avatarUrl()" class="w-10 h-10 rounded-full object-cover" />
-              </a>
-            </div>
-          </li>
-        </ng-container>
-      </ul>
+        <!-- User Avatar -->
+        <a [routerLink]="user?.role === 'owner' ? '/owner-dashboard' : '/profile-student'">
+          <img [src]="avatarUrl()" class="w-10 h-10 rounded-full object-cover border-2 border-[#852EE4]" />
+        </a>
+      </div>
     </div>
-  }
+  </ng-container>
+
+  <!-- MENU LINKS -->
+  <ul class="flex flex-col space-y-2 text-zinc-700 dark:text-zinc-200 uppercase text-sm font-semibold">
+  <li>
+    <a routerLink="/"
+       class="block px-4 py-2 rounded-lg transition
+              hover:bg-[#FA9233]/20 dark:hover:bg-white/10 hover:text-[#FA9233] dark:hover:text-white">
+      Home
+    </a>
+  </li>
+  <li>
+    <a routerLink="/filter"
+       class="block px-4 py-2 rounded-lg transition
+              hover:bg-[#FA9233]/20 dark:hover:bg-white/10 hover:text-[#FA9233] dark:hover:text-white">
+      Apartments
+    </a>
+  </li>
+  <ng-container *ngIf="isLoggedIn">
+    <li>
+      <a routerLink="/Recommended"
+         class="block px-4 py-2 rounded-lg transition
+                hover:bg-[#FA9233]/20 dark:hover:bg-white/10 hover:text-[#FA9233] dark:hover:text-white">
+        Recommended
+      </a>
+    </li>
+  </ng-container>
+  <li>
+    <a routerLink="/aboutus"
+       class="block px-4 py-2 rounded-lg transition
+              hover:bg-[#FA9233]/20 dark:hover:bg-white/10 hover:text-[#FA9233] dark:hover:text-white">
+      About
+    </a>
+  </li>
+  <li>
+    <a routerLink="/contactus"
+       class="block px-4 py-2 rounded-lg transition
+              hover:bg-[#FA9233]/20 dark:hover:bg-white/10 hover:text-[#FA9233] dark:hover:text-white">
+      Contact
+    </a>
+  </li>
+
+  <!-- LOGIN / REGISTER -->
+  <ng-container *ngIf="!isLoggedIn">
+    <li>
+      <button routerLink="/login"
+        class="w-full border border-zinc-500 px-5 py-2 rounded-lg hover:bg-[#852EE4] hover:text-white transition">
+        Login
+      </button>
+    </li>
+    <li>
+      <button routerLink="/register"
+        class="w-full bg-[#852EE4] text-white px-5 py-2 rounded-lg hover:opacity-90 transition">
+        Register
+      </button>
+    </li>
+  </ng-container>
+</ul>
+
+</div>
+
 </nav>
 
 <p-toast></p-toast>

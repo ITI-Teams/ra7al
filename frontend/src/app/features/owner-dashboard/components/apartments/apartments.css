@@ -1,0 +1,19 @@
+/* Line clamp utilities for text truncation */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Smooth transitions */
+:host ::ng-deep {
+  .p-button {
+    transition: all 0.3s ease;
+  }
+
+  .p-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(146, 51, 250, 0.3);
+  }
+}

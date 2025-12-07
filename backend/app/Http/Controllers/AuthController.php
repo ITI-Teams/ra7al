@@ -48,7 +48,6 @@ class AuthController extends Controller
         $data = $request->validate([
             'email' => 'required|email',
             'password' => 'required|string',
-            'role' => 'required|in:student,owner',
         ]);
 
         $user = User::where('email', $data['email'])->first();
@@ -59,10 +58,6 @@ class AuthController extends Controller
 
         if (! in_array($user->role, ['student', 'owner'])) {
             return response()->json(['message' => 'This account cannot login from the frontend'], 403);
-        }
-
-        if ($user->role !== $data['role']) {
-            return response()->json(['message' => 'Role does not match this account'], 403);
         }
 
         $user->updateLastLogin();

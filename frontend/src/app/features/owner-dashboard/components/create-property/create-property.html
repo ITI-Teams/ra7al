@@ -1,11 +1,11 @@
 <p-toast></p-toast>
 
-<div class="w-full from-[#f7f2ff] to-white dark:bg-gray-900">
+<div class="w-fullfrom-[#f7f2ff] to-white dark:bg-gray-900">
 
   <!-- RIGHT FORM -->
-  <div class="relative w-full z-30 flex items-center justify-center p-6 order-1 md:order-2">
-    <div class="w-full bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl shadow-xl rounded-3xl p-8 md:p-10 border border-white/30 dark:border-white/10 overflow-y-auto">
-      <h2 class="text-4xl font-extrabold mb-2 text-center bg-gradient-to-r from-[#5e1fbf] to-[#9b4dff] text-transparent bg-clip-text">
+  <div class="relative w-full z-30  flex items-center justify-center p-6 order-1 md:order-2">
+    <div class="w-full overflow-hidden  bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl shadow-xl rounded-3xl p-8 md:p-10 border border-white/30 dark:border-white/10 overflow-y-auto">
+      <h2 class="text-4xl font-extrabold mb-2 text-center bg-gradient-to-r from-[#9233FA] to-[#9233fa] text-transparent bg-clip-text">
         Create Professional Property
       </h2>
       <p class="text-center text-gray-600 dark:text-gray-300 mb-8">Fill in the details to list your property</p>
@@ -13,8 +13,8 @@
       <form [formGroup]="propertyForm" (ngSubmit)="submit()" class="space-y-5">
 
         <!-- SECTION 1: Basic Information -->
-        <div class="border-b border-[#5e1fbf]/20 pb-6">
-          <h3 class="text-lg font-bold text-[#5e1fbf] mb-4">Basic Information</h3>
+        <div class="border-b border-[#9233FA]/20 pb-6">
+          <h3 class="text-lg font-bold text-[#9233FA] mb-4">Basic Information</h3>
 
           <!-- Title -->
           <div class="mb-4">
@@ -22,7 +22,7 @@
               type="text"
               placeholder="Property Title"
               formControlName="title"
-              class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#5e1fbf]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#5e1fbf] outline-none transition"
+              class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#9233FA]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#9233FA] outline-none transition"
             />
             <small *ngIf="f.title.touched && f.title.invalid" class="text-red-500 text-sm mt-1 block">
               <span *ngIf="f.title.errors['required']">Title is required</span>
@@ -36,7 +36,7 @@
             <textarea
               placeholder="Property Description"
               formControlName="description"
-              class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#5e1fbf]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#5e1fbf] outline-none transition resize-none"
+              class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#9233FA]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#9233FA] outline-none transition resize-none"
               rows="4"
             ></textarea>
             <small *ngIf="f.description.touched && f.description.invalid" class="text-red-500 text-sm mt-1 block">
@@ -53,10 +53,13 @@
                 type="number"
                 placeholder="Price per Month"
                 formControlName="price"
-                class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#5e1fbf]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#5e1fbf] outline-none transition"
+                class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#9233FA]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#9233FA] outline-none transition"
               />
               <small *ngIf="f.price.touched && f.price.invalid" class="text-red-500 text-sm mt-1 block">
                 Price is required
+              </small>
+              <small *ngIf="f.price.errors?.min" class="text-red-500 text-sm mt-1 block">
+                Price must be upper than zero
               </small>
               <small *ngIf="f.price.errors?.server" class="text-red-500 text-sm mt-1 block">{{ f.price.errors.server }}</small>
             </div>
@@ -65,10 +68,13 @@
                 type="number"
                 placeholder="Security Deposit"
                 formControlName="security_deposit"
-                class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#5e1fbf]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#5e1fbf] outline-none transition"
+                class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#9233FA]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#9233FA] outline-none transition"
               />
               <small *ngIf="f.security_deposit.touched && f.security_deposit.invalid" class="text-red-500 text-sm mt-1 block">
                 Deposit is required
+              </small>
+              <small *ngIf="f.security_deposit.errors?.min" class="text-red-500 text-sm mt-1 block">
+                Deposit must be upper than zero
               </small>
               <small *ngIf="f.security_deposit.errors?.server" class="text-red-500 text-sm mt-1 block">{{ f.security_deposit.errors.server }}</small>
             </div>
@@ -76,8 +82,8 @@
         </div>
 
         <!-- SECTION 2: Location -->
-        <div class="border-b border-[#5e1fbf]/20 pb-6">
-          <h3 class="text-lg font-bold text-[#5e1fbf] mb-4">Location</h3>
+        <div class="border-b border-[#9233FA]/20 pb-6">
+          <h3 class="text-lg font-bold text-[#9233FA] mb-4">Location</h3>
 
           <!-- Address -->
           <div class="mb-4">
@@ -85,7 +91,7 @@
               type="text"
               placeholder="Street Address"
               formControlName="address"
-              class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#5e1fbf]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#5e1fbf] outline-none transition"
+              class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#9233FA]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#9233FA] outline-none transition"
             />
             <small *ngIf="f.address.touched && f.address.invalid" class="text-red-500 text-sm mt-1 block">
               Address is required
@@ -98,7 +104,7 @@
             <button
               type="button"
               (click)="cityOpen = !cityOpen"
-              class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#5e1fbf]/40 text-gray-900 dark:text-white shadow-sm flex justify-between items-center focus:ring-2 focus:ring-[#5e1fbf] outline-none transition text-left"
+              class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#9233FA]/40 text-gray-900 dark:text-white shadow-sm flex justify-between items-center focus:ring-2 focus:ring-[#9233FA] outline-none transition text-left"
             >
               {{ selectedCityName || 'Select City' }}
               <i class="fa" [ngClass]="cityOpen ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
@@ -127,7 +133,7 @@
               type="button"
               (click)="areaOpen = !areaOpen"
               [disabled]="!selectedCityId"
-              class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#5e1fbf]/40 text-gray-900 dark:text-white shadow-sm flex justify-between items-center focus:ring-2 focus:ring-[#5e1fbf] outline-none transition text-left disabled:opacity-50"
+              class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#9233FA]/40 text-gray-900 dark:text-white shadow-sm flex justify-between items-center focus:ring-2 focus:ring-[#9233FA] outline-none transition text-left disabled:opacity-50"
             >
               {{ selectedAreaName || 'Select Area' }}
               <i class="fa" [ngClass]="areaOpen ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
@@ -152,8 +158,8 @@
         </div>
 
         <!-- SECTION 3: Property Details -->
-        <div class="border-b border-[#5e1fbf]/20 pb-6">
-          <h3 class="text-lg font-bold text-[#5e1fbf] mb-4">Property Details</h3>
+        <div class="border-b border-[#9233FA]/20 pb-6">
+          <h3 class="text-lg font-bold text-[#9233FA] mb-4">Property Details</h3>
 
           <!-- Accommodation Type and Gender -->
           <div class="grid grid-cols-2 gap-4 mb-4">
@@ -162,7 +168,7 @@
               <button
                 type="button"
                 (click)="accommodationOpen = !accommodationOpen"
-                class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#5e1fbf]/40 text-gray-900 dark:text-white shadow-sm flex justify-between items-center focus:ring-2 focus:ring-[#5e1fbf] outline-none transition text-left text-sm"
+                class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#9233FA]/40 text-gray-900 dark:text-white shadow-sm flex justify-between items-center focus:ring-2 focus:ring-[#9233FA] outline-none transition text-left text-sm"
               >
                 {{ selectedAccommodation || 'Type' }}
                 <i class="fa" [ngClass]="accommodationOpen ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
@@ -186,7 +192,7 @@
               <button
                 type="button"
                 (click)="genderOpen = !genderOpen"
-                class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#5e1fbf]/40 text-gray-900 dark:text-white shadow-sm flex justify-between items-center focus:ring-2 focus:ring-[#5e1fbf] outline-none transition text-left text-sm"
+                class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#9233FA]/40 text-gray-900 dark:text-white shadow-sm flex justify-between items-center focus:ring-2 focus:ring-[#9233FA] outline-none transition text-left text-sm"
               >
                 {{ selectedGender || 'Gender' }}
                 <i class="fa" [ngClass]="genderOpen ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
@@ -213,10 +219,13 @@
                 type="number"
                 placeholder="Total Rooms"
                 formControlName="total_rooms"
-                class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#5e1fbf]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#5e1fbf] outline-none transition"
+                class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#9233FA]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#9233FA] outline-none transition"
               />
               <small *ngIf="f.total_rooms.touched && f.total_rooms.invalid" class="text-red-500 text-sm mt-1 block">
                 Required
+              </small>
+              <small *ngIf="f.total_rooms.errors?.min" class="text-red-500 text-sm mt-1 block">
+                Total Rooms must be upper than zero
               </small>
               <small *ngIf="f.total_rooms.errors?.server" class="text-red-500 text-sm mt-1 block">{{ f.total_rooms.errors.server }}</small>
             </div>
@@ -225,10 +234,13 @@
                 type="number"
                 placeholder="Available Rooms"
                 formControlName="available_rooms"
-                class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#5e1fbf]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#5e1fbf] outline-none transition"
+                class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#9233FA]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#9233FA] outline-none transition"
               />
               <small *ngIf="f.available_rooms.touched && f.available_rooms.invalid" class="text-red-500 text-sm mt-1 block">
                 Required
+              </small>
+              <small *ngIf="f.available_rooms.errors?.min" class="text-red-500 text-sm mt-1 block">
+                Available Rooms must be upper than zero
               </small>
               <small *ngIf="propertyForm.errors?.availableInvalid" class="text-red-500 text-sm mt-1 block">Available Rooms cannot exceed Total Rooms.</small>
               <small *ngIf="f.available_rooms.errors?.server" class="text-red-500 text-sm mt-1 block">{{ f.available_rooms.errors.server }}</small>
@@ -238,10 +250,13 @@
                 type="number"
                 placeholder="Bathrooms"
                 formControlName="bathrooms_count"
-                class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#5e1fbf]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#5e1fbf] outline-none transition"
+                class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#9233FA]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#9233FA] outline-none transition"
               />
               <small *ngIf="f.bathrooms_count.touched && f.bathrooms_count.invalid" class="text-red-500 text-sm mt-1 block">
                 Required
+              </small>
+              <small *ngIf="f.bathrooms_count.errors?.min" class="text-red-500 text-sm mt-1 block">
+                Bathrooms must be upper than zero
               </small>
               <small *ngIf="f.bathrooms_count.errors?.server" class="text-red-500 text-sm mt-1 block">{{ f.bathrooms_count.errors.server }}</small>
             </div>
@@ -250,10 +265,13 @@
                 type="number"
                 placeholder="Beds"
                 formControlName="beds"
-                class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#5e1fbf]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#5e1fbf] outline-none transition"
+                class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#9233FA]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#9233FA] outline-none transition"
               />
               <small *ngIf="f.beds.touched && f.beds.invalid" class="text-red-500 text-sm mt-1 block">
                 Required
+              </small>
+              <small *ngIf="f.beds.errors?.min" class="text-red-500 text-sm mt-1 block">
+                Beds must be upper than zero
               </small>
               <small *ngIf="f.beds.errors?.server" class="text-red-500 text-sm mt-1 block">{{ f.beds.errors.server }}</small>
             </div>
@@ -262,10 +280,13 @@
                 type="number"
                 placeholder="Available Spots"
                 formControlName="available_spots"
-                class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#5e1fbf]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#5e1fbf] outline-none transition"
+                class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#9233FA]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#9233FA] outline-none transition"
               />
               <small *ngIf="f.available_spots.touched && f.available_spots.invalid" class="text-red-500 text-sm mt-1 block">
                 Required
+              </small>
+              <small *ngIf="f.available_spots.errors?.min" class="text-red-500 text-sm mt-1 block">
+                Available Spots must be upper than zero
               </small>
               <small *ngIf="f.available_spots.errors?.server" class="text-red-500 text-sm mt-1 block">{{ f.available_spots.errors.server }}</small>
             </div>
@@ -274,10 +295,13 @@
                 type="number"
                 placeholder="Size (sqm)"
                 formControlName="size"
-                class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#5e1fbf]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#5e1fbf] outline-none transition"
+                class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#9233FA]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#9233FA] outline-none transition"
               />
               <small *ngIf="f.size.touched && f.size.invalid" class="text-red-500 text-sm mt-1 block">
                 Required
+              </small>
+              <small *ngIf="f.size.errors?.min" class="text-red-500 text-sm mt-1 block">
+                Size must be upper than zero
               </small>
               <small *ngIf="f.size.errors?.server" class="text-red-500 text-sm mt-1 block">{{ f.size.errors.server }}</small>
             </div>
@@ -286,9 +310,17 @@
                 type="number"
                 placeholder="Min Stay (months)"
                 formControlName="minimum_stay_months"
-                class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#5e1fbf]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#5e1fbf] outline-none transition"
+                class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#9233FA]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#9233FA] outline-none transition"
               />
+              <small *ngIf="f.minimum_stay_months.touched && f.minimum_stay_months.invalid" class="text-red-500 text-sm mt-1 block">
+                Required
+              </small>
+              <small *ngIf="f.minimum_stay_months.errors?.min" class="text-red-500 text-sm mt-1 block">
+                Minimum Stay must be upper than zero
+              </small>
+              <small *ngIf="f.minimum_stay_months.errors?.server" class="text-red-500 text-sm mt-1 block">{{ f.minimum_stay_months.errors.server }}</small>
             </div>
+
           </div>
 
           <!-- University -->
@@ -297,7 +329,7 @@
               type="button"
               (click)="universityOpen = !universityOpen"
               [disabled]="!selectedCityId"
-              class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#5e1fbf]/40 text-gray-900 dark:text-white shadow-sm flex justify-between items-center focus:ring-2 focus:ring-[#5e1fbf] outline-none transition text-left disabled:opacity-50">
+              class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#9233FA]/40 text-gray-900 dark:text-white shadow-sm flex justify-between items-center focus:ring-2 focus:ring-[#9233FA] outline-none transition text-left disabled:opacity-50">
               {{ selectedUniversityName || 'Select University' }}
               <i class="fa" [ngClass]="universityOpen ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
             </button>
@@ -324,8 +356,8 @@
         </div>
 
         <!-- SECTION 4: Availability -->
-        <div class="border-b border-[#5e1fbf]/20 pb-6">
-          <h3 class="text-lg font-bold text-[#5e1fbf] mb-4">Availability</h3>
+        <div class="border-b border-[#9233FA]/20 pb-6">
+          <h3 class="text-lg font-bold text-[#9233FA] mb-4">Availability</h3>
 
           <div class="grid grid-cols-2 gap-4">
             <div>
@@ -333,7 +365,7 @@
               <input
                 type="date"
                 formControlName="available_from"
-                class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#5e1fbf]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#5e1fbf] outline-none transition"
+                class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#9233FA]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#9233FA] outline-none transition"
               />
               <small *ngIf="f.available_from.touched && f.available_from.invalid" class="text-red-500 text-sm mt-1 block">
                 Required
@@ -346,7 +378,7 @@
               <input
                 type="date"
                 formControlName="available_to"
-                class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#5e1fbf]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#5e1fbf] outline-none transition"
+                class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#9233FA]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#9233FA] outline-none transition"
               />
               <small *ngIf="f.available_to.touched && f.available_to.invalid" class="text-red-500 text-sm mt-1 block">
                 Required
@@ -360,46 +392,52 @@
         </div>
 
         <!-- SECTION 5: Amenities -->
-        <div class="border-b border-[#5e1fbf]/20 pb-6">
-          <h3 class="text-lg font-bold text-[#5e1fbf] mb-4">Amenities</h3>
+        <div class="border-b border-[#9233FA]/20 pb-6">
+          <h3 class="text-lg font-bold text-[#9233FA] mb-4">Amenities</h3>
 
           <div class="grid grid-cols-2 gap-3">
-            <button
-              type="button"
-              *ngFor="let amenity of amenities"
-              (click)="toggleAmenity(amenity.id)"
-              [class.ring-2]="isAmenitySelected(amenity.id)"
-              class="p-3 rounded-lg border-2 border-[#5e1fbf]/40 bg-gray-200 dark:bg-gray-900 text-gray-900 dark:text-white transition"
-            >
-              {{ amenity.name }}
-            </button>
+           <button
+  type="button"
+  *ngFor="let amenity of amenities"
+  (click)="toggleAmenity(amenity.id)"
+  [ngClass]="{
+    'ring-2 ring-[#9233FA] bg-[#9233FA]/10 text-gray-900 dark:text-white': isAmenitySelected(amenity.id),
+    'bg-gray-200 dark:bg-gray-900 text-gray-900 dark:text-white': !isAmenitySelected(amenity.id)
+  }"
+  class="p-3 rounded-lg border-2 border-[#9233FA]/40 transition capitalize"
+>
+  {{ amenity.name }}
+</button>
+
           </div>
           <small *ngIf="f.amenities.errors?.server" class="text-red-500 text-sm mt-1 block">{{ f.amenities.errors.server }}</small>
         </div>
 
         <!-- SECTION 5.5: Payment Methods -->
-        <div class="border-b border-[#5e1fbf]/20 pb-6">
-          <h3 class="text-lg font-bold text-[#5e1fbf] mb-4">Payment Methods</h3>
+        <div class="border-b border-[#9233FA]/20 pb-6">
+          <h3 class="text-lg font-bold text-[#9233FA] mb-4">Payment Methods</h3>
 
           <div class="grid grid-cols-3 gap-3">
             <button
-              type="button"
-              *ngFor="let method of paymentMethods"
-              (click)="togglePaymentMethod(method)"
-              [class.ring-2]="isPaymentMethodSelected(method)"
-              [class.ring-[#5e1fbf]]="isPaymentMethodSelected(method)"
-              [class.bg-[#5e1fbf]/10]="isPaymentMethodSelected(method)"
-              class="p-3 rounded-lg border-2 border-[#5e1fbf]/40 bg-gray-200 dark:bg-gray-900 text-gray-900 dark:text-white transition capitalize"
-            >
-              {{ method.replace('_', ' ') }}
-            </button>
+  type="button"
+  *ngFor="let method of paymentMethods"
+  (click)="togglePaymentMethod(method)"
+  [ngClass]="{
+    'ring-2 ring-[#9233FA] bg-[#9233FA]/10 text-gray-900 dark:text-white': isPaymentMethodSelected(method),
+    'bg-gray-200 dark:bg-gray-900 text-gray-900 dark:text-white': !isPaymentMethodSelected(method)
+  }"
+  class="p-3 rounded-lg border-2 border-[#9233FA]/40 transition-transform duration-150 ease-in-out hover:scale-105 capitalize"
+>
+  {{ method.replace('_', ' ') }}
+</button>
+
           </div>
           <small *ngIf="f.payment_methods.errors?.server" class="text-red-500 text-sm mt-1 block">{{ f.payment_methods.errors.server }}</small>
         </div>
 
         <!-- SECTION 6: Features & Contact -->
-        <div class="border-b border-[#5e1fbf]/20 pb-6">
-          <h3 class="text-lg font-bold text-[#5e1fbf] mb-4">Features & Contact</h3>
+        <div class="border-b border-[#9233FA]/20 pb-6">
+          <h3 class="text-lg font-bold text-[#9233FA] mb-4">Features & Contact</h3>
 
           <!-- Toggles -->
           <div class="grid grid-cols-2 gap-4 mb-4">
@@ -407,7 +445,7 @@
               <input
                 type="checkbox"
                 formControlName="smoking_allowed"
-                class="w-5 h-5 rounded border-[#5e1fbf]/40 accent-[#5e1fbf]"
+                class="w-5 h-5 rounded border-[#9233FA]/40 accent-[#9233FA]"
               />
               <span class="text-gray-900 dark:text-white">Smoking Allowed</span>
             </label>
@@ -415,7 +453,7 @@
               <input
                 type="checkbox"
                 formControlName="pets_allowed"
-                class="w-5 h-5 rounded border-[#5e1fbf]/40 accent-[#5e1fbf]"
+                class="w-5 h-5 rounded border-[#9233FA]/40 accent-[#9233FA]"
               />
               <span class="text-gray-900 dark:text-white">Pets Allowed</span>
             </label>
@@ -423,7 +461,7 @@
               <input
                 type="checkbox"
                 formControlName="furnished"
-                class="w-5 h-5 rounded border-[#5e1fbf]/40 accent-[#5e1fbf]"
+                class="w-5 h-5 rounded border-[#9233FA]/40 accent-[#9233FA]"
               />
               <span class="text-gray-900 dark:text-white">Furnished</span>
             </label>
@@ -431,7 +469,7 @@
               <input
                 type="checkbox"
                 formControlName="is_negotiable"
-                class="w-5 h-5 rounded border-[#5e1fbf]/40 accent-[#5e1fbf]"
+                class="w-5 h-5 rounded border-[#9233FA]/40 accent-[#9233FA]"
               />
               <span class="text-gray-900 dark:text-white">Price Negotiable</span>
             </label>
@@ -439,24 +477,37 @@
 
           <!-- Contact Information -->
           <div class="grid grid-cols-2 gap-4">
-            <div>
-              <input
-                type="tel"
-                placeholder="Contact Phone"
-                formControlName="contact_phone"
-                class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#5e1fbf]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#5e1fbf] outline-none transition"
-              />
-              <small *ngIf="f.contact_phone.touched && f.contact_phone.invalid" class="text-red-500 text-sm mt-1 block">
-                Valid phone required
-              </small>
-              <small *ngIf="f.contact_phone.errors?.server" class="text-red-500 text-sm mt-1 block">{{ f.contact_phone.errors.server }}</small>
-            </div>
+            <div class="relative">
+  <input
+    type="tel"
+    placeholder="Contact Phone"
+    formControlName="contact_phone"
+    class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#9233FA]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#9233FA] outline-none transition"
+  />
+
+  <!-- Validation Error -->
+  <small
+    *ngIf="f.contact_phone.touched && f.contact_phone.invalid && !f.contact_phone.errors?.server"
+    class="text-red-500 text-sm mt-1 block"
+  >
+    Valid phone required
+  </small>
+
+  <!-- Server Error -->
+  <small
+    *ngIf="f.contact_phone.errors?.server"
+    class="text-red-500 text-sm mt-1 block"
+  >
+    {{ f.contact_phone.errors.server }}
+  </small>
+</div>
+
             <div>
               <input
                 type="email"
                 placeholder="Contact Email"
                 formControlName="contact_email"
-                class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#5e1fbf]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#5e1fbf] outline-none transition"
+                class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#9233FA]/40 text-gray-900 dark:text-white shadow-sm focus:ring-2 focus:ring-[#9233FA] outline-none transition"
               />
               <small *ngIf="f.contact_email.touched && f.contact_email.invalid" class="text-red-500 text-sm mt-1 block">
                 Valid email required
@@ -467,12 +518,12 @@
         </div>
 
         <!-- SECTION 7: Images -->
-        <div class="border-b border-[#5e1fbf]/20 pb-6">
-          <h3 class="text-lg font-bold text-[#5e1fbf] mb-4">Property Images</h3>
+        <div class="border-b border-[#9233FA]/20 pb-6">
+          <h3 class="text-lg font-bold text-[#9233FA] mb-4">Property Images</h3>
 
           <!-- Upload Button -->
           <label
-            class="block w-full p-6 border-2 border-dashed border-[#5e1fbf]/40 rounded-xl cursor-pointer hover:border-[#7a30e3] hover:shadow-lg transition bg-gray-200 dark:bg-gray-900 text-center"
+            class="block w-full p-6 border-2 border-dashed border-[#9233FA]/40 rounded-xl cursor-pointer hover:border-[#9233fa] hover:shadow-lg transition bg-gray-200 dark:bg-gray-900 text-center"
           >
             <div class="text-gray-600 dark:text-gray-300">
               <i class="fa fa-cloud-upload text-2xl mb-2 block"></i>
@@ -507,7 +558,7 @@
         <button
           type="submit"
           [disabled]="isSubmitting || propertyForm.invalid"
-          class="w-full text-white py-3.5 rounded-xl text-base font-semibold bg-gradient-to-r from-[#5e1fbf] to-[#7a30e3] hover:opacity-90 transition shadow-lg disabled:opacity-50 mt-6"
+          class="w-full text-white py-3.5 rounded-xl text-base font-semibold bg-gradient-to-r from-[#9233FA] to-[#9233fa] hover:opacity-90 transition shadow-lg disabled:opacity-50 mt-6"
         >
           {{ isSubmitting ? 'Creating Property...' : 'Create Property' }}
         </button>

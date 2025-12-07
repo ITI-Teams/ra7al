@@ -142,7 +142,7 @@ export class CreateProperty implements OnInit {
       pets_allowed: [false],
       furnished: [false],
       is_negotiable: [false],
-      contact_phone: ['', [Validators.required, Validators.pattern(/^[0-9+\-\s()]+$/)]],
+      contact_phone: ['', [Validators.required, Validators.pattern(/^\+?(\d[\d\s\-()]{6,14}\d)$/)]],
       contact_email: ['', [Validators.required, Validators.email]],
       images: [null as File[] | null],
       amenities: [[] as number[]],
@@ -374,7 +374,7 @@ dateCompareValidator(form: FormGroup) {
         this.msg.add({ severity: 'success', summary: 'Success', detail: 'Property created successfully' });
         this.isSubmitting = false;
         setTimeout(() => {
-          this.router.navigate(['/owner-dashboard']);
+          this.router.navigate(['/owner-dashboard/apartments']);
         }, 2000);
       },
       error: (err) => {

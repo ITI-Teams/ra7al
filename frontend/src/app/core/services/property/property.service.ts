@@ -54,10 +54,53 @@ export class PropertyService {
         return response.data;
       }),
       catchError((error: HttpErrorResponse) => {
-        console.warn('API call failed, using mock data:', error);
+        console.error('API call failed to fetch property:', error);
         this.isLoading.set(false);
-        // Return mock data as fallback
-        return of(this.getMockProperty(id));
+        // Throw the actual error instead of returning mock data
+        throw error;
+      })
+    );
+  }
+
+  /**
+   * Fetch owner's own properties
+   */
+  getOwnerProperties(page: number = 1, perPage: number = 100): Observable<PropertiesListResponse> {
+    this.isLoading.set(true);
+
+    let params = new URLSearchParams();
+    params.append('page', page.toString());
+    params.append('per_page', perPage.toString());
+
+    return this.http
+      .get<PropertiesListResponse>(
+        `${this.apiUrl}/my-properties?${params.toString()}`
+      )
+      .pipe(
+        tap(() => this.isLoading.set(false)),
+        catchError((error: HttpErrorResponse) => {
+          console.error('Failed to fetch owner properties:', error);
+          this.isLoading.set(false);
+          throw error;
+        })
+      );
+  }
+
+  /**
+   * Fetch a specific property owned by the current user with full details for editing
+   */
+  getOwnerPropertyById(id: number): Observable<Property> {
+    this.isLoading.set(true);
+
+    return this.http.get<PropertyResponse>(`${this.apiUrl}/my-properties/${id}`).pipe(
+      map((response) => {
+        this.isLoading.set(false);
+        return response.data;
+      }),
+      catchError((error: HttpErrorResponse) => {
+        console.error('Failed to fetch owner property details:', error);
+        this.isLoading.set(false);
+        throw error;
       })
     );
   }

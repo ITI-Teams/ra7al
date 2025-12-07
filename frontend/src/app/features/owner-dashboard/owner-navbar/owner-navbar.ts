@@ -20,6 +20,7 @@ export class OwnerNavbar {
   isFixed = false;
   isLoggedIn = false;
   user: any = null;
+  mobileMenuOpen = false;
   showShareFeedback = false;
 
   constructor(
@@ -48,39 +49,50 @@ export class OwnerNavbar {
     this.profileOpen = !this.profileOpen;
   }
 
-  logout() {
-    Swal.fire({
-      title: 'Are you sure?',
-      text: 'You will be logged out of your account.',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Yes, Logout',
-      cancelButtonText: 'Cancel',
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.auth.logout().subscribe({
-          next: () => {},
-          error: () => {},
-        }).add(() => {
-          this.auth.clearUser();
-          this.auth.clearToken();
-          this.syncUser();
+ logout() {
+  const isDark = document.documentElement.classList.contains('dark');
 
-          // ✅ Show success toast
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Logged Out',
-            detail: 'You have successfully logged out',
-            life: 3000,
-          });
+  Swal.fire({
+    title: 'Are you sure?',
+    text: 'You will be logged out of your account.',
+    icon: 'warning',
 
-          this.router.navigate(['/login'], { replaceUrl: true });
+    // 🌙 Dark Mode Support
+    background: isDark ? '#1f2937' : '#ffffff', // dark: gray-800
+    color: isDark ? '#e5e7eb' : '#111827',      // dark: gray-200
+    iconColor: isDark ? '#facc15' : '#f59e0b',  // amber colors
+
+    showCancelButton: true,
+    confirmButtonText: 'Yes, Logout',
+    cancelButtonText: 'Cancel',
+
+    // Buttons (auto theme)
+    confirmButtonColor: isDark ? '#dc2626' : '#d33',      // red-600
+    cancelButtonColor: isDark ? '#3b82f6' : '#3085d6',     // blue-500
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.auth.logout().subscribe({
+        next: () => {},
+        error: () => {},
+      }).add(() => {
+        this.auth.clearUser();
+        this.auth.clearToken();
+        this.syncUser();
+
+        // Success toast
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Logged Out',
+          detail: 'You have successfully logged out',
+          life: 3000,
         });
-      }
-    });
-  }
+
+        this.router.navigate(['/login'], { replaceUrl: true });
+      });
+    }
+  });
+}
+
 
   shareProfile() {
     const path = this.user?.role === 'owner' ? '/profile-owner' : '/profile-student';
