@@ -57,39 +57,50 @@ export class Navbar {
     this.profileOpen = !this.profileOpen;
   }
 
-  logout() {
-    Swal.fire({
-      title: 'Are you sure?',
-      text: 'You will be logged out of your account.',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Yes, Logout',
-      cancelButtonText: 'Cancel',
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.auth.logout().subscribe({
-          next: () => {},
-          error: () => {},
-        }).add(() => {
-          this.auth.clearUser();
-          this.auth.clearToken();
-          this.syncUser();
+ logout() {
+  const isDark = document.documentElement.classList.contains('dark');
 
-          // ✅ Show success toast
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Logged Out',
-            detail: 'You have successfully logged out',
-            life: 3000,
-          });
+  Swal.fire({
+    title: 'Are you sure?',
+    text: 'You will be logged out of your account.',
+    icon: 'warning',
 
-          this.router.navigate(['/login'], { replaceUrl: true });
+    // 🔥 Dark mode support
+    background: isDark ? '#1f2937' : '#ffffff', // gray-800
+    color: isDark ? '#e5e7eb' : '#111827',      // gray-200 / gray-900
+    iconColor: isDark ? '#fbbf24' : '#f59e0b',   // amber
+
+    // Buttons
+    confirmButtonText: 'Yes, Logout',
+    cancelButtonText: 'Cancel',
+    showCancelButton: true,
+
+    confirmButtonColor: isDark ? '#dc2626' : '#d33', // red-600
+    cancelButtonColor: isDark ? '#3b82f6' : '#3085d6', // blue-500
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.auth.logout().subscribe({
+        next: () => {},
+        error: () => {},
+      }).add(() => {
+        this.auth.clearUser();
+        this.auth.clearToken();
+        this.syncUser();
+
+        // Toast
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Logged Out',
+          detail: 'You have successfully logged out',
+          life: 3000,
         });
-      }
-    });
-  }
+
+        this.router.navigate(['/login'], { replaceUrl: true });
+      });
+    }
+  });
+}
+
 
   shareProfile() {
     const path = this.user?.role === 'owner' ? '/profile-owner' : '/profile-student';
@@ -106,10 +117,10 @@ export class Navbar {
     }
   }
 
-  avatarUrl(): string {
+ avatarUrl(): string {
     if (!this.user) return '/assets/default-avatar.svg';
     if (this.user.avatar) {
-      return `${this.auth.getBackendBase()}/${this.user.avatar}`;
+      return `${this.auth.getBackendBase()}/storage/${this.user.avatar}`;
     }
     const name = (this.user.name || '').trim();
     let initials = '';
