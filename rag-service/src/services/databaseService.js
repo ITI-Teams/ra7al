@@ -169,9 +169,8 @@ class DatabaseService {
       const query = `
         SELECT 
           pa.property_id,
-          a.name as amenity_name,
-          a.icon as amenity_icon
-        FROM property_amenities pa
+          a.name as amenity_name
+        FROM property_amenity pa
         INNER JOIN amenities a ON pa.amenity_id = a.id
         WHERE pa.property_id IN (${placeholders})
       `;
@@ -205,7 +204,7 @@ class DatabaseService {
   async getUserProfile(userId) {
     try {
       const query = `
-        SELECT * FROM user_profiles
+        SELECT * FROM user_profile
         WHERE user_id = ?
         LIMIT 1
       `;

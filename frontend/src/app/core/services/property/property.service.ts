@@ -1,4 +1,4 @@
-// src/app/services/property.service.ts
+// src/app/core/services/property/property.service.ts
 
 import { Injectable, signal } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
@@ -16,7 +16,7 @@ import {
   AmenityResponse,
   University,
   UniversityResponse,
-  FilterState
+  FilterState,
 } from '../../models/property.model';
 
 export interface BookingRequest {
@@ -81,9 +81,7 @@ export class PropertyService {
     params.append('per_page', perPage.toString());
 
     return this.http
-      .get<PropertiesListResponse>(
-        `${this.apiUrl}?${params.toString()}`
-      )
+      .get<PropertiesListResponse>(`${this.apiUrl}?${params.toString()}`)
       .pipe(
         tap(() => this.isLoading.set(false)),
         catchError((error: HttpErrorResponse) => {
@@ -97,7 +95,9 @@ export class PropertyService {
   /**
    * Toggle saved status for a property
    */
-  toggleSaved(propertyId: number): Observable<{ saved: boolean; message: string }> {
+  toggleSaved(
+    propertyId: number
+  ): Observable<{ saved: boolean; message: string }> {
     return this.http
       .post<{ saved: boolean; message: string }>(
         `${this.apiUrl}/${propertyId}/toggle-save`,
@@ -145,9 +145,13 @@ export class PropertyService {
   /**
    * Delete a property
    */
-  deleteProperty(propertyId: number): Observable<{ success: boolean; message: string }> {
+  deleteProperty(
+    propertyId: number
+  ): Observable<{ success: boolean; message: string }> {
     return this.http
-      .delete<{ success: boolean; message: string }>(`${this.apiUrl}/${propertyId}`)
+      .delete<{ success: boolean; message: string }>(
+        `${this.apiUrl}/${propertyId}`
+      )
       .pipe(
         catchError((error: HttpErrorResponse) => {
           console.error('Failed to delete property:', error);
@@ -160,23 +164,21 @@ export class PropertyService {
    * Fetch list of cities from API
    */
   getCities(): Observable<City[]> {
-    return this.http
-      .get<CityResponse>(`${environment.apiUrl}/cities`)
-      .pipe(
-        map((res) => res.data),
-        catchError((error) => {
-          console.error('Failed to fetch cities:', error);
-          return of([]);
-        })
-      );
+    return this.http.get<CityResponse>(`${environment.apiUrl}/cities`).pipe(
+      map((res) => res.data),
+      catchError((error) => {
+        console.error('Failed to fetch cities:', error);
+        return of([]);
+      })
+    );
   }
 
   /**
    * Fetch areas for a given city
    */
-  getAreas(cityId: number): Observable<Area[]> {
+  getAreas(areaId: number): Observable<Area[]> {
     return this.http
-      .get<AreaResponse>(`${environment.apiUrl}/cities/${cityId}/areas`)
+      .get<AreaResponse>(`${environment.apiUrl}/areas/${areaId}`)
       .pipe(
         map((res) => res.data),
         catchError((error) => {
@@ -201,7 +203,6 @@ export class PropertyService {
       );
   }
 
-
   getUniversities(): Observable<University[]> {
     return this.http
       .get<UniversityResponse>(`${environment.apiUrl}/properties/universities`)
@@ -219,13 +220,15 @@ export class PropertyService {
    */
   getUniversitiesByCity(cityId: number): Observable<University[]> {
     return this.http
-      .get<UniversityResponse>(`${environment.apiUrl}/properties/universities/${cityId}`)
+      .get<UniversityResponse>(
+        `${environment.apiUrl}/properties/universities/${cityId}`
+      )
       .pipe(
         map((res) => res.data),
         catchError((error) => {
           console.error('Failed to fetch universities for city:', error);
           const allUniversities = this.getMockUniversities();
-          return of(allUniversities.filter(u => u.city_id === cityId));
+          return of(allUniversities.filter((u) => u.city_id === cityId));
         })
       );
   }
@@ -245,7 +248,8 @@ export class PropertyService {
     }
 
     if (filters?.propertyType || filters?.accommodation_type) {
-      const accommodationType = filters.propertyType || filters.accommodation_type;
+      const accommodationType =
+        filters.propertyType || filters.accommodation_type;
       params.append('accommodation_type', accommodationType);
     }
 
@@ -256,8 +260,10 @@ export class PropertyService {
 
     if (filters?.priceRange && filters.priceRange.length === 2) {
       const defaultPriceRange = [100, 700];
-      if (filters.priceRange[0] !== defaultPriceRange[0] ||
-        filters.priceRange[1] !== defaultPriceRange[1]) {
+      if (
+        filters.priceRange[0] !== defaultPriceRange[0] ||
+        filters.priceRange[1] !== defaultPriceRange[1]
+      ) {
         params.append('min_price', filters.priceRange[0].toString());
         params.append('max_price', filters.priceRange[1].toString());
       }
@@ -265,17 +271,27 @@ export class PropertyService {
 
     if (filters?.studentsRange && filters.studentsRange.length === 2) {
       const defaultStudentsRange = [1, 8];
-      if (filters.studentsRange[0] !== defaultStudentsRange[0] ||
-        filters.studentsRange[1] !== defaultStudentsRange[1]) {
-        params.append('min_available_spots', filters.studentsRange[0].toString());
-        params.append('max_available_spots', filters.studentsRange[1].toString());
+      if (
+        filters.studentsRange[0] !== defaultStudentsRange[0] ||
+        filters.studentsRange[1] !== defaultStudentsRange[1]
+      ) {
+        params.append(
+          'min_available_spots',
+          filters.studentsRange[0].toString()
+        );
+        params.append(
+          'max_available_spots',
+          filters.studentsRange[1].toString()
+        );
       }
     }
 
     if (filters?.bedsRange && filters.bedsRange.length === 2) {
       const defaultBedsRange = [1, 10];
-      if (filters.bedsRange[0] !== defaultBedsRange[0] ||
-        filters.bedsRange[1] !== defaultBedsRange[1]) {
+      if (
+        filters.bedsRange[0] !== defaultBedsRange[0] ||
+        filters.bedsRange[1] !== defaultBedsRange[1]
+      ) {
         params.append('min_beds', filters.bedsRange[0].toString());
         params.append('max_beds', filters.bedsRange[1].toString());
       }
@@ -283,8 +299,10 @@ export class PropertyService {
 
     if (filters?.roomsRange && filters.roomsRange.length === 2) {
       const defaultRoomsRange = [1, 6];
-      if (filters.roomsRange[0] !== defaultRoomsRange[0] ||
-        filters.roomsRange[1] !== defaultRoomsRange[1]) {
+      if (
+        filters.roomsRange[0] !== defaultRoomsRange[0] ||
+        filters.roomsRange[1] !== defaultRoomsRange[1]
+      ) {
         params.append('min_rooms', filters.roomsRange[0].toString());
         params.append('max_rooms', filters.roomsRange[1].toString());
       }
@@ -297,11 +315,23 @@ export class PropertyService {
       params.append('max_price', filters.max_price.toString());
     }
 
-    if (filters?.min_available_spots !== undefined && filters?.min_available_spots !== null) {
-      params.append('min_available_spots', filters.min_available_spots.toString());
+    if (
+      filters?.min_available_spots !== undefined &&
+      filters?.min_available_spots !== null
+    ) {
+      params.append(
+        'min_available_spots',
+        filters.min_available_spots.toString()
+      );
     }
-    if (filters?.max_available_spots !== undefined && filters?.max_available_spots !== null) {
-      params.append('max_available_spots', filters.max_available_spots.toString());
+    if (
+      filters?.max_available_spots !== undefined &&
+      filters?.max_available_spots !== null
+    ) {
+      params.append(
+        'max_available_spots',
+        filters.max_available_spots.toString()
+      );
     }
 
     if (filters?.min_beds !== undefined && filters?.min_beds !== null) {
@@ -322,7 +352,10 @@ export class PropertyService {
       params.append('pets_allowed', filters.petsAllowed.toString());
     }
 
-    if (filters?.smokingAllowed !== null && filters?.smokingAllowed !== undefined) {
+    if (
+      filters?.smokingAllowed !== null &&
+      filters?.smokingAllowed !== undefined
+    ) {
       params.append('smoking_allowed', filters.smokingAllowed.toString());
     }
 
@@ -339,7 +372,9 @@ export class PropertyService {
     }
 
     const queryString = params.toString();
-    const apiUrl = queryString ? `${this.apiUrl}/filter?${queryString}` : `${this.apiUrl}/filter`;
+    const apiUrl = queryString
+      ? `${this.apiUrl}/filter?${queryString}`
+      : `${this.apiUrl}/filter`;
 
     console.log('API Call:', apiUrl);
 
@@ -389,7 +424,7 @@ export class PropertyService {
           city: {
             id: 1,
             name: 'Cairo',
-          }
+          },
         },
       },
       area: {
@@ -398,7 +433,7 @@ export class PropertyService {
         city: {
           id: 1,
           name: 'Cairo',
-        }
+        },
       },
       owner: {
         id: 1,
@@ -442,6 +477,7 @@ export class PropertyService {
         { id: 6, name: 'Smart TV', icon: 'pi pi-desktop' },
         { id: 7, name: 'Wash machine', icon: 'pi pi-replay' },
       ],
+      city: { id: 99999, name: 'nothing' },
       payment_methods: ['cash', 'bank_transfer'],
       average_rating: 4.8,
       is_available: true,
@@ -461,7 +497,7 @@ export class PropertyService {
       { id: 7, name: 'Assiut University', abbreviation: 'AU', city_id: 5 },
       { id: 8, name: 'Tanta University', abbreviation: 'TU', city_id: 6 },
       { id: 9, name: 'Suez Canal University', abbreviation: 'SCU', city_id: 7 },
-      { id: 10, name: 'Menoufia University', abbreviation: 'MU', city_id: 8 }
+      { id: 10, name: 'Menoufia University', abbreviation: 'MU', city_id: 8 },
     ];
   }
 
@@ -488,9 +524,9 @@ export class PropertyService {
         current_page: page,
         last_page: Math.ceil(mockProperties.length / perPage),
         per_page: perPage,
-        total: mockProperties.length
+        total: mockProperties.length,
       },
-      filters: mockFilters
+      filters: mockFilters,
     };
   }
 
@@ -501,83 +537,148 @@ export class PropertyService {
 
     return [
       { ...mockProperty1, university_id: 1, accommodation_type: 'apartment' },
-      { ...mockProperty2, university_id: 2, accommodation_type: 'shared', gender_requirement: 'female' },
-      { ...mockProperty3, university_id: 3, accommodation_type: 'private', gender_requirement: 'male' },
-      { ...mockProperty1, id: 4, university_id: 1, price: 250, available_spots: 3 },
-      { ...mockProperty2, id: 5, university_id: 2, price: 400, available_spots: 1 },
-      { ...mockProperty3, id: 6, university_id: 3, price: 600, available_spots: 2 }
+      {
+        ...mockProperty2,
+        university_id: 2,
+        accommodation_type: 'shared',
+        gender_requirement: 'female',
+      },
+      {
+        ...mockProperty3,
+        university_id: 3,
+        accommodation_type: 'private',
+        gender_requirement: 'male',
+      },
+      {
+        ...mockProperty1,
+        id: 4,
+        university_id: 1,
+        price: 250,
+        available_spots: 3,
+      },
+      {
+        ...mockProperty2,
+        id: 5,
+        university_id: 2,
+        price: 400,
+        available_spots: 1,
+      },
+      {
+        ...mockProperty3,
+        id: 6,
+        university_id: 3,
+        price: 600,
+        available_spots: 2,
+      },
     ];
   }
 
   private applyMockFilters(properties: Property[], filters: any): Property[] {
-    return properties.filter(property => {
-      if (filters?.university_id && property.university_id !== filters.university_id) {
+    return properties.filter((property) => {
+      if (
+        filters?.university_id &&
+        property.university_id !== filters.university_id
+      ) {
         return false;
       }
 
-      if (filters?.propertyType && property.accommodation_type !== filters.propertyType) {
+      if (
+        filters?.propertyType &&
+        property.accommodation_type !== filters.propertyType
+      ) {
         return false;
       }
-      if (filters?.accommodation_type && property.accommodation_type !== filters.accommodation_type) {
-        return false;
-      }
-
-      if (filters?.gender &&
-        property.gender_requirement !== filters.gender.toLowerCase()) {
-        return false;
-      }
-      if (filters?.gender_requirement &&
-        property.gender_requirement !== filters.gender_requirement) {
+      if (
+        filters?.accommodation_type &&
+        property.accommodation_type !== filters.accommodation_type
+      ) {
         return false;
       }
 
-      if (filters?.priceRange &&
+      if (
+        filters?.gender &&
+        property.gender_requirement !== filters.gender.toLowerCase()
+      ) {
+        return false;
+      }
+      if (
+        filters?.gender_requirement &&
+        property.gender_requirement !== filters.gender_requirement
+      ) {
+        return false;
+      }
+
+      if (
+        filters?.priceRange &&
         (property.price < filters.priceRange[0] ||
-          property.price > filters.priceRange[1])) {
+          property.price > filters.priceRange[1])
+      ) {
         return false;
       }
-      if ((filters?.min_price && property.price < filters.min_price) ||
-        (filters?.max_price && property.price > filters.max_price)) {
+      if (
+        (filters?.min_price && property.price < filters.min_price) ||
+        (filters?.max_price && property.price > filters.max_price)
+      ) {
         return false;
       }
 
-      if (filters?.studentsRange &&
+      if (
+        filters?.studentsRange &&
         (property.available_spots < filters.studentsRange[0] ||
-          property.available_spots > filters.studentsRange[1])) {
+          property.available_spots > filters.studentsRange[1])
+      ) {
         return false;
       }
-      if ((filters?.min_available_spots && property.available_spots < filters.min_available_spots) ||
-        (filters?.max_available_spots && property.available_spots > filters.max_available_spots)) {
+      if (
+        (filters?.min_available_spots &&
+          property.available_spots < filters.min_available_spots) ||
+        (filters?.max_available_spots &&
+          property.available_spots > filters.max_available_spots)
+      ) {
         return false;
       }
 
-      if (filters?.bedsRange &&
+      if (
+        filters?.bedsRange &&
         (property.beds < filters.bedsRange[0] ||
-          property.beds > filters.bedsRange[1])) {
+          property.beds > filters.bedsRange[1])
+      ) {
         return false;
       }
-      if ((filters?.min_beds && property.beds < filters.min_beds) ||
-        (filters?.max_beds && property.beds > filters.max_beds)) {
+      if (
+        (filters?.min_beds && property.beds < filters.min_beds) ||
+        (filters?.max_beds && property.beds > filters.max_beds)
+      ) {
         return false;
       }
 
-      if (filters?.roomsRange &&
+      if (
+        filters?.roomsRange &&
         (property.total_rooms < filters.roomsRange[0] ||
-          property.total_rooms > filters.roomsRange[1])) {
+          property.total_rooms > filters.roomsRange[1])
+      ) {
         return false;
       }
-      if ((filters?.min_rooms && property.total_rooms < filters.min_rooms) ||
-        (filters?.max_rooms && property.total_rooms > filters.max_rooms)) {
+      if (
+        (filters?.min_rooms && property.total_rooms < filters.min_rooms) ||
+        (filters?.max_rooms && property.total_rooms > filters.max_rooms)
+      ) {
         return false;
       }
 
-      if (filters?.petsAllowed !== null && filters?.petsAllowed !== undefined &&
-        property.pets_allowed !== filters.petsAllowed) {
+      if (
+        filters?.petsAllowed !== null &&
+        filters?.petsAllowed !== undefined &&
+        property.pets_allowed !== filters.petsAllowed
+      ) {
         return false;
       }
 
-      if (filters?.smokingAllowed !== null && filters?.smokingAllowed !== undefined &&
-        property.smoking_allowed !== filters.smokingAllowed) {
+      if (
+        filters?.smokingAllowed !== null &&
+        filters?.smokingAllowed !== undefined &&
+        property.smoking_allowed !== filters.smokingAllowed
+      ) {
         return false;
       }
 
@@ -590,12 +691,12 @@ export class PropertyService {
       cities: [
         { id: 1, name: 'Cairo' },
         { id: 2, name: 'Alexandria' },
-        { id: 3, name: 'Giza' }
+        { id: 3, name: 'Giza' },
       ],
       areas: [
         { id: 1, name: 'Downtown', city: { id: 1, name: 'Cairo' } },
         { id: 2, name: 'Maadi', city: { id: 1, name: 'Cairo' } },
-        { id: 3, name: 'Smouha', city: { id: 2, name: 'Alexandria' } }
+        { id: 3, name: 'Smouha', city: { id: 2, name: 'Alexandria' } },
       ],
       universities: this.getMockUniversities(),
       accommodation_types: ['apartment', 'shared', 'private', 'studio'],
@@ -603,23 +704,83 @@ export class PropertyService {
         { min: 100, max: 300, label: '100-300' },
         { min: 300, max: 500, label: '300-500' },
         { min: 500, max: 700, label: '500-700' },
-        { min: 700, max: 1000, label: '700+' }
+        { min: 700, max: 1000, label: '700+' },
       ],
       rooms_options: [1, 2, 3, 4, 5, 6],
       sort_options: [
         { value: 'price_asc', label: 'Price: Low to High' },
         { value: 'price_desc', label: 'Price: High to Low' },
         { value: 'created_at_desc', label: 'Newest First' },
-        { value: 'available_spots_desc', label: 'Most Available Spots' }
-      ]
+        { value: 'available_spots_desc', label: 'Most Available Spots' },
+      ],
     };
   }
 
-
-  requestBooking(propertyId: number, bookingData: BookingRequest): Observable<BookingResponse> {
+  requestBooking(
+    propertyId: number,
+    bookingData: BookingRequest
+  ): Observable<BookingResponse> {
     return this.http.post<BookingResponse>(
       `${this.apiUrl}/${propertyId}/request`,
       bookingData
     );
+  }
+
+  /**
+   * Get similar properties based on area/city
+   */
+  getSimilarProperties(propertyId: number): Observable<Property[]> {
+    return this.http
+      .get<{ success: boolean; data: Property[] }>(
+        `${this.apiUrl}/${propertyId}/similar`
+      )
+      .pipe(
+        map((response) => response.data),
+        catchError((error: HttpErrorResponse) => {
+          console.warn(
+            'Failed to load similar properties, using mock data:',
+            error
+          );
+          return of(this.getMockSimilarProperties(propertyId));
+        })
+      );
+  }
+
+  /**
+   * Add comment to property
+   */
+  addComment(
+    propertyId: number,
+    rating: number,
+    comment: string
+  ): Observable<any> {
+    return this.http
+      .post<any>(`${this.apiUrl}/${propertyId}/comments`, { rating, comment })
+      .pipe(
+        catchError((error: HttpErrorResponse) => {
+          console.error('Failed to add comment:', error);
+          throw error;
+        })
+      );
+  }
+
+  /**
+   * Mock similar properties for fallback
+   */
+  private getMockSimilarProperties(excludeId: number): Property[] {
+    const mockProperties: Property[] = [];
+
+    for (let i = 1; i <= 4; i++) {
+      const id = excludeId + i;
+      const mockProp = this.getMockProperty(id);
+      mockProperties.push({
+        ...mockProp,
+        id,
+        title: `Modern Apartment ${i} in Cairo`,
+        price: 2500 + i * 400,
+      });
+    }
+
+    return mockProperties;
   }
 }

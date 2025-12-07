@@ -311,3 +311,61 @@ a:focus {
     color: black !important;
   }
 }
+/* property-detail.css or your global styles */
+
+/* Custom Galleria styles */
+:host ::ng-deep .p-galleria .p-galleria-item-nav {
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+}
+
+:host ::ng-deep .p-galleria .p-galleria-item-nav:hover {
+  background: rgba(255, 255, 255, 1);
+}
+
+:host ::ng-deep .p-galleria .p-galleria-indicators {
+  padding: 1rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+:host ::ng-deep .p-galleria .p-galleria-indicator button {
+  background-color: rgba(255, 255, 255, 0.4);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: none;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+:host ::ng-deep .p-galleria .p-galleria-indicator button:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+:host ::ng-deep .p-galleria .p-galleria-indicator.p-highlight button {
+  background-color: #f97316; /* Orange color */
+  transform: scale(1.2);
+}
+
+/* Dark mode support */
+:host-context(.dark) ::ng-deep .p-galleria .p-galleria-item-nav {
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+}
+
+:host-context(.dark) ::ng-deep .p-galleria .p-galleria-indicator button {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+:host-context(.dark)
+  ::ng-deep
+  .p-galleria
+  .p-galleria-indicator.p-highlight
+  button {
+  background-color: #fb923c; /* Lighter orange for dark mode */
+}

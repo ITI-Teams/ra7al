@@ -130,7 +130,12 @@ export interface Property {
   //university?: University;
   available_from: string;
   available_to?: string;
-  status: 'available' | 'partially_occupied' | 'fully_occupied' | 'maintenance' | 'inactive';
+  status:
+    | 'available'
+    | 'partially_occupied'
+    | 'fully_occupied'
+    | 'maintenance'
+    | 'inactive';
   location: Location;
   owner: Owner;
   images: PropertyImage[];
@@ -147,6 +152,7 @@ export interface Property {
   rentals?: ActiveRental[];
   pending_requests?: RentalRequest[];
   area: Area;
+  city: City;
   bills?: Bill[];
   roommates?: Roommate[];
 }
@@ -171,9 +177,9 @@ export interface PropertiesListResponse {
     areas: Area[];
     universities: University[];
     accommodation_types: string[];
-    price_ranges: Array<{min: number; max: number; label: string}>;
+    price_ranges: Array<{ min: number; max: number; label: string }>;
     rooms_options: number[];
-    sort_options: Array<{value: string; label: string}>;
+    sort_options: Array<{ value: string; label: string }>;
   };
 }
 
@@ -263,9 +269,9 @@ export interface FilterResponse {
     areas: Area[];
     universities: University[];
     accommodation_types: string[];
-    price_ranges: Array<{min: number; max: number; label: string}>;
+    price_ranges: Array<{ min: number; max: number; label: string }>;
     rooms_options: number[];
-    sort_options: Array<{value: string; label: string}>;
+    sort_options: Array<{ value: string; label: string }>;
   };
   pagination: {
     current_page: number;
