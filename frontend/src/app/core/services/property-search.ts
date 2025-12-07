@@ -7,7 +7,7 @@ import { environment } from '../../environments/environment';
   providedIn: 'root',
 })
 export class PropertySearch {
-  private apiUrl = `${environment.apiUrl}/v1/properties/search`;
+  private apiUrl = `${environment.apiUrl}/properties/search`;
 
   constructor(private http: HttpClient) {}
 
