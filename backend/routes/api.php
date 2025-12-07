@@ -12,8 +12,10 @@ use App\Http\Controllers\Api\CityController;
 use App\Http\Controllers\Api\AmenityController;
 use App\Http\Controllers\Api\V1\PropertySaveController;
 use App\Http\Controllers\Api\V1\RecommendationController;
+use App\Http\Controllers\Api\V1\HomeController;
 
 
+Route::get('/home/latest-properties', [HomeController::class, 'latestPropertiesByCity']);
 
 // profile student and owner
 Route::middleware(['auth:sanctum'])->group(function () {
