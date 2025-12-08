@@ -17,6 +17,9 @@ use App\Http\Controllers\Api\V1\PropertyController;
 use App\Http\Controllers\Api\V1\LocationController;
 use App\Http\Controllers\Api\V1\PropertySearchController;
 use App\Http\Controllers\Api\V1\RecommendationController;
+use App\Http\Controllers\Api\V1\HomeController;
+use App\Http\Controllers\Api\V1\DashboardController;
+
 use App\Http\Controllers\Api\V1\PropertyCommentController;
 use App\Http\Controllers\Api\V1\PropertySaveController;
 
@@ -134,6 +137,22 @@ Route::prefix('recommendations')->group(function () {
     });
 });
 
+
+// favourites api routes
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('property/{id}/favourite', [PropertySaveController::class, 'toggle']);
+    Route::get('/my-favourites', [PropertySaveController::class, 'myFavourites']);
+});
+
+// Dashboard API routes
+Route::prefix('dashboard')->group(function () {
+    Route::get('/stats', [DashboardController::class, 'stats']);
+    Route::get('/users-per-month', [DashboardController::class, 'usersPerMonth']);
+    Route::get('/users-by-role', [DashboardController::class, 'usersByRole']);
+    Route::get('/properties-per-city', [DashboardController::class, 'propertiesPerCity']);
+    Route::get('/properties-by-status', [DashboardController::class, 'propertiesByStatus']);
+    Route::get('/messages-by-priority', [DashboardController::class, 'messagesByPriority']);
+});
 /*
 |--------------------------------------------------------------------------
 | Contact & Messages Routes
