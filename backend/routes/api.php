@@ -74,9 +74,7 @@ Route::get('/home/latest-properties', [HomeController::class, 'latestPropertiesB
 Route::prefix('properties')->group(function () {
     // Public Property Routes
     Route::get('/', [PropertyController::class, 'index']);
-    Route::get('/{id}', [PropertyController::class, 'show']);
-    Route::get('/{id}/similar', [PropertyController::class, 'getSimilarProperties']);
-    route::get('/{id}/comments', [PropertyCommentController::class, 'getPropertyComments']);
+
 
     // Property Search & Filter
     Route::get('/search', [PropertySearchController::class, 'search']);
@@ -109,6 +107,9 @@ Route::prefix('properties')->group(function () {
         // Comments
         Route::post('/{id}/comments', [PropertyCommentController::class, 'addComment']);
     });
+    Route::get('/show/{id}', [PropertyController::class, 'show']);
+    Route::get('/{id}/similar', [PropertyController::class, 'getSimilarProperties']);
+    route::get('/{id}/comments', [PropertyCommentController::class, 'getPropertyComments']);
 });
 
 /*

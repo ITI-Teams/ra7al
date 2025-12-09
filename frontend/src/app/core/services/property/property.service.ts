@@ -48,7 +48,7 @@ export class PropertyService {
   getPropertyById(id: number): Observable<Property> {
     this.isLoading.set(true);
 
-    return this.http.get<PropertyResponse>(`${this.apiUrl}/${id}`).pipe(
+    return this.http.get<PropertyResponse>(`${this.apiUrl}/show/${id}`).pipe(
       map((response) => {
         this.isLoading.set(false);
         return response.data;
