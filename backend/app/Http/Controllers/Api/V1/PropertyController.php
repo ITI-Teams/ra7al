@@ -60,7 +60,7 @@ class PropertyController extends Controller
                 'data' => $similarProperties,
             ], 200);
         } catch (\Exception $e) {
-            \Log::error('Error fetching similar properties: ' . $e->getMessage());
+            Log::error('Error fetching similar properties: ' . $e->getMessage());
 
             return response()->json([
                 'success' => false,

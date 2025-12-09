@@ -35,7 +35,7 @@ class PropertySaveController extends Controller
         ]);
     }
 
-   
+
 
     public function myFavourites()
     {

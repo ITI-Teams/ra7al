@@ -10,9 +10,12 @@ class HomeController extends Controller
 {
     public function latestPropertiesByCity()
     {
-        $cities = City::with(['properties' => function ($q) {
-            $q->latest()->take(4);  // آخر 4 properties لكل مدينة
-        }])->get();
+        $cities = City::inRandomOrder()
+            ->limit(4)
+            ->with(['properties' => function ($q) {
+                $q->latest()->take(4);
+            }])
+            ->get();
 
         return response()->json([
             'cities' => $cities
