@@ -299,7 +299,7 @@
 
   </div>
 
-  <!-- ROOMS / BATHS / SIZE / BEDS / SPOTS / MIN STAY -->
+  <!-- ROOMS / BATHS / SIZE / BEDS / SPOTS -->
   <div class="grid grid-cols-2 gap-4 mb-4">
 
     <!-- Total Rooms -->
@@ -394,55 +394,61 @@
                text-gray-900 dark:text-white shadow-sm">
     </div>
 
-    <!-- Minimum Stay -->
-    <div>
-      <label class="block mb-1 text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
-        <i class="fa-solid fa-calendar-days text-[#9233FA]"></i>
-        Minimum Stay (Months)
-      </label>
-      <input
-        type="number"
-        formControlName="minimum_stay_months"
-        placeholder="Minimum Stay"
-        class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#9233FA]/40
-               text-gray-900 dark:text-white shadow-sm">
-    </div>
+
+
+
 
   </div>
 
-  <!-- University -->
-  <div class="relative w-full mb-4" [class.z-30]="universityOpen">
-    <label class="block mb-1 text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
-      <i class="fa-solid fa-building-columns text-[#9233FA]"></i>
-      University
-    </label>
+<!-- University -->
+<div class="mb-5 relative" [class.z-30]="universityOpen">
+  <label class="block mb-2 font-medium text-gray-700 dark:text-gray-300">
+    University <span class="text-red-500">*</span>
+  </label>
 
-    <button
-      type="button"
-      (click)="universityOpen = !universityOpen"
-      [disabled]="!selectedCityId"
-      class="w-full bg-gray-200 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#9233FA]/40
-             text-gray-900 dark:text-white shadow-sm flex justify-between items-center
-             focus:ring-2 focus:ring-[#9233FA] outline-none transition disabled:opacity-50">
+  <button
+    type="button"
+    (click)="universityOpen = !universityOpen"
+    [disabled]="!selectedCityId"
+    class="w-full bg-gray-100 dark:bg-gray-900 px-5 py-3 rounded-xl border border-[#9233FA]/40
+           text-gray-900 dark:text-white shadow-sm flex justify-between items-center
+           focus:ring-2 focus:ring-[#9233FA] outline-none transition text-left disabled:opacity-50"
+  >
+    <div class="flex items-center gap-2">
+      <i class="fa-solid fa-building-columns text-gray-500 dark:text-gray-400"></i>
       {{ selectedUniversityName || 'Select University' }}
-      <i class="fa" [ngClass]="universityOpen ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
-    </button>
+    </div>
+    <i class="fa" [ngClass]="universityOpen ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+  </button>
 
-    <ul
-      *ngIf="universityOpen && universities.length > 0"
-      class="absolute w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700
-             rounded-xl shadow-lg overflow-hidden z-30 max-h-60 overflow-y-auto">
-      <li
-        *ngFor="let uni of universities"
-        (click)="selectUniversity(uni)"
-        class="px-5 py-3 hover:bg-purple-100 dark:hover:bg-gray-700 cursor-pointer text-gray-900
-               dark:text-white flex items-center gap-2">
-        <span>{{ uni.name }}</span>
-        <span *ngIf="uni.abbreviation" class="text-xs text-gray-500">({{ uni.abbreviation }})</span>
-      </li>
-    </ul>
+  <!-- University Dropdown -->
+  <ul
+    *ngIf="universityOpen && universities.length > 0"
+    class="absolute w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700
+           rounded-xl shadow-lg overflow-hidden z-30 max-h-60 overflow-y-auto"
+  >
+    <li
+      *ngFor="let uni of universities"
+      (click)="selectUniversity(uni)"
+      class="px-5 py-3 hover:bg-purple-100 dark:hover:bg-gray-700 cursor-pointer
+             text-gray-900 dark:text-white flex items-center gap-2"
+    >
+      <i class="fa-solid fa-school text-[#9233FA]"></i>
+      <span>{{ uni.name }}</span>
+      <span *ngIf="uni.abbreviation" class="text-xs text-gray-500">
+        ({{ uni.abbreviation }})
+      </span>
+    </li>
+  </ul>
 
-  </div>
+  <small *ngIf="f.university_id?.touched && f.university_id?.invalid" class="text-red-500 text-sm mt-1 block">
+    University is required
+  </small>
+  <small *ngIf="f.university_id?.errors?.server" class="text-red-500 text-sm mt-1 block">
+    {{ f.university_id.errors.server }}
+  </small>
+</div>
+
 </div>
 
 
@@ -610,32 +616,10 @@
       />
       <span class="text-gray-900 dark:text-white">Furnished</span>
     </label>
+
   </div>
 
-  <!-- Contact Information (Read-only - Owner Info) -->
-  <div class="grid grid-cols-2 gap-4">
-    <div class="relative">
-      <input
-        type="tel"
-        placeholder="Contact Phone"
-        formControlName="contact_phone"
-        [disabled]="true"
-        class="w-full bg-gray-100 dark:bg-gray-800 px-5 py-3 rounded-xl border border-gray-300/40 text-gray-600 dark:text-gray-400 shadow-sm outline-none cursor-not-allowed"
-      />
-      <small class="text-gray-500 text-xs mt-1 block">Owner phone number (read-only)</small>
-    </div>
 
-    <div>
-      <input
-        type="email"
-        placeholder="Contact Email"
-        formControlName="contact_email"
-        [disabled]="true"
-        class="w-full bg-gray-100 dark:bg-gray-800 px-5 py-3 rounded-xl border border-gray-300/40 text-gray-600 dark:text-gray-400 shadow-sm outline-none cursor-not-allowed"
-      />
-      <small class="text-gray-500 text-xs mt-1 block">Owner email address (read-only)</small>
-    </div>
-  </div>
 </div>
 
 

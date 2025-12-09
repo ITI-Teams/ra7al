@@ -41,6 +41,7 @@ export class EditProperty implements OnInit {
   isLoading = false;
   previewImages: (string | ArrayBuffer)[] = [];
   existingImages: any[] = [];
+  imagesToDeleteIds: number[] = [];
   selectedAmenityIds: number[] = [];
   amenitiesOpen = false;
   cityOpen = false;
@@ -60,7 +61,8 @@ export class EditProperty implements OnInit {
   areas: AreaData[] = [];
   amenities: AmenityData[] = [];
 
-  genderOptions = ['male', 'female', 'mixed'];
+  // Allowed gender options must match backend validation (male|female)
+  genderOptions = ['male', 'female'];
   accommodationTypes = ['Studio', 'Apartment', 'Villa', 'Shared'];
   paymentMethods = ['cash', 'bank_transfer', 'vodafone_cash'];
   selectedPaymentMethods: string[] = [];
@@ -153,30 +155,62 @@ export class EditProperty implements OnInit {
     this.previewImages = [];
     this.existingImages = [];
 
-    // Extract city and area IDs from nested location structure
-    const cityId = property.location?.city?.id;
-    const areaId = property.location?.area?.id;
-    const cityName = property.location?.city?.name;
-    const areaName = property.location?.area?.name;
+    // Extract city and area IDs/names from multiple possible response shapes
+    // Backend may return: property.city, property.area, property.city_id, property.area_id
+    const cityIdFromRelation = property.city?.id || property.area?.city?.id;
+    const cityId = cityIdFromRelation || property.city_id || property.location?.city?.id;
+    const cityName = property.city?.name || property.location?.city?.name || property.area?.city?.name || null;
 
-    // Set city and load areas
+    const areaId = property.area?.id || property.area_id || property.location?.area?.id;
+    const areaName = property.area?.name || property.location?.area?.name || null;
+
+    // Set city and load related lists (areas & universities)
     if (cityId) {
       this.selectedCityId = cityId;
       this.selectedCityName = cityName || null;
 
-      // Load areas for this city
+      // Load areas for this city and mark selected area name when available
       this.propertyService.getAreas(cityId).subscribe((list) => {
         this.areas = list || [];
+        if (areaId) {
+          const found = this.areas.find(a => a.id === areaId);
+          if (found) {
+            this.selectedAreaId = found.id;
+            this.selectedAreaName = found.name;
+            // ensure form control is patched
+            this.propertyForm.patchValue({ area_id: found.id });
+          }
+        }
       });
 
-      // Load universities for this city
+      // Load universities for this city and set selected name if present
       this.propertyService.getUniversitiesByCity(cityId).subscribe((list) => {
         this.universities = list || [];
+        if (property.university_id || property.university?.id) {
+          const uniId = property.university_id || property.university?.id || null;
+          const foundUni = this.universities.find(u => u.id === uniId);
+          if (foundUni) {
+            this.selectedUniversityId = foundUni.id;
+            this.selectedUniversityName = foundUni.name;
+            this.propertyForm.patchValue({ university_id: foundUni.id });
+          } else if (property.university?.name) {
+            // fallback: keep id if name only
+            this.selectedUniversityId = uniId;
+            this.selectedUniversityName = property.university?.name || null;
+            this.propertyForm.patchValue({ university_id: uniId });
+          }
+        }
       });
     }
 
-    // Set area
-    if (areaId) {
+    // If city wasn't available above, but area includes city info, attempt to set from area
+    if (!this.selectedCityId && areaId && property.area?.city) {
+      this.selectedCityId = property.area.city.id;
+      this.selectedCityName = property.area.city.name;
+    }
+
+    // If area info exists independently, set it (will be overridden above if areas list found it)
+    if (areaId && !this.selectedAreaId) {
       this.selectedAreaId = areaId;
       this.selectedAreaName = areaName || null;
     }
@@ -216,24 +250,16 @@ export class EditProperty implements OnInit {
     }
     this.selectedPaymentMethods = paymentMethods;
 
-    // Set existing images
+    // Set existing images (use helper to normalize URL)
     if (property.images && Array.isArray(property.images)) {
       this.existingImages = property.images;
-      property.images.forEach((img: any) => {
-        // Try to get the URL from the response
-        let imageUrl = img.url || '';
-
-        // If no URL, construct it from the path using environment
-        if (!imageUrl && img.path) {
-          imageUrl = `${environment.imageUrl}/storage/${img.path}`;
-        }
-
-        if (imageUrl) {
-          console.log('Adding existing image:', imageUrl);
-          this.previewImages.push(imageUrl);
-        }
+      const existingUrls = this.existingImages.map(img => this.getImageUrl(img)).filter(u => !!u);
+      existingUrls.forEach(u => {
+        console.log('Adding existing image:', u);
+        this.previewImages.push(u);
       });
-    }    // Convert boolean values properly
+    }
+    // Convert boolean values properly
     const smokingAllowed = property.smoking_allowed === true || property.smoking_allowed === 1 || property.smoking_allowed === '1';
     const petsAllowed = property.pets_allowed === true || property.pets_allowed === 1 || property.pets_allowed === '1';
     const isFurnished = property.furnished === true || property.furnished === 1 || property.furnished === '1';
@@ -246,15 +272,13 @@ export class EditProperty implements OnInit {
       address: property.address || '',
       city_id: cityId || '',
       area_id: areaId || '',
-      gender_requirement: property.gender_requirement || 'mixed',
+      gender_requirement: property.gender_requirement || 'male',
       total_rooms: property.total_rooms ? parseInt(property.total_rooms.toString()) : '',
       available_rooms: property.available_rooms ? parseInt(property.available_rooms.toString()) : '',
       bathrooms_count: property.bathrooms_count ? parseInt(property.bathrooms_count.toString()) : '',
       beds: property.beds ? parseInt(property.beds.toString()) : '',
       available_spots: property.available_spots ? parseInt(property.available_spots.toString()) : '',
       size: property.size ? parseInt(property.size.toString()) : '',
-      minimum_stay_months: property.minimum_stay_months ? parseInt(property.minimum_stay_months.toString()) : '',
-      security_deposit: property.security_deposit ? parseFloat(property.security_deposit.toString()) : '',
       accommodation_type: property.accommodation_type || 'Apartment',
       university_id: property.university_id || '',
       available_from: this.formatDate(property.available_from),
@@ -262,12 +286,9 @@ export class EditProperty implements OnInit {
       smoking_allowed: smokingAllowed,
       pets_allowed: petsAllowed,
       furnished: isFurnished,
-      contact_phone: property.owner?.phone || '',
-      contact_email: property.owner?.email || '',
       amenities: this.selectedAmenityIds,
       payment_methods: this.selectedPaymentMethods,
     });
-
     console.log('Form reset with all values:', {
       title: property.title,
       price: property.price,
@@ -316,24 +337,20 @@ export class EditProperty implements OnInit {
       address: ['', [Validators.required]],
       city_id: ['', [Validators.required]],
       area_id: ['', [Validators.required]],
-      gender_requirement: ['mixed', [Validators.required]],
+      gender_requirement: ['male', [Validators.required]],
       total_rooms: ['', [Validators.required, Validators.min(1)]],
       available_rooms: ['', [Validators.required, Validators.min(1)]],
       bathrooms_count: ['', [Validators.required, Validators.min(1)]],
       beds: ['', [Validators.required, Validators.min(1)]],
       available_spots: ['', [Validators.required, Validators.min(1)]],
       size: ['', [Validators.required, Validators.min(1)]],
-      minimum_stay_months: ['1', [Validators.required, Validators.min(1)]],
-      security_deposit: ['', [Validators.required, Validators.min(0)]],
       accommodation_type: ['Apartment', [Validators.required]],
-      university_id: ['', [Validators.required]],
+      // university_id: ['', [Validators.required]],
       available_from: ['', [Validators.required]],
       available_to: ['', [Validators.required]],
       smoking_allowed: [false],
       pets_allowed: [false],
       furnished: [false],
-      contact_phone: [{value: '', disabled: true}],
-      contact_email: [{value: '', disabled: true}],
       images: [null as File[] | null],
       amenities: [[] as number[]],
       payment_methods: [[] as string[]],
@@ -396,6 +413,15 @@ export class EditProperty implements OnInit {
   return `${year}-${month}-${day}`;   // <-- Angular-friendly
 }
 
+  // Helper: compute an image URL from various backend fields
+  getImageUrl(img: any): string {
+    if (!img) return '';
+    if (img.url) return img.url;
+    if (img.path) return `${environment.imageUrl}/storage/${img.path}`;
+    if (img.image_path) return `${environment.imageUrl}/storage/${img.image_path}`;
+    return '';
+  }
+
 
   onFileChange(event: any) {
   const files: FileList = event.target.files;
@@ -410,17 +436,23 @@ export class EditProperty implements OnInit {
   // Reset preview list
   this.previewImages = [];
 
-  // BASE URL for Laravel storage
-  const BASE_URL = '/storage/';
+  // Helper: derive URL for existing image objects from multiple possible fields
+  const getExistingImageUrl = (img: any) => {
+    if (!img) return '';
+    if (img.url) return img.url;
+    if (img.path) return `${environment.imageUrl}/storage/${img.path}`;
+    if (img.image_path) return `${environment.imageUrl}/storage/${img.image_path}`;
+    return '';
+  };
 
-  // 1) Add existing images (from database)
-  if (this.existingImages && this.existingImages.length > 0) {
-    this.existingImages.forEach(img => {
-      this.previewImages.push(BASE_URL + img.image_path);
-    });
-  }
+  // 1) Add existing images (from database) in a deterministic way
+  const existingUrls = (this.existingImages || [])
+    .map(getExistingImageUrl)
+    .filter(u => !!u);
 
-  // 2) Add previews for newly uploaded files
+  this.previewImages = [...existingUrls];
+
+  // 2) Add previews for newly uploaded files (Data URLs)
   fileArray.forEach((file: File) => {
     const reader = new FileReader();
     reader.onload = () => {
@@ -525,15 +557,39 @@ export class EditProperty implements OnInit {
 
     const formData = new FormData();
 
+    // Ensure form values reflect selected ids (city/area/university) before building payload
     const formValue = this.propertyForm.value;
+
+    // Normalize numeric IDs: prefer selected values, then form values, then loaded property fallbacks
+    const normalizeId = (val: any) => {
+      if (val === null || val === undefined || val === '') return null;
+      const n = Number(val);
+      return Number.isFinite(n) && !Number.isNaN(n) ? Math.trunc(n) : null;
+    };
+
+    const cityToSend = normalizeId(this.selectedCityId ?? formValue.city_id ?? this.property?.location?.city?.id);
+    const areaToSend = normalizeId(this.selectedAreaId ?? formValue.area_id ?? this.property?.area?.id);
+    const uniToSend = normalizeId(this.selectedUniversityId ?? formValue.university_id ?? this.property?.university_id);
+
+    // Patch the form controls so validations and further logic see the right values
+    this.propertyForm.patchValue({ city_id: cityToSend, area_id: areaToSend, university_id: uniToSend });
+
+    // Basic client-side guard: ensure required relation ids are present and numeric
+    if (!cityToSend || !areaToSend || !uniToSend) {
+      if (!cityToSend) this.propertyForm.get('city_id')?.setErrors({ required: true });
+      if (!areaToSend) this.propertyForm.get('area_id')?.setErrors({ required: true });
+      if (!uniToSend) this.propertyForm.get('university_id')?.setErrors({ required: true });
+      this.msg.add({ severity: 'error', summary: 'Validation', detail: 'Please select City, Area and University' });
+      return;
+    }
 
     // Add all required and optional fields
     formData.append('title', formValue.title || '');
     formData.append('description', formValue.description || '');
     formData.append('price', formValue.price || '');
     formData.append('address', formValue.address || '');
-    formData.append('city_id', formValue.city_id || '');
-    formData.append('area_id', formValue.area_id || '');
+    formData.append('city_id', String(cityToSend));
+    formData.append('area_id', String(areaToSend));
     formData.append('gender_requirement', formValue.gender_requirement || 'mixed');
     formData.append('total_rooms', formValue.total_rooms || '');
     formData.append('available_rooms', formValue.available_rooms || '');
@@ -541,13 +597,9 @@ export class EditProperty implements OnInit {
     formData.append('beds', formValue.beds || '');
     formData.append('available_spots', formValue.available_spots || '');
     formData.append('size', formValue.size || '');
-    formData.append('minimum_stay_months', formValue.minimum_stay_months || '1');
-    formData.append('security_deposit', formValue.security_deposit || '0');
     formData.append('accommodation_type', formValue.accommodation_type || 'Apartment');
-    formData.append(
-      'university_id',
-      this.selectedUniversityId?.toString() || formValue.university_id || ''
-    );
+    // Ensure we always attach university id (may be empty string if not set)
+    formData.append('university_id', String(uniToSend));
     formData.append('available_from', formValue.available_from || '');
     formData.append('available_to', formValue.available_to || '');
     formData.append('smoking_allowed', formValue.smoking_allowed ? '1' : '0');
@@ -569,11 +621,38 @@ export class EditProperty implements OnInit {
       });
     }
 
-    // Add new images with correct field name
+    // Add new images with correct field name (only append real File objects)
     if (formValue.images && formValue.images.length > 0) {
-      formValue.images.forEach((file: File) => {
+      const validFiles = (formValue.images as any[]).filter(f => f instanceof File);
+      validFiles.forEach((file: File) => {
         formData.append('new_images[]', file);
       });
+    }
+
+    // Append images marked for deletion (ids)
+    if (this.imagesToDeleteIds && this.imagesToDeleteIds.length > 0) {
+      this.imagesToDeleteIds.forEach((id) => {
+        formData.append('images_to_delete[]', String(id));
+      });
+    }
+
+    // Debug: log key fields to help diagnose 422s (missing/invalid city/area/university)
+    try {
+      const debugPayload: any = {
+        city_id: formValue.city_id || this.selectedCityId,
+        area_id: formValue.area_id || this.selectedAreaId,
+        university_id: this.selectedUniversityId || formValue.university_id,
+        title: formValue.title,
+        price: formValue.price,
+      };
+      console.log('Updating property payload (debug):', debugPayload);
+
+      // log FormData entries (for development only)
+      const entries: any[] = [];
+      formData.forEach((value, key) => entries.push({ key, value }));
+      console.log('FormData entries:', entries);
+    } catch (e) {
+      console.warn('Failed to enumerate FormData for debug', e);
     }
 
     this.isSubmitting = true;
@@ -589,12 +668,23 @@ export class EditProperty implements OnInit {
         error: (err) => {
           this.serverErrors = {};
 
+          // Log full server error for debugging
+          console.error('Full server error object:', err?.error || err);
+
           if (err?.error?.errors && typeof err.error.errors === 'object') {
             const errors = err.error.errors as { [key: string]: string[] };
+            console.log('Server validation errors:', errors);
 
             Object.keys(errors).forEach((key) => {
-              const parts = key.split('.');
-              const controlKey = parts[0];
+              // Normalize keys like "university id" -> "university_id" and remove array/index parts
+              const rawKey = key.split('.')[0];
+              let controlKey = rawKey.replace(/\s+/g, '_').replace(/\[.*\]/g, '').replace(/-/g, '_');
+
+              // If the normalized key still doesn't match, try a secondary normalization
+              if (!this.propertyForm.get(controlKey)) {
+                controlKey = controlKey.toLowerCase();
+              }
+
               const message = errors[key].join(' ');
               this.serverErrors[controlKey] = message;
 
@@ -604,15 +694,15 @@ export class EditProperty implements OnInit {
               }
             });
 
-            const firstField = Object.keys(errors)[0];
-            const firstMsg = errors[firstField][0];
+            // Show first validation message (if present)
+            const firstErrorKey = Object.keys(errors)[0];
+            const firstMsg = errors[firstErrorKey] && errors[firstErrorKey][0] ? errors[firstErrorKey][0] : 'Validation error';
             this.msg.add({ severity: 'error', summary: 'Validation error', detail: firstMsg });
           } else {
             const detail = err?.error?.message || 'Failed to update property';
             this.msg.add({ severity: 'error', summary: 'Error', detail });
           }
 
-          console.error('Error response:', err);
           this.isSubmitting = false;
         },
       });
@@ -620,24 +710,49 @@ export class EditProperty implements OnInit {
   }
 
   removeImage(index: number) {
-    this.previewImages.splice(index, 1);
-    // If this is a new image (beyond existing images count)
-    if (index >= this.existingImages.length) {
+    // Determine how many existing images have valid URLs (they appear first in previewImages)
+    const existingUrls = (this.existingImages || []).map(img => this.getImageUrl(img)).filter(u => !!u);
+    const existingCount = existingUrls.length;
+
+    // If clicked on an existing image, remove it from existingImages; otherwise remove from new files
+    if (index < existingCount) {
+      // Remove the corresponding existing image object
+      this.existingImages.splice(index, 1);
+      // Rebuild previewImages: existing URLs + current new file previews
+      const existingPreviewUrls = (this.existingImages || []).map(img => this.getImageUrl(img)).filter(u => !!u);
+      const currentFiles = (this.f.images.value as File[]) || [];
+      const newFilePreviews: (string | ArrayBuffer)[] = [];
+      // We cannot regenerate dataURLs for new files synchronously here, so keep previous data URLs by slicing previewImages
+      // Build previewImages as existingPreviewUrls + remaining new previews
+      const previousNewPreviews = this.previewImages.slice(existingCount + 0);
+      this.previewImages = [...existingPreviewUrls, ...previousNewPreviews];
+    } else {
+      // Removing a newly added file
+      const fileIndex = index - existingCount;
       const currentFiles = this.f.images.value as File[];
       if (currentFiles) {
-        currentFiles.splice(index - this.existingImages.length, 1);
+        currentFiles.splice(fileIndex, 1);
         this.propertyForm.patchValue({ images: currentFiles });
       }
+      // Remove from previews
+      this.previewImages.splice(index, 1);
     }
   }
 
   removeExistingImage(imageId: number) {
     // This would require an API endpoint to delete specific images
-    // For now, we'll just remove from the preview
-    const index = this.existingImages.findIndex(img => img.id === imageId);
-    if (index > -1) {
-      this.existingImages.splice(index, 1);
-      this.previewImages.splice(index, 1);
+    // For now, remove the image object and its preview (if present)
+    const idx = this.existingImages.findIndex(img => img.id === imageId);
+    if (idx > -1) {
+      const imgObj = this.existingImages[idx];
+      const url = this.getImageUrl(imgObj);
+      // remove from existingImages
+      this.existingImages.splice(idx, 1);
+      // track for deletion on submit
+      if (imgObj && imgObj.id) this.imagesToDeleteIds.push(imgObj.id);
+      // remove matching preview (first occurrence)
+      const previewIndex = this.previewImages.findIndex(p => p === url);
+      if (previewIndex > -1) this.previewImages.splice(previewIndex, 1);
     }
   }
 
