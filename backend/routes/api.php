@@ -22,6 +22,7 @@ use App\Http\Controllers\Api\V1\DashboardController;
 
 use App\Http\Controllers\Api\V1\PropertyCommentController;
 use App\Http\Controllers\Api\V1\PropertySaveController;
+use App\Http\Controllers\Api\V1\OwnerDashboardController;
 
 
 /*
@@ -172,3 +173,5 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/my-favourites', [PropertySaveController::class, 'myFavourites']);
 });
+// Owner Dashboard Route
+Route::middleware('auth:sanctum')->get('/owner/dashboard', [OwnerDashboardController::class, 'index']);
