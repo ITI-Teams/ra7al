@@ -1,0 +1,232 @@
+<div class="dashboard-charts p-6 space-y-8 dark:bg-gray-900 min-h-screen">
+  <!-- Welcome Section -->
+  <div class="relative overflow-hidden">
+    <div
+      class="absolute inset-0 bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 blur-3xl"
+    ></div>
+    <div
+      class="relative welcome-msg bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white font-bold text-2xl md:text-3xl p-8 rounded-2xl shadow-2xl text-center animate-fade-in"
+    >
+      <div class="flex items-center justify-center gap-3">
+        <span class="text-4xl animate-wave">👋</span>
+        <span>Welcome back, Owner!</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Counters Grid -->
+  <div class="stats grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Total Properties Card -->
+    <div
+      class="stat-card group relative overflow-hidden bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-8 transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 animate-slide-up"
+      style="animation-delay: 0.1s"
+    >
+      <div
+        class="absolute inset-0 bg-gradient-to-br from-indigo-500 to-purple-500 opacity-0 group-hover:opacity-10 transition-opacity duration-500"
+      ></div>
+      <div
+        class="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 opacity-10 group-hover:scale-125 transition-transform duration-700"
+      ></div>
+
+      <div class="relative flex items-start justify-between mb-4">
+        <div class="flex-1">
+          <h3
+            class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3"
+          >
+            Total Properties
+          </h3>
+          <p
+            class="text-5xl font-extrabold bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent"
+          >
+            {{ dashboardData?.properties_count }}
+          </p>
+        </div>
+        <div
+          class="text-5xl transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 opacity-80"
+        >
+          🏘️
+        </div>
+      </div>
+
+      <div
+        class="relative mt-6 h-1.5 w-0 group-hover:w-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all duration-700"
+      ></div>
+    </div>
+
+    <!-- Active Tenants Card -->
+    <div
+      class="stat-card group relative overflow-hidden bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-8 transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 animate-slide-up"
+      style="animation-delay: 0.2s"
+    >
+      <div
+        class="absolute inset-0 bg-gradient-to-br from-emerald-500 to-teal-500 opacity-0 group-hover:opacity-10 transition-opacity duration-500"
+      ></div>
+      <div
+        class="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 opacity-10 group-hover:scale-125 transition-transform duration-700"
+      ></div>
+
+      <div class="relative flex items-start justify-between mb-4">
+        <div class="flex-1">
+          <h3
+            class="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3"
+          >
+            Active Tenants
+          </h3>
+          <p
+            class="text-5xl font-extrabold bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent"
+          >
+            {{ dashboardData?.active_tenants }}
+          </p>
+        </div>
+        <div
+          class="text-5xl transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 opacity-80"
+        >
+          👥
+        </div>
+      </div>
+
+      <div
+        class="relative mt-6 h-1.5 w-0 group-hover:w-full bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full transition-all duration-700"
+      ></div>
+    </div>
+  </div>
+
+  <!-- Charts Grid -->
+  <div class="charts-grid grid grid-cols-1 md:grid-cols-2 gap-8">
+    <!-- Properties by Status -->
+    <div
+      class="chart-card group relative overflow-hidden bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-6 transition-all duration-500 hover:shadow-2xl animate-chart-slide"
+      style="animation-delay: 0.1s"
+    >
+      <div
+        class="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+      ></div>
+
+      <div class="relative flex items-center justify-between mb-6">
+        <h4
+          class="text-lg font-bold text-gray-800 dark:text-white flex items-center gap-3"
+        >
+          <span
+            class="text-3xl transform group-hover:scale-125 transition-transform duration-300"
+            >📊</span
+          >
+          <span>Properties by Status</span>
+        </h4>
+        <div
+          class="w-2.5 h-2.5 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 animate-pulse shadow-lg"
+        ></div>
+      </div>
+
+      <div class="relative">
+        <canvas
+          baseChart
+          [data]="propertiesByStatusData"
+          [type]="propertiesByStatusType"
+          [options]="chartOptions"
+        ></canvas>
+      </div>
+    </div>
+
+    <!-- Properties by City -->
+    <div
+      class="chart-card group relative overflow-hidden bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-6 transition-all duration-500 hover:shadow-2xl animate-chart-slide"
+      style="animation-delay: 0.2s"
+    >
+      <div
+        class="absolute inset-0 bg-gradient-to-br from-violet-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+      ></div>
+
+      <div class="relative flex items-center justify-between mb-6">
+        <h4
+          class="text-lg font-bold text-gray-800 dark:text-white flex items-center gap-3"
+        >
+          <span
+            class="text-3xl transform group-hover:scale-125 transition-transform duration-300"
+            >🌆</span
+          >
+          <span>Properties by City</span>
+        </h4>
+        <div
+          class="w-2.5 h-2.5 rounded-full bg-gradient-to-r from-violet-500 to-purple-500 animate-pulse shadow-lg"
+        ></div>
+      </div>
+
+      <div class="relative">
+        <canvas
+          baseChart
+          [data]="propertiesByCityData"
+          [type]="propertiesByCityType"
+          [options]="chartOptions"
+        ></canvas>
+      </div>
+    </div>
+
+    <!-- Rental Requests Stats -->
+    <div
+      class="chart-card group relative overflow-hidden bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-6 transition-all duration-500 hover:shadow-2xl animate-chart-slide"
+      style="animation-delay: 0.3s"
+    >
+      <div
+        class="absolute inset-0 bg-gradient-to-br from-rose-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+      ></div>
+
+      <div class="relative flex items-center justify-between mb-6">
+        <h4
+          class="text-lg font-bold text-gray-800 dark:text-white flex items-center gap-3"
+        >
+          <span
+            class="text-3xl transform group-hover:scale-125 transition-transform duration-300"
+            >📈</span
+          >
+          <span>Rental Requests</span>
+        </h4>
+        <div
+          class="w-2.5 h-2.5 rounded-full bg-gradient-to-r from-rose-500 to-pink-500 animate-pulse shadow-lg"
+        ></div>
+      </div>
+
+      <div class="relative">
+        <canvas
+          baseChart
+          [data]="requestsStatsData"
+          [type]="requestsStatsType"
+          [options]="chartOptions"
+        ></canvas>
+      </div>
+    </div>
+
+    <!-- Requests per Property -->
+    <div
+      class="chart-card group relative overflow-hidden bg-white dark:bg-gray-800 shadow-xl rounded-2xl p-6 transition-all duration-500 hover:shadow-2xl animate-chart-slide"
+      style="animation-delay: 0.4s"
+    >
+      <div
+        class="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+      ></div>
+
+      <div class="relative flex items-center justify-between mb-6">
+        <h4
+          class="text-lg font-bold text-gray-800 dark:text-white flex items-center gap-3"
+        >
+          <span
+            class="text-3xl transform group-hover:scale-125 transition-transform duration-300"
+            >📋</span
+          >
+          <span>Requests per Property</span>
+        </h4>
+        <div
+          class="w-2.5 h-2.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 animate-pulse shadow-lg"
+        ></div>
+      </div>
+
+      <div class="relative">
+        <canvas
+          baseChart
+          [data]="requestsPerPropertyData"
+          [type]="requestsPerPropertyType"
+          [options]="chartOptions"
+        ></canvas>
+      </div>
+    </div>
+  </div>
+</div>

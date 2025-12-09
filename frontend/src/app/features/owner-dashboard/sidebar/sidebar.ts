@@ -39,7 +39,7 @@ export class Sidebar {
     {
       label: 'Dashboard',
       icon: 'fa-solid fa-gauge',
-      route: '/owner-dashboard',
+      route: '/owner-dashboard/owner-dashboardcharts',
     },
     {
       label: 'Offer for Rent',
@@ -100,7 +100,10 @@ export class Sidebar {
     if (name.length === 0) initials = '??';
     else {
       const parts = name.split(/\s+/).filter(Boolean);
-      initials = parts.length === 1 ? parts[0].slice(0, 2).toUpperCase() : (parts[0][0] + (parts[1][0] || '')).toUpperCase();
+      initials =
+        parts.length === 1
+          ? parts[0].slice(0, 2).toUpperCase()
+          : (parts[0][0] + (parts[1][0] || '')).toUpperCase();
     }
     const bg = '#667eea';
     const fg = '#ffffff';

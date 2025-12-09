@@ -1,0 +1,94 @@
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slide-up {
+    from {
+      opacity: 0;
+      transform: translateY(30px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @keyframes chart-slide {
+    from {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes wave {
+    0%,
+    100% {
+      transform: rotate(0deg);
+    }
+    25% {
+      transform: rotate(20deg);
+    }
+    75% {
+      transform: rotate(-20deg);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.8s ease-out;
+  }
+
+  .animate-slide-up {
+    animation: slide-up 0.6s ease-out both;
+  }
+
+  .animate-chart-slide {
+    animation: chart-slide 0.6s ease-out both;
+  }
+
+  .animate-wave {
+    animation: wave 2s ease-in-out infinite;
+  }
+
+  /* Smooth transitions */
+  .stat-card,
+  .chart-card {
+    will-change: transform;
+  }
+
+  /* Dark mode glass effect */
+  .dark .stat-card,
+  .dark .chart-card {
+    background: linear-gradient(
+      135deg,
+      rgba(31, 41, 55, 0.9) 0%,
+      rgba(17, 24, 39, 0.9) 100%
+    );
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(75, 85, 99, 0.3);
+  }
+
+  .dark .welcome-msg {
+    box-shadow: 0 25px 50px -12px rgba(139, 92, 246, 0.25);
+  }
+
+  /* Responsive canvas */
+  canvas {
+    max-height: 300px;
+  }
+
+  @media (max-width: 768px) {
+    canvas {
+      max-height: 250px;
+    }
+  }
