@@ -16,17 +16,29 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   register(formData: FormData): Observable<any> {
-    return this.http.post(`${this.apiBase}/auth/register`, formData, { withCredentials: true });
+    return this.http.post(`${this.apiBase}/register`, formData, {
+      withCredentials: true,
+    });
   }
 
-  login(payload: { email: string; password: string; role: string }): Observable<any> {
-    return this.http.post(`${this.apiBase}/login`, payload, { withCredentials: true });
+  login(payload: {
+    email: string;
+    password: string;
+    role: string;
+  }): Observable<any> {
+    return this.http.post(`${this.apiBase}/login`, payload, {
+      withCredentials: true,
+    });
   }
 
   logout(): Observable<any> {
     this.clearToken();
     this.clearUser();
-    return this.http.post(`${this.apiBase}/logout`, {}, { withCredentials: true });
+    return this.http.post(
+      `${this.apiBase}/logout`,
+      {},
+      { withCredentials: true }
+    );
   }
 
   storeToken(token: string) {
