@@ -20,6 +20,7 @@ import { Payment } from './features/payment/payment';
 import { General } from './layouts/general/general';
 import { Dashboard } from './layouts/dashboard/dashboard';
 import { PropertyDetail } from './features/property-detail/property-detail';
+import { RecommendationComponent } from './features/recommendation/recommendation';
 
 export const routes: Routes = [
   // General layout routes (with navbar & footer)
@@ -33,6 +34,7 @@ export const routes: Routes = [
       { path: 'contactus', component: Contactus },
       { path: 'filter', component: FilterPage },
       { path: 'search', component: Search },
+      { path: 'recommendations', component: RecommendationComponent },
 
       // Prevent logged-in users from accessing login/register
       {

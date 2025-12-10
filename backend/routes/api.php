@@ -135,8 +135,19 @@ Route::prefix('recommendations')->group(function () {
 
     // Protected Routes
     Route::middleware('auth:sanctum')->group(function () {
+        // Answer a single question
+        Route::post('/answer', [RecommendationController::class, 'answerQuestion'])
+            ->name('recommendations.answer');
+
+        // Answer multiple questions at once
+        Route::post('/answers', [RecommendationController::class, 'answerMultipleQuestions'])
+            ->name('recommendations.answers');
+
+        // Get AI-powered recommendations
         Route::post('/', [RecommendationController::class, 'getRecommendations'])
             ->name('recommendations.generate');
+
+        // Get recommendation history
         Route::get('/history', [RecommendationController::class, 'getHistory'])
             ->name('recommendations.history');
     });
