@@ -94,6 +94,37 @@
                    dark:bg-gray-700 dark:text-white focus:border-[#9810fa] focus:ring-2 focus:ring-purple-200
                    dark:focus:ring-purple-900 transition-all duration-300 outline-none">
 
+          <!-- Boolean (Yes/No) -->
+          <div *ngIf="isBooleanQuestion(question)" class="space-y-2">
+            <div class="flex items-center">
+              <input
+                type="radio"
+                [id]="'bool_yes_' + question.id"
+                [name]="'question_' + question.id"
+                [value]="true"
+                [checked]="formAnswers()[question.id] === true"
+                (change)="updateAnswer(question.id, true)"
+                class="w-4 h-4 text-[#9810fa] rounded-full cursor-pointer">
+              <label [for]="'bool_yes_' + question.id" class="ml-3 text-gray-700 dark:text-gray-300 cursor-pointer font-medium">
+                Yes
+              </label>
+            </div>
+
+            <div class="flex items-center">
+              <input
+                type="radio"
+                [id]="'bool_no_' + question.id"
+                [name]="'question_' + question.id"
+                [value]="false"
+                [checked]="formAnswers()[question.id] === false"
+                (change)="updateAnswer(question.id, false)"
+                class="w-4 h-4 text-[#9810fa] rounded-full cursor-pointer">
+              <label [for]="'bool_no_' + question.id" class="ml-3 text-gray-700 dark:text-gray-300 cursor-pointer font-medium">
+                No
+              </label>
+            </div>
+          </div>
+
           <!-- Single Select -->
           <div *ngIf="isSelectQuestion(question)" class="space-y-2">
             <div *ngFor="let option of getOptions(question)" class="flex items-center">
@@ -132,7 +163,7 @@
             </div>
           </div>
 
-          <!-- Range Input -->
+          Range Input
           <div *ngIf="isRangeQuestion(question)" class="space-y-2">
             <input
               type="range"

@@ -104,18 +104,32 @@ export class RecommendationComponent implements OnInit {
           // Parse options if they're JSON strings
           const parsedQuestions = response.data.map(q => ({
             ...q,
-            options: typeof q.options === 'string' ? JSON.parse(q.options) : q.options
+            options: typeof q.options === 'string' ? (() => {
+              try { return JSON.parse(q.options); } catch(e) { return q.options; }
+            })() : q.options
           }));
-          
-          this.allQuestions.set(parsedQuestions);
+
+          // Deduplicate questions client-side by question text to avoid duplicate rows
+          // coming from the database (keeps first occurrence)
+          const uniqueByQuestion = new Map<string, RecommendationQuestion>();
+          parsedQuestions.forEach((q: RecommendationQuestion) => {
+            const key = (q.question || '').trim();
+            if (!uniqueByQuestion.has(key)) {
+              uniqueByQuestion.set(key, q);
+            }
+          });
+
+          const dedupedQuestions = Array.from(uniqueByQuestion.values());
+
+          this.allQuestions.set(dedupedQuestions);
 
           // Group questions by category
-          const categories = this.recommendationService.getCategoriesInOrder(parsedQuestions);
+          const categories = this.recommendationService.getCategoriesInOrder(dedupedQuestions);
           this.categories.set(categories);
 
           const grouped: QuestionGroup[] = categories.map(category => ({
             category,
-            questions: parsedQuestions.filter(q => q.category === category)
+            questions: dedupedQuestions.filter(q => q.category === category)
           }));
 
           this.questionGroups.set(grouped);
@@ -295,17 +309,21 @@ export class RecommendationComponent implements OnInit {
     return this.getQuestionType(question) === 'text';
   }
 
+  isBooleanQuestion(question: RecommendationQuestion): boolean {
+    return this.getQuestionType(question) === 'boolean';
+  }
+
   /**
    * Get options array from question, handling JSON string parsing
    */
   getOptions(question: RecommendationQuestion): any[] {
     if (!question.options) return [];
-    
+
     // If it's already an array, return it
     if (Array.isArray(question.options)) {
       return question.options;
     }
-    
+
     // If it's a string (JSON), parse it
     if (typeof question.options === 'string') {
       try {
@@ -316,12 +334,12 @@ export class RecommendationComponent implements OnInit {
         return [];
       }
     }
-    
+
     // If it's an object (for range questions), return as array
     if (typeof question.options === 'object') {
       return [question.options];
     }
-    
+
     return [];
   }
 }
