@@ -17,7 +17,7 @@ import { FavouriteService } from '../../core/services/favourite/favourite-servic
   standalone: true,
   imports:  [FormsModule,RouterModule , NgClass,NgIf,ReactiveFormsModule,CommonModule],
   templateUrl: './student-profile.html',
-  styleUrl: './student-profile.css',
+  styleUrls: ['./student-profile.css'],
 })
 export class StudentProfile {
   properties: any[] = [];
@@ -38,11 +38,11 @@ showToast: boolean = false;
 
   constructor(private fb: FormBuilder, private profileSrv: ProfileService,private cdr: ChangeDetectorRef,   private favouriteService: FavouriteService ,  private router: Router) {
   this.profileForm = this.fb.group({
-    name: ['', [Validators.required, Validators.pattern(/^(?!\s*$)[\p{L}\s]+$/u)]],
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.minLength(6), Validators.maxLength(20)]],
-    gender:['',Validators.required],
-    age: ['', [Validators.required, Validators.min(5), Validators.max(113)]],
+  name: ['', [Validators.required, Validators.pattern(/^(?!\s*$)[\p{L}\s]+$/u)]],
+  email: ['', [Validators.required, Validators.email]],
+  password: ['', [Validators.minLength(6), Validators.maxLength(20)]],
+  gender:['',Validators.required],
+  age: ['', [Validators.required, Validators.min(5), Validators.max(120)]],
     habits: [''],
     preferences: [''],
     roommate_style: ['', [Validators.required, Validators.pattern(/^(?!\s*$)[\p{L}\s]+$/u)]],
@@ -164,35 +164,83 @@ saveData() {
 
   console.log('Payload to send:', payload);
 
+  // If avatar file selected, send as FormData so backend can process file upload
+  if (this.selectedAvatarFile) {
+    const form = new FormData();
+    Object.keys(payload).forEach((k) => {
+      const v: any = (payload as any)[k];
+      if (v === null || v === undefined) return;
+      if (Array.isArray(v) || typeof v === 'object') {
+        form.append(k, JSON.stringify(v));
+      } else {
+        form.append(k, String(v));
+      }
+    });
+    form.append('avatar', this.selectedAvatarFile as File);
+
+    this.profileSrv.saveProfile(form).subscribe({
+      next: (res) => {
+        this.showToastMessage('Data saved successfully', 'success');
+
+        if (res && res.profile) {
+          const updated = {
+            ...res.profile,
+            smoking: res.profile.smoking === 1 ? 'yes' : 'no',
+            pets: res.profile.pets === 1 ? 'yes' : 'no'
+          };
+
+          if (updated.avatar && typeof updated.avatar === 'string' && updated.avatar.includes('/images/users/')) {
+            updated.avatar = updated.avatar.replace('://localhost:8000/', '://localhost:8000/storage/');
+          }
+
+          this.profile = updated;
+          this.profileForm.patchValue({ ...updated, password: '' });
+        }
+
+        this.isEditing = false;
+      },
+      error: (err) => {
+        console.log('Error status:', err.status);
+        console.log('Error body:', err.error);
+        this.showToastMessage('An error occurred while saving. Please try again.','error');
+      }
+    });
+
+    return;
+  }
 
   this.profileSrv.saveProfile(payload).subscribe({
     next: (res) => {
+      this.showToastMessage('Data saved successfully', 'success');
 
-
-
-this.showToastMessage('Data saved successfully', 'success');
-
-      // this.isEditing = false;
-
-
-      if (res.profile) {
-        const profile = {
+      // Update local profile and form with server response
+      if (res && res.profile) {
+        const updated = {
           ...res.profile,
           smoking: res.profile.smoking === 1 ? 'yes' : 'no',
           pets: res.profile.pets === 1 ? 'yes' : 'no'
         };
 
+        // replace avatar path if necessary
+        if (updated.avatar && typeof updated.avatar === 'string' && updated.avatar.includes('/images/users/')) {
+          updated.avatar = updated.avatar.replace('://localhost:8000/', '://localhost:8000/storage/');
+        }
 
+        this.profile = updated;
 
+        // Ensure form shows updated values
+        this.profileForm.patchValue({ ...updated, password: '' });
       }
+
+      this.isEditing = false;
     },
     error: (err) => {
       // console.error('Error while saving:', err);
 
-        console.log('Error status:', err.status);
-  console.log('Error body:', err.error);
-  console.log('Full error:', err);
-        this.showToastMessage('حدث خطأ أثناء الحفظ، حاول مرة أخرى.','error');
+      console.log('Error status:', err.status);
+      console.log('Error body:', err.error);
+      console.log('Full error:', err);
+      this.showToastMessage('An error occurred while saving. Please try again.','error');
     },
   });
 }

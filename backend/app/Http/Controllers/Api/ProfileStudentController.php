@@ -84,14 +84,24 @@ class ProfileStudentController extends Controller
 
 
 
-        $data['habits'] = is_array($data['habits']) ? json_encode($data['habits']) : $data['habits'];
-        $data['preferences'] = is_array($data['preferences']) ? json_encode($data['preferences']) : $data['preferences'];
+        $data['habits'] = isset($data['habits']) && is_array($data['habits']) ? json_encode($data['habits']) : ($data['habits'] ?? null);
+        $data['preferences'] = isset($data['preferences']) && is_array($data['preferences']) ? json_encode($data['preferences']) : ($data['preferences'] ?? null);
 
 
         $userId = Auth::id();
 
-        if (!empty($data['avatar']) && strpos($data['avatar'], 'data:image') === 0) {
-
+        // Handle avatar upload: support file upload or base64 payload
+        if ($request->hasFile('avatar') && $request->file('avatar')->isValid()) {
+            $file = $request->file('avatar');
+            $extension = $file->extension() ?: 'png';
+            $fileName = 'avatar_' . Auth::id() . '_' . time() . '.' . $extension;
+            $folder = public_path('images/users/avatar');
+            if (!file_exists($folder)) {
+                mkdir($folder, 0777, true);
+            }
+            $file->move($folder, $fileName);
+            $data['avatar'] = 'images/users/avatar/' . $fileName;
+        } elseif (isset($data['avatar']) && !empty($data['avatar']) && strpos($data['avatar'], 'data:image') === 0) {
             preg_match('/data:image\/(\w+);base64,/', $data['avatar'], $matches);
             $extension = $matches[1] ?? 'png';
             $base64Str = substr($data['avatar'], strpos($data['avatar'], ',') + 1);
@@ -104,17 +114,23 @@ class ProfileStudentController extends Controller
             file_put_contents($folder . '/' . $fileName, $image);
             $data['avatar'] = 'images/users/avatar/' . $fileName;
         } else {
-            unset($data['avatar']);
+            // ensure avatar key is not accessed later if not provided
+            if (array_key_exists('avatar', $data)) {
+                // remove empty avatar value so we don't overwrite existing avatar with null
+                unset($data['avatar']);
+            }
         }
 
-        User::where('id', $userId)->update([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => !empty($data['password'])
-                ? Hash::make($data['password'])
-                : User::find($userId)->password,
-            'avatar' => $data['avatar']
-        ]);
+        $user = User::find($userId);
+        $user->name = $data['name'];
+        $user->email = $data['email'];
+        if (!empty($data['password'])) {
+            $user->password = Hash::make($data['password']);
+        }
+        if (isset($data['avatar'])) {
+            $user->avatar = $data['avatar'];
+        }
+        $user->save();
         unset($data['name'], $data['email'], $data['password'], $data['avatar']);
 
 
