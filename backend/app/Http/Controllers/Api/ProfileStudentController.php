@@ -84,37 +84,53 @@ class ProfileStudentController extends Controller
 
 
 
-        $data['habits'] = is_array($data['habits']) ? json_encode($data['habits']) : $data['habits'];
-        $data['preferences'] = is_array($data['preferences']) ? json_encode($data['preferences']) : $data['preferences'];
+        $data['habits'] = isset($data['habits']) && is_array($data['habits']) ? json_encode($data['habits']) : ($data['habits'] ?? null);
+        $data['preferences'] = isset($data['preferences']) && is_array($data['preferences']) ? json_encode($data['preferences']) : ($data['preferences'] ?? null);
 
 
         $userId = Auth::id();
 
-        if (!empty($data['avatar']) && strpos($data['avatar'], 'data:image') === 0) {
-
+        // Handle avatar upload: support file upload or base64 payload
+        if ($request->hasFile('avatar') && $request->file('avatar')->isValid()) {
+            $file = $request->file('avatar');
+            $extension = $file->extension() ?: 'png';
+            $fileName = 'avatar_' . Auth::id() . '_' . time() . '.' . $extension;
+            $folder = storage_path('app/public/images/users/avatar');
+            if (!file_exists($folder)) {
+                mkdir($folder, 0777, true);
+            }
+            $file->move($folder, $fileName);
+            $data['avatar'] = 'images/users/avatar/' . $fileName;
+        } elseif (isset($data['avatar']) && !empty($data['avatar']) && strpos($data['avatar'], 'data:image') === 0) {
             preg_match('/data:image\/(\w+);base64,/', $data['avatar'], $matches);
             $extension = $matches[1] ?? 'png';
             $base64Str = substr($data['avatar'], strpos($data['avatar'], ',') + 1);
             $image = base64_decode($base64Str);
             $fileName = 'avatar_' . Auth::id() . '_' . time() . '.' . $extension;
-            $folder = public_path('images/users/avatar');
+            $folder = storage_path('app/public/images/users/avatar');
             if (!file_exists($folder)) {
                 mkdir($folder, 0777, true);
             }
             file_put_contents($folder . '/' . $fileName, $image);
             $data['avatar'] = 'images/users/avatar/' . $fileName;
         } else {
-            unset($data['avatar']);
+            // ensure avatar key is not accessed later if not provided
+            if (array_key_exists('avatar', $data)) {
+                // remove empty avatar value so we don't overwrite existing avatar with null
+                unset($data['avatar']);
+            }
         }
 
-        User::where('id', $userId)->update([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => !empty($data['password'])
-                ? Hash::make($data['password'])
-                : User::find($userId)->password,
-            'avatar' => $data['avatar']
-        ]);
+        $user = User::find($userId);
+        $user->name = $data['name'];
+        $user->email = $data['email'];
+        if (!empty($data['password'])) {
+            $user->password = Hash::make($data['password']);
+        }
+        if (isset($data['avatar'])) {
+            $user->avatar = $data['avatar'];
+        }
+        $user->save();
         unset($data['name'], $data['email'], $data['password'], $data['avatar']);
 
 
@@ -130,4 +146,89 @@ class ProfileStudentController extends Controller
             'profile' => $profile
         ]);
     }
+
+    public function removeAvatar()
+    {
+        $userId = Auth::id();
+        $user = User::find($userId);
+
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+
+        // Delete avatar file from storage if it exists
+        if ($user->avatar) {
+            $filePath = storage_path('app/public/' . $user->avatar);
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+        }
+
+        // Remove avatar from database
+        $user->avatar = null;
+        $user->save();
+
+        return response()->json([
+            'message' => 'Avatar removed successfully',
+            'profile' => [
+                'name' => $user->name,
+                'email' => $user->email,
+                'avatar' => null,
+            ]
+        ]);
+    }
+
+    public function updateAvatar(Request $request)
+    {
+        $request->validate([
+            'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
+
+        $userId = Auth::id();
+        $user = User::find($userId);
+
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+
+        // Delete old avatar if exists
+        if ($user->avatar) {
+            $storagePath = storage_path('app/public/' . $user->avatar);
+            if (file_exists($storagePath)) {
+                unlink($storagePath);
+            }
+        }
+
+        // Upload new avatar to storage
+        if ($request->hasFile('avatar')) {
+            $file = $request->file('avatar');
+            $extension = $file->extension() ?: 'png';
+            $fileName = 'avatar_' . Auth::id() . '_' . time() . '.' . $extension;
+            $folder = storage_path('app/public/images/users/avatar');
+
+            if (!file_exists($folder)) {
+                mkdir($folder, 0777, true);
+            }
+
+            $file->move($folder, $fileName);
+            $avatarPath = 'images/users/avatar/' . $fileName;
+
+            // Update user avatar
+            $user->avatar = $avatarPath;
+            $user->save();
+
+            return response()->json([
+                'message' => 'Avatar updated successfully',
+                'profile' => [
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'avatar' => $avatarPath
+                ]
+            ]);
+        }
+
+        return response()->json(['error' => 'No file provided'], 400);
+    }
+
 }
+

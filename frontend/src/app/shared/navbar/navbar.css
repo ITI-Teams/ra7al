@@ -1,0 +1,10 @@
+/* Loading circle animation using conic-gradient */
+  .loading-circle {
+    background: conic-gradient(#852EE4 0% 25%, #DE7A18 25% 50%, #852EE4 50% 75%, #DE7A18 75% 100%);
+    animation: rotateCircle 1s linear infinite;
+  }
+
+  @keyframes rotateCircle {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }

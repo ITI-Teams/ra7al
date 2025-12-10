@@ -79,6 +79,14 @@ export class AuthService {
     return !!this.getToken();
   }
 
+  updateUserAvatar(avatarPath: string | null) {
+    const user = this.getUser();
+    if (user) {
+      user.avatar = avatarPath;
+      this.storeUser(user);
+    }
+  }
+
   getBackendBase(): string {
     return this.backendBase;
   }

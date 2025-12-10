@@ -7,6 +7,7 @@ import Swal from 'sweetalert2';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-navbar',
@@ -33,7 +34,8 @@ export class Navbar {
     public theme: ThemeService,
     private router: Router,
     private auth: AuthService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private location: Location
   ) {
     // Subscribe to user changes
     this.auth.user$.subscribe((user) => {
@@ -150,4 +152,14 @@ export class Navbar {
   toggleMenu() {
     this.menuOpen = !this.menuOpen;
   }
+
+  get navbarClasses() {
+  const isHome = this.location.path() === '' || this.location.path() === '/home';
+
+  return {
+    'fixed top-0 left-0 overflow-visible w-full z-40 bg-white dark:bg-gray-900': this.isFixed,
+    'static md:bg-[#852EE4] dark:md:bg-[#5e1fbf]': !this.isFixed && isHome
+  };
+}
+
 }

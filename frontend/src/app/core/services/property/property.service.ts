@@ -180,6 +180,19 @@ export class PropertyService {
     propertyId: number,
     propertyData: FormData | Partial<Property>
   ): Observable<PropertyResponse> {
+    // If caller passed FormData (multipart with files), some backends
+    // expect a POST with `_method=PUT` to support file uploads reliably.
+    if (propertyData instanceof FormData) {
+      return this.http
+        .post<PropertyResponse>(`${this.apiUrl}/${propertyId}`, propertyData)
+        .pipe(
+          catchError((error: HttpErrorResponse) => {
+            console.error('Failed to update property (multipart):', error);
+            throw error;
+          })
+        );
+    }
+
     return this.http
       .put<PropertyResponse>(`${this.apiUrl}/${propertyId}`, propertyData)
       .pipe(

@@ -122,4 +122,39 @@ export class Apartments implements OnInit {
   createNewProperty() {
     this.router.navigate(['/owner-dashboard/create-property']);
   }
+
+
+  // Pagination
+currentPage: number = 1;
+itemsPerPage: number = 3; // 3 per row × 2 rows
+
+get paginatedProperties() {
+  const start = (this.currentPage - 1) * this.itemsPerPage;
+  const end = start + this.itemsPerPage;
+  return this.properties.slice(start, end);
+}
+
+get totalPages() {
+  return Math.ceil(this.properties.length / this.itemsPerPage);
+}
+
+goToPage(page: number) {
+  if (page >= 1 && page <= this.totalPages) {
+    this.currentPage = page;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+nextPage() {
+  if (this.currentPage < this.totalPages) {
+    this.goToPage(this.currentPage + 1);
+  }
+}
+
+prevPage() {
+  if (this.currentPage > 1) {
+    this.goToPage(this.currentPage - 1);
+  }
+}
+
 }

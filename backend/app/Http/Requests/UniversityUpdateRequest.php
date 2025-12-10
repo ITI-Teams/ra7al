@@ -22,8 +22,8 @@ class UniversityUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'       => 'required|string|min:2|max:100|unique:universities,name,' . $this->university->id,
-            'city_id'    => 'required|exists:cities,id',
+            // 'name'       => 'required|string|min:2|max:100|unique:universities,name,' . $this->university->id,
+            // 'city_id'    => 'required|exists:cities,id',
         ];
     }
 }

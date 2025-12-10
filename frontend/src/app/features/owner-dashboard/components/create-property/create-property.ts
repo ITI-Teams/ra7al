@@ -132,8 +132,6 @@ export class CreateProperty implements OnInit {
       beds: ['', [Validators.required, Validators.min(1)]],
       available_spots: ['', [Validators.required, Validators.min(1)]],
       size: ['', [Validators.required, Validators.min(1)]],
-      minimum_stay_months: ['1', [Validators.required, Validators.min(1)]],
-      security_deposit: ['', [Validators.required, Validators.min(0)]],
       accommodation_type: ['Apartment', [Validators.required]],
       university_id: ['', [Validators.required]],
       available_from: ['', [Validators.required]],
@@ -141,9 +139,6 @@ export class CreateProperty implements OnInit {
       smoking_allowed: [false],
       pets_allowed: [false],
       furnished: [false],
-      is_negotiable: [false],
-      contact_phone: ['', [Validators.required, Validators.pattern(/^\+?(\d[\d\s\-()]{6,14}\d)$/)]],
-      contact_email: ['', [Validators.required, Validators.email]],
       images: [null as File[] | null],
       amenities: [[] as number[]],
       payment_methods: [[] as string[]],
@@ -173,17 +168,17 @@ dateCompareValidator(form: FormGroup) {
   // If invalid dates => do nothing
   if (isNaN(fromDate.getTime()) || isNaN(toDate.getTime())) return null;
 
-  // ❌ from < today
+  // from < today
   if (fromDate < today) {
     return { fromPastDate: true };
   }
 
-  // ❌ to < today
+  // to < today
   if (toDate < today) {
     return { toPastDate: true };
   }
 
-  // ❌ to < from
+  // to < from
   if (toDate < fromDate) {
     return { dateInvalid: true };
   }

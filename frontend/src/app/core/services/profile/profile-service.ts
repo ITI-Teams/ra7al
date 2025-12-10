@@ -31,12 +31,32 @@ getProfile(): Observable<{ profile: StudentProfileData }> {
 return this.http.get<{ profile: StudentProfileData }>(`${this.base}/profile`,{ headers });
 }
 // POST /profile (create/update)
-saveProfile(payload: Partial<StudentProfileData>): Observable<any> {
+saveProfile(payload: Partial<StudentProfileData> | FormData): Observable<any> {
   const token = localStorage.getItem('api_token');
-  const headers = { Authorization: `Bearer ${token}` };
+  const headers: any = { Authorization: `Bearer ${token}` };
+
+  // If sending FormData (contains avatar file), let HttpClient set the Content-Type boundary automatically
+  if (payload instanceof FormData) {
+    return this.http.post<any>(`${this.base}/profile`, payload, { headers });
+  }
 
   return this.http.post<any>(`${this.base}/profile`, payload, { headers });
 }
 
+// POST /profile/avatar (upload/update avatar only)
+uploadAvatar(file: File): Observable<any> {
+  const token = localStorage.getItem('api_token');
+  const headers: any = { Authorization: `Bearer ${token}` };
+  const formData = new FormData();
+  formData.append('avatar', file);
+  return this.http.post<any>(`${this.base}/profile/avatar`, formData, { headers });
+}
+
+// DELETE /profile/avatar (remove avatar)
+removeAvatar(): Observable<any> {
+  const token = localStorage.getItem('api_token');
+  const headers = { Authorization: `Bearer ${token}` };
+  return this.http.delete<any>(`${this.base}/profile/avatar`, { headers });
+}
 
 }
