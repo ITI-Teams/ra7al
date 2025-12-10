@@ -187,12 +187,46 @@ saveData() {
             pets: res.profile.pets === 1 ? 'yes' : 'no'
           };
 
+          // Parse habits if string
+          if (updated.habits && typeof updated.habits === 'string') {
+            try {
+              updated.habits = JSON.parse(updated.habits);
+            } catch {
+              updated.habits = updated.habits.split(',').map((h: string) => h.trim());
+            }
+          } else if (!Array.isArray(updated.habits)) {
+            updated.habits = [];
+          }
+
+          // Parse preferences if string
+          if (updated.preferences && typeof updated.preferences === 'string') {
+            try {
+              updated.preferences = JSON.parse(updated.preferences);
+            } catch {
+              updated.preferences = [updated.preferences];
+            }
+          } else if (!Array.isArray(updated.preferences)) {
+            updated.preferences = [];
+          }
+
           if (updated.avatar && typeof updated.avatar === 'string' && updated.avatar.includes('/images/users/')) {
             updated.avatar = updated.avatar.replace('://localhost:8000/', '://localhost:8000/storage/');
           }
 
           this.profile = updated;
-          this.profileForm.patchValue({ ...updated, password: '' });
+          
+          // Update selectedHabits for the dropdown
+          if (Array.isArray(updated.habits)) {
+            this.selectedHabits = updated.habits;
+          }
+
+          this.profileForm.patchValue({ 
+            ...updated, 
+            password: '',
+            habits: Array.isArray(updated.habits) ? updated.habits.join(', ') : ''
+          });
+          
+          this.cdr.detectChanges();
         }
 
         this.isEditing = false;
@@ -219,15 +253,48 @@ saveData() {
           pets: res.profile.pets === 1 ? 'yes' : 'no'
         };
 
+        // Parse habits if string
+        if (updated.habits && typeof updated.habits === 'string') {
+          try {
+            updated.habits = JSON.parse(updated.habits);
+          } catch {
+            updated.habits = updated.habits.split(',').map((h: string) => h.trim());
+          }
+        } else if (!Array.isArray(updated.habits)) {
+          updated.habits = [];
+        }
+
+        // Parse preferences if string
+        if (updated.preferences && typeof updated.preferences === 'string') {
+          try {
+            updated.preferences = JSON.parse(updated.preferences);
+          } catch {
+            updated.preferences = [updated.preferences];
+          }
+        } else if (!Array.isArray(updated.preferences)) {
+          updated.preferences = [];
+        }
+
         // replace avatar path if necessary
         if (updated.avatar && typeof updated.avatar === 'string' && updated.avatar.includes('/images/users/')) {
           updated.avatar = updated.avatar.replace('://localhost:8000/', '://localhost:8000/storage/');
         }
 
         this.profile = updated;
+        
+        // Update selectedHabits for the dropdown
+        if (Array.isArray(updated.habits)) {
+          this.selectedHabits = updated.habits;
+        }
 
         // Ensure form shows updated values
-        this.profileForm.patchValue({ ...updated, password: '' });
+        this.profileForm.patchValue({ 
+          ...updated, 
+          password: '',
+          habits: Array.isArray(updated.habits) ? updated.habits.join(', ') : ''
+        });
+        
+        this.cdr.detectChanges();
       }
 
       this.isEditing = false;
