@@ -1,20 +1,19 @@
 <nav
-  [ngClass]="{
-    'fixed top-0 left-0 overflow-visible w-full z-50 bg-white dark:bg-gray-900': isFixed,
-    'static': !isFixed
-  }"
+  [ngClass]="navbarClasses"
   class="transition-colors duration-500 bg-white dark:bg-gray-900"
 >
 
-  <div class="mx-auto flex items-center justify-between px-6 py-3">
+  <div class="mx-auto flex items-center justify-between">
 
     <!-- LEFT SECTION -->
-    <div class="flex items-center space-x-10">
+    <div class="flex items-center py-2 transition duration-500 bg-white ps-6  dark:bg-gray-900 w-1/2 h-[100%] space-x-10">
 
       <!-- LOGO -->
       <div class="flex items-center space-x-1">
-        <span class="text-2xl font-bold text-[#DE7A18]">Rahal</span>
-        <span class="w-3 h-3 mt-3 bg-[#852EE4] dark:bg-[#5e1fbf] rounded-full block"></span>
+        <img src="logos/rahal.png" alt="" class="w-8 h-8 object-contain" />
+        <span class="text-2xl font-bold text-[#852EE4] dark:text-[#5e1fbf]">Rahal</span>
+          <!-- Loading Circle -->
+          <span class="w-3 h-3 mt-3 rounded-full loading-circle block"></span>
       </div>
 
       <!-- DESKTOP MENU -->
@@ -30,7 +29,7 @@
     </div>
 
     <!-- RIGHT SECTION -->
-    <div class="flex items-center space-x-4">
+    <div class="flex pe-6   items-center  space-x-4">
 
       <!-- NOT LOGGED -->
       <ng-container *ngIf="!isLoggedIn">
@@ -218,4 +217,16 @@
 
 <p-toast></p-toast>
 
+<style>
+/* Loading circle animation using conic-gradient */
+  .loading-circle {
+    background: conic-gradient(#852EE4 0% 25%, #DE7A18 25% 50%, #852EE4 50% 75%, #DE7A18 75% 100%);
+    animation: rotateCircle 1s linear infinite;
+  }
+
+  @keyframes rotateCircle {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+</style>
 

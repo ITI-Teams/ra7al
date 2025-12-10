@@ -3,7 +3,7 @@ import { CommonModule, NgClass, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Validators } from '@angular/forms';
 import { ChangeDetectorRef } from '@angular/core';
-
+import { RouterModule, Router } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 
 
@@ -15,7 +15,7 @@ import { FavouriteService } from '../../core/services/favourite/favourite-servic
 @Component({
   selector: 'app-student-profile',
   standalone: true,
-  imports:  [FormsModule,NgClass,NgIf,ReactiveFormsModule,CommonModule],
+  imports:  [FormsModule,RouterModule , NgClass,NgIf,ReactiveFormsModule,CommonModule],
   templateUrl: './student-profile.html',
   styleUrl: './student-profile.css',
 })
@@ -27,13 +27,16 @@ toastType: 'success' | 'error' = 'success';
 showToast: boolean = false;
 
     profile:any;
+    selectedAvatarFile: File | null = null;
+    avatarPreview: string | null = null;
+
 
    profileForm: FormGroup;
 
     isEditing = false;
   activeTab: string = 'favourites';
 
-  constructor(private fb: FormBuilder, private profileSrv: ProfileService,private cdr: ChangeDetectorRef,   private favouriteService: FavouriteService) {
+  constructor(private fb: FormBuilder, private profileSrv: ProfileService,private cdr: ChangeDetectorRef,   private favouriteService: FavouriteService ,  private router: Router) {
   this.profileForm = this.fb.group({
     name: ['', [Validators.required, Validators.pattern(/^(?!\s*$)[\p{L}\s]+$/u)]],
     email: ['', [Validators.required, Validators.email]],
@@ -47,7 +50,7 @@ showToast: boolean = false;
     smoking: ['', Validators.required],
     pets: ['', Validators.required],
     bio:['',Validators.required],
-    avatar: ['']
+    avatar: [''],
 });
 }
 
@@ -69,46 +72,59 @@ loadProfile() {
   this.profileSrv.getProfile().subscribe({
     next: ({ profile }) => {
 
+      /** -----------------------------
+       * Fix avatar storage path
+       * ------------------------------ */
+      // Fix avatar path by inserting /storage/ after the domain
+if (profile.avatar) {
+  // Example: http://localhost:8000/images/users/file.jpg
+  const url = profile.avatar;
 
-      profile.avatar = profile.avatar
-        ? profile.avatar
-        : '/assets/default-avatar.png';
+  if (url.includes('/images/users/')) {
+    // Insert /storage after the base URL
+    profile.avatar = url.replace(
+      '://localhost:8000/',
+      '://localhost:8000/storage/'
+    );
+  }
+} else {
+  profile.avatar = '/assets/default-avatar.png';
+}
 
-           this.cdr.detectChanges();
 
+      this.cdr.detectChanges();
       this.profile = profile;
 
-      console.log(this.profile)
+      console.log(this.profile);
 
-  if (profile.habits && typeof profile.habits === 'string') {
-  profile.habits = JSON.parse(profile.habits);
-}
-if (profile.preferences && typeof profile.preferences === 'string') {
-  profile.preferences = JSON.parse(profile.preferences);
-}
+      /** Parse fields if returned as string */
+      if (profile.habits && typeof profile.habits === 'string') {
+        profile.habits = JSON.parse(profile.habits);
+      }
 
-profile.smoking = Number(profile.smoking) === 1 ? 'yes' : 'no';
-profile.pets = Number(profile.pets) === 1 ? 'yes' : 'no';
+      if (profile.preferences && typeof profile.preferences === 'string') {
+        profile.preferences = JSON.parse(profile.preferences);
+      }
 
-if (profile.gender !== 'male' && profile.gender !== 'female') {
-  profile.gender = '';
-}
+      /** Normalize boolean values */
+      profile.smoking = Number(profile.smoking) === 1 ? 'yes' : 'no';
+      profile.pets = Number(profile.pets) === 1 ? 'yes' : 'no';
 
+      /** Protect from invalid gender */
+      if (profile.gender !== 'male' && profile.gender !== 'female') {
+        profile.gender = '';
+      }
 
-
-this.profile = profile;
-
-
-     this.profileForm.patchValue({
-  ...profile,
-  password: ''
-});
-
-
+      /** Update form */
+      this.profileForm.patchValue({
+        ...profile,
+        password: ''
+      });
     },
     error: (err) => console.error(err),
   });
 }
+
 
 showToastMessage(message: string, type: 'success' | 'error' = 'success') {
   this.toastMessage = message;
@@ -183,18 +199,18 @@ this.showToastMessage('Data saved successfully', 'success');
 
 onAvatarChange(event: Event) {
   const input = event.target as HTMLInputElement;
-  if (input.files && input.files[0]) {
-    const file = input.files[0];
-    const reader = new FileReader();
 
-    reader.onload = () => {
+  if (!input.files || input.files.length === 0) return;
 
-      this.profileForm.patchValue({ avatar: reader.result });
-    };
+  this.selectedAvatarFile = input.files[0];
 
-    reader.readAsDataURL(file);
-  }
+  const reader = new FileReader();
+  reader.onload = () => {
+    this.avatarPreview = reader.result as string; // preview only
+  };
+  reader.readAsDataURL(this.selectedAvatarFile);
 }
+
 
 
  loadFavourites(){
@@ -203,8 +219,79 @@ onAvatarChange(event: Event) {
     });
   }
 
+  viewProperty(property: any) {
+    this.router.navigate(['/properties', property.id]);
+  }
+
+ // Pagination
+currentPage: number = 1;
+itemsPerPage: number = 3; // 3 per row × 2 rows
+
+get paginatedProperties() {
+  const start = (this.currentPage - 1) * this.itemsPerPage;
+  const end = start + this.itemsPerPage;
+  return this.properties.slice(start, end);
+}
+
+get totalPages() {
+  return Math.ceil(this.properties.length / this.itemsPerPage);
+}
+
+goToPage(page: number) {
+  if (page >= 1 && page <= this.totalPages) {
+    this.currentPage = page;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+nextPage() {
+  if (this.currentPage < this.totalPages) {
+    this.goToPage(this.currentPage + 1);
+  }
+}
+
+prevPage() {
+  if (this.currentPage > 1) {
+    this.goToPage(this.currentPage - 1);
+  }
+}
+// Dropdown state
+// Dropdown toggle
+  dropdown = { habits: false };
+
+  // Options list
+  habitsOptions = ['Reading', 'Sports', 'Music', 'Gaming', 'Traveling'];
+
+  // Selected items
+  selectedHabits: string[] = [];
 
 
+  // Toggle dropdown open/close
+  toggleDropdown(type: 'habits') {
+    this.dropdown[type] = !this.dropdown[type];
+  }
+
+  // Select habit
+  selectHabit(option: string) {
+    if (!this.selectedHabits.includes(option)) {
+      this.selectedHabits.push(option);
+      this.updateFormHabits();
+    }
+    this.toggleDropdown('habits');
+  }
+
+  // Remove selected habit
+  removeHabit(option: string) {
+    this.selectedHabits = this.selectedHabits.filter(h => h !== option);
+    this.updateFormHabits();
+  }
+
+  // Update form control
+  private updateFormHabits() {
+    this.profileForm.patchValue({
+      habits: this.selectedHabits.join(', ')
+    });
+  }
 
 }
 
