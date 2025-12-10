@@ -65,6 +65,8 @@ export class RecommendationService {
   getRecommendations(answers: any): Observable<RecommendationResponse> {
     return this.http.post<RecommendationResponse>(`${this.apiUrl}`, {
       answers: answers
+    }, {
+      withCredentials: true
     });
   }
 
