@@ -15,12 +15,9 @@
   </div>
 
 
-
   <!-- Profile Card -->
- <div class="flex flex-col items-center relative z-10 w-full max-w-5xl mx-auto p-6">
-  <!-- Avatar -->
-
-    <div
+  <div class="flex relative flex-col items-center z-10 w-full max-w-5xl">
+     <div
   class="flex relative flex-col items-center z-10 w-full max-w-md
          rounded-3xl shadow-xl p-8
          border border-gray-100 dark:border-gray-800
@@ -40,7 +37,7 @@
     <!-- Avatar Normal -->
     <ng-template #originalAvatar>
       <img
-        [src]="profile?.avatar"
+        [src]="avatarUrl()"
         class="w-32 h-32 rounded-full object-cover shadow-lg border-4
                border-white dark:border-gray-800"
       />
@@ -53,17 +50,10 @@
              bg-gradient-to-r from-orange-500 to-pink-500
              text-white py-2 px-3 rounded-full cursor-pointer shadow-md
              hover:scale-110 transition-all"
+      (click)="openAvatarModal()"
     >
       <i class="pi pi-camera text-lg"></i>
     </label>
-
-    <input
-      type="file"
-      id="avatarInput"
-      accept="image/*"
-      (change)="onAvatarChange($event)"
-      class="hidden"
-    />
   </div>
 
   <!-- NAME -->
@@ -89,125 +79,193 @@
   </button>
 </div>
 
+    <!-- EDIT PROFILE SLIDE PANEL -->
 
-
-  <!-- Edit Profile Slide Panel -->
-  <div
-    *ngIf="isEditing"
-    class="fixed inset-0 w-full md:max-w-lg animate-slideLeft bg-black/40 flex items-start justify-end z-50"
-  >
     <div
-      class="w-full md:max-w-lg max-h-[100vh] overflow-y-auto bg-white dark:bg-gray-800 p-7  shadow-xl animate-fadeIn"
+      *ngIf="isEditing"
+      class="fixed inset-0 w-full md:max-w-lg animate-slideLeft bg-transparent flex items-start justify-start z-50"
     >
-      <!-- Header -->
-      <div class="flex justify-between items-center mb-6">
-        <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100">Edit Profile</h2>
-        <button
-          (click)="toggleEdit()"
-          class="text-gray-500 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 text-2xl transition"
-        >
-          ✕
-        </button>
-      </div>
+      <div
+        class="w-full md:max-w-lg max-h-[100vh] overflow-y-auto bg-white dark:bg-gray-800 p-8 rounded-2xl animate-fadeIn"
+      >
+        <!-- MODAL HEADER -->
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100">
+            Edit Profile
+          </h2>
+          <button
+            (click)="toggleEdit()"
+            class="text-gray-500 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition text-2xl"
+          >
+            ✕
+          </button>
+        </div>
 
-      <!-- Form -->
-      <form [formGroup]="profileForm" class="space-y-6">
-        <!-- Name & Email in grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- FORM -->
+        <form [formGroup]="profileForm" class="space-y-6">
+          <!-- Name -->
           <div>
-            <label class="block text-gray-700 dark:text-gray-300 mb-2 font-medium">Name</label>
+            <label
+              class="block text-gray-700 dark:text-gray-300 mb-2 font-medium"
+              >Name</label
+            >
             <input
               type="text"
               formControlName="name"
+              class="w-full p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 dark:bg-gray-700 dark:border-gray-600"
               placeholder="Enter your name"
-              class="w-full p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 dark:bg-gray-700 dark:border-gray-600"
             />
-            <div class="text-red-500 text-sm mt-1" *ngIf="profileForm.get('name')?.invalid && profileForm.get('name')?.touched">
-              <div *ngIf="profileForm.get('name')?.errors?.['required']">Name is required.</div>
-              <div *ngIf="profileForm.get('name')?.errors?.['pattern']">Name must be text only.</div>
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-gray-700 dark:text-gray-300 mb-2 font-medium">Email</label>
-            <input
-              type="email"
-              formControlName="email"
-              placeholder="Enter your email"
-              class="w-full p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 dark:bg-gray-700 dark:border-gray-600"
-            />
-            <div class="text-red-500 text-sm mt-1" *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched">
-              <div *ngIf="profileForm.get('email')?.errors?.['required']">Email is required.</div>
-              <div *ngIf="profileForm.get('email')?.errors?.['email']">Invalid email format.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Password & Age -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-gray-700 dark:text-gray-300 mb-2 font-medium">Password</label>
-            <input
-              type="password"
-              formControlName="password"
-              placeholder="Enter your password"
-              class="w-full p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 dark:bg-gray-700 dark:border-gray-600"
-            />
-            <div class="text-red-500 text-sm mt-1" *ngIf="profileForm.get('password')?.invalid && profileForm.get('password')?.touched">
-              <div *ngIf="profileForm.get('password')?.errors?.['minlength']">Password must be at least 6 characters.</div>
-              <div *ngIf="profileForm.get('password')?.errors?.['maxlength']">Password cannot exceed 20 characters.</div>
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-gray-700 dark:text-gray-300 mb-2 font-medium">Age</label>
-            <input
-              type="number"
-              formControlName="age"
-              placeholder="Enter your age"
-              class="w-full p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 dark:bg-gray-700 dark:border-gray-600"
-            />
-            <div class="text-red-500 text-sm mt-1" *ngIf="profileForm.get('age')?.invalid && profileForm.get('age')?.touched">
-              <div *ngIf="profileForm.get('age')?.errors?.['required']">Age is required.</div>
-              <div *ngIf="profileForm.get('age')?.errors?.['min'] || profileForm.get('age')?.errors?.['max']">Age must be between 5 and 120.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Habits -->
-        <div>
-          <label class="block text-gray-700 dark:text-gray-300 mb-2 font-medium">Habits</label>
-          <div class="relative">
             <div
-              (click)="toggleDropdown('habits')"
-              class="w-full p-4 border rounded-lg bg-white dark:bg-gray-700 dark:border-gray-600 cursor-pointer focus:ring-2 focus:ring-[#852EE4] flex flex-wrap gap-2"
+              class="text-red-500 text-sm mt-1"
+              *ngIf="profileForm.get('name')?.invalid && profileForm.get('name')?.touched"
             >
-              <span class="text-gray-400" *ngIf="selectedHabits.length === 0">Select one or more habits</span>
-              <span *ngFor="let item of selectedHabits" class="px-3 py-1 bg-[#852EE4] text-white rounded-full text-sm flex items-center gap-1">
-                {{ item }}
-                <button (click)="removeHabit(item)" class="text-white font-bold">×</button>
-              </span>
-            </div>
-
-            <div *ngIf="dropdown['habits']" class="absolute w-full mt-2 bg-white dark:bg-gray-700 border rounded-lg shadow-lg max-h-60 overflow-y-auto z-50">
-              <div
-                *ngFor="let option of habitsOptions"
-                (click)="selectHabit(option)"
-                class="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer transition"
-              >
-                {{ option }}
+              <div *ngIf="profileForm.get('name')?.errors?.['required']">
+                Name is required.
+              </div>
+              <div *ngIf="profileForm.get('name')?.errors?.['pattern']">
+                Name must be text only.
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Preferences, Roommate Style, Cleanliness, Gender -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Email -->
           <div>
-            <label class="block text-gray-700 dark:text-gray-300 mb-2 font-medium">Preferences</label>
+            <label
+              class="block text-gray-700 dark:text-gray-300 mb-2 font-medium"
+              >Email</label
+            >
+            <input
+              type="email"
+              formControlName="email"
+              class="w-full p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 dark:bg-gray-700 dark:border-gray-600"
+              placeholder="Enter your email"
+            />
+            <div
+              class="text-red-500 text-sm mt-1"
+              *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched"
+            >
+              <div *ngIf="profileForm.get('email')?.errors?.['required']">
+                Email is required.
+              </div>
+              <div *ngIf="profileForm.get('email')?.errors?.['email']">
+                Invalid email format.
+              </div>
+            </div>
+          </div>
+          <!-- Password -->
+          <div>
+            <label
+              class="block text-gray-700 dark:text-gray-300 mb-2 font-medium"
+              >Password</label
+            >
+            <input
+              type="password"
+              formControlName="password"
+              class="w-full p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 dark:bg-gray-700 dark:border-gray-600"
+              placeholder="Enter your password"
+            />
+            <div
+              class="text-red-500 text-sm mt-1"
+              *ngIf="profileForm.get('password')?.invalid && profileForm.get('password')?.touched"
+            >
+              <div *ngIf="profileForm.get('password')?.errors?.['minlength']">
+                Password must be at least 6 characters.
+              </div>
+              <div *ngIf="profileForm.get('password')?.errors?.['maxlength']">
+                Password cannot exceed 20 characters.
+              </div>
+            </div>
+          </div>
+
+          <!-- Age -->
+          <div>
+            <label
+              class="block text-gray-700 dark:text-gray-300 mb-2 font-medium"
+              >Age</label
+            >
+            <input
+              type="number"
+              formControlName="age"
+              class="w-full p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 dark:bg-gray-700 dark:border-gray-600"
+              placeholder="Enter your age"
+            />
+            <div
+              class="text-red-500 text-sm mt-1"
+              *ngIf="profileForm.get('age')?.invalid && profileForm.get('age')?.touched"
+            >
+              <div *ngIf="profileForm.get('age')?.errors?.['required']">
+                Age is required.
+              </div>
+              <div
+                *ngIf="profileForm.get('age')?.errors?.['min'] || profileForm.get('age')?.errors?.['max']"
+              >
+                Age must be between 5 and 120.
+              </div>
+            </div>
+          </div>
+
+          <!-- HABITS -->
+          <!-- HABITS TAG MULTI SELECT -->
+          <div class="mb-6">
+            <label
+              class="block text-gray-700 dark:text-gray-300 mb-2 font-medium"
+            >
+              Habits
+            </label>
+
+            <div class="relative">
+              <!-- Input box -->
+              <div
+                (click)="toggleDropdown('habits')"
+                class="w-full p-4 border rounded-lg bg-white dark:bg-gray-700 dark:border-gray-600 cursor-pointer focus:ring-2 focus:ring-[#852EE4]"
+              >
+                <span class="text-gray-500" *ngIf="selectedHabits.length === 0">
+                  Select one or more habits
+                </span>
+
+                <!-- Show selected tags INSIDE input -->
+                <div class="flex flex-wrap gap-2">
+                  <span
+                    *ngFor="let item of selectedHabits"
+                    class="px-3 py-1 bg-[#852EE4] text-white rounded-full text-sm flex items-center gap-2"
+                  >
+                    {{ item }}
+                    <button
+                      (click)="removeHabit(item)"
+                      class="text-white font-bold"
+                    >
+                      ×
+                    </button>
+                  </span>
+                </div>
+              </div>
+
+              <!-- Dropdown list -->
+              <div
+                *ngIf="dropdown['habits']"
+                class="absolute w-full mt-2 bg-white dark:bg-gray-700 border rounded-lg shadow-lg z-50 max-h-60 overflow-y-auto"
+              >
+                <div
+                  *ngFor="let option of habitsOptions"
+                  (click)="selectHabit(option)"
+                  class="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer"
+                >
+                  {{ option }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PREFERENCES -->
+          <div>
+            <label
+              class="block text-gray-700 dark:text-gray-300 mb-2 font-medium"
+              >Preferences</label
+            >
+
             <select
               formControlName="preferences"
-              class="w-full p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#852EE4] dark:bg-gray-700 dark:border-gray-600"
+              class="w-full p-4 border rounded-lg bg-white dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#852EE4]"
             >
               <option value="" disabled>Select your preference</option>
               <option value="Early Riser">Early Riser</option>
@@ -216,13 +274,25 @@
               <option value="Sociable">Sociable</option>
               <option value="Flexible">Flexible</option>
             </select>
+
+            <div
+              class="text-red-500 text-sm mt-1"
+              *ngIf="profileForm.get('preferences')?.invalid && profileForm.get('preferences')?.touched"
+            >
+              Invalid selection.
+            </div>
           </div>
 
+          <!-- ROOMMATE STYLE -->
           <div>
-            <label class="block text-gray-700 dark:text-gray-300 mb-2 font-medium">Roommate Style</label>
+            <label
+              class="block text-gray-700 dark:text-gray-300 mb-2 font-medium"
+              >Roommate Style</label
+            >
+
             <select
               formControlName="roommate_style"
-              class="w-full p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#852EE4] dark:bg-gray-700 dark:border-gray-600"
+              class="w-full p-4 border rounded-lg bg-white dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#852EE4]"
             >
               <option value="" disabled>Select roommate style</option>
               <option value="Friendly">Friendly</option>
@@ -231,31 +301,159 @@
               <option value="Independent">Independent</option>
               <option value="Clean">Clean</option>
             </select>
-          </div>
-        </div>
 
-        <!-- Save & Cancel -->
-        <div class="flex justify-end gap-4 mt-6">
-          <button
-            type="button"
-            class="px-6 py-3 rounded-xl font-semibold text-white bg-[#852EE4] hover:bg-[#6e24c0] transition shadow-md"
-            (click)="saveData()"
+            <div
+              class="text-red-500 text-sm mt-1"
+              *ngIf="profileForm.get('roommate_style')?.invalid && profileForm.get('roommate_style')?.touched"
+            >
+              Field is required.
+            </div>
+          </div>
+
+          <!-- CLEANLINESS LEVEL -->
+          <div>
+            <label
+              class="block text-gray-700 dark:text-gray-300 mb-2 font-medium"
+              >Cleanliness Level</label
+            >
+
+            <select
+              formControlName="cleanliness_level"
+              class="w-full p-4 border rounded-lg bg-white dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#852EE4]"
+            >
+              <option value="" disabled>Select level</option>
+              <option value="1">1 - Very messy</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5 - Average</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9 - Very clean</option>
+            </select>
+
+            <div
+              class="text-red-500 text-sm mt-1"
+              *ngIf="profileForm.get('cleanliness_level')?.invalid && profileForm.get('cleanliness_level')?.touched"
+            >
+              Please select a value 1–9.
+            </div>
+          </div>
+
+          <div>
+            <!-- gender -->
+            <label
+              class="block text-gray-700 dark:text-gray-300 mb-2 font-medium"
+              >Gender</label
+            >
+            <select
+              formControlName="gender"
+              class="w-full mb-5 p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 dark:bg-gray-700 dark:border-gray-600"
+            >
+              <option value="">Select</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
+            <div
+              class="text-red-500 text-sm mt-1"
+              *ngIf="profileForm.get('gender')?.invalid && profileForm.get('gender')?.touched"
+            >
+              <div *ngIf="profileForm.get('gender')?.errors?.['required']">
+                gender field is required.
+              </div>
+            </div>
+          </div>
+          <!-- Smoking & Pets -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label
+                class="block text-gray-700 dark:text-gray-300 mb-2 font-medium"
+                >Smoking</label
+              >
+              <select
+                formControlName="smoking"
+                class="w-full p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 dark:bg-gray-700 dark:border-gray-600"
+              >
+                <option value="">Select</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+              <div
+                class="text-red-500 text-sm mt-1"
+                *ngIf="profileForm.get('smoking')?.invalid && profileForm.get('smoking')?.touched"
+              >
+                <div *ngIf="profileForm.get('smoking')?.errors?.['required']">
+                  Smoking field is required.
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label
+                class="block text-gray-700 dark:text-gray-300 mb-2 font-medium"
+                >Pets</label
+              >
+              <select
+                formControlName="pets"
+                class="w-full p-4 mb-20 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 dark:bg-gray-700 dark:border-gray-600"
+              >
+                <option value="">Select</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+              <div
+                class="text-red-500 text-sm mt-1"
+                *ngIf="profileForm.get('pets')?.invalid && profileForm.get('pets')?.touched"
+              >
+                <div *ngIf="profileForm.get('pets')?.errors?.['required']">
+                  Pets field is required.
+                </div>
+              </div>
+            </div>
+          </div>
+          <label class="block text-gray-700 dark:text-gray-300 mb-2 font-medium"
+            >About Me</label
           >
-            Save
-          </button>
-          <button
-            type="button"
-            class="px-6 py-3 border rounded-xl font-semibold border-gray-400 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition"
-            (click)="toggleEdit()"
+
+          <textarea
+            class="w-full h-30 p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 dark:bg-gray-700 dark:border-gray-600"
+            placeholder="About me"
+            formControlName="bio"
+          ></textarea>
+
+          <div
+            class="text-red-500 text-sm"
+            *ngIf="profileForm.get('bio')?.invalid && profileForm.get('bio')?.touched"
           >
-            Cancel
-          </button>
-        </div>
-      </form>
+            <div *ngIf="profileForm.get('bio')?.errors?.['required']">
+              About Me field is required.
+            </div>
+          </div>
+
+          <!-- ⬇️ PASTE YOUR FORM HERE (no changes needed) -->
+
+          <!-- Buttons -->
+          <div class="flex justify-end gap-4 mt-6">
+            <button
+              type="button"
+              class="px-6 py-3 rounded-xl font-semibold text-white bg-[#852EE4] hover:bg-[#6e24c0] transition shadow-md"
+              (click)="saveData()"
+            >
+              Save
+            </button>
+
+            <button
+              type="button"
+              class="px-6 py-3 border rounded-xl font-semibold border-gray-400 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+              (click)="toggleEdit()"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
     </div>
   </div>
-
-
 
   <!-- Tabs -->
   <div
@@ -558,39 +756,34 @@
 </div>
 
 
-<!-- ================= PREFERENCES (HOBBIES) ================= -->
-<div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6 rounded-2xl shadow-sm mt-8">
-  <h3 class="text-sm font-semibold text-gray-500 mb-4 flex items-center gap-2">
-    <i class="fa-solid fa-star text-yellow-500"></i> PREFERENCES
-  </h3>
+  <!-- ================= PREFERENCES (HOBBIES) ================= -->
+  <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6 rounded-2xl shadow-sm mt-8">
+    <h3 class="text-sm font-semibold text-gray-500 mb-4">PREFERENCES</h3>
 
-  <div class="flex flex-wrap gap-2">
-    <ng-container *ngIf="profile?.preferences?.length > 0; else noPrefs">
-      <span
-        *ngFor="let p of profile.preferences"
-        class="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-sm rounded-xl flex items-center gap-2"
-      >
-        <i class="fa-solid fa-tag text-yellow-500 text-xs"></i> {{ p }}
-      </span>
-    </ng-container>
+    <div class="flex flex-wrap gap-2">
+      <ng-container *ngIf="profile?.preferences?.length > 0; else noPrefs">
+        <span
+          *ngFor="let p of profile.preferences"
+          class="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-sm rounded-xl flex items-center gap-2"
+        >
+          <i class="fa-solid fa-tag text-yellow-500 text-xs"></i> {{ p }}
+        </span>
+      </ng-container>
 
-    <ng-template #noPrefs>
-      <span class="text-gray-500">-</span>
-    </ng-template>
+      <ng-template #noPrefs>
+        <span class="text-gray-500">-</span>
+      </ng-template>
+    </div>
   </div>
-</div>
 
-<!-- ================= BIO SECTION ================= -->
-<div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6 rounded-2xl shadow-sm mt-8">
-  <h3 class="text-sm font-semibold text-gray-500 mb-3 flex items-center gap-2">
-    <i class="fa-solid fa-user-pen text-blue-500"></i> ABOUT ME
-  </h3>
+  <!-- ================= BIO SECTION ================= -->
+  <div class="bg-white overflow-auto dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6 rounded-2xl shadow-sm mt-8">
+    <h3 class="text-sm font-semibold text-gray-500 mb-3">ABOUT ME</h3>
 
-  <p class="text-base leading-relaxed text-gray-700 dark:text-gray-300">
-    {{ profile?.bio || 'Add personal information here...' }}
-  </p>
-</div>
-
+    <p class="text-base leading-relaxed text-gray-700 dark:text-gray-300">
+      {{ profile?.bio || 'Add personal information here...' }}
+    </p>
+  </div>
 </div>
 
 
@@ -625,6 +818,36 @@
   }
 
   .animate-slideLeft {
-    animation: slideLeft 1s both cubic-bezier(0.16, 1, 0.3, 1);
+    animation: slideLeft 1s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
   }
+
+  /* Glow Animation */
+@keyframes glow {
+  0% { transform: scale(1); opacity: 0.4; }
+  50% { transform: scale(1.15); opacity: 0.6; }
+  100% { transform: scale(1); opacity: 0.4; }
+}
+.animate-glow {
+  animation: glow 3s infinite ease-in-out;
+}
+
+/* Avatar Pop Animation */
+@keyframes pop {
+  0% { transform: scale(0.6); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-pop {
+  animation: pop 0.35s ease-out forwards;
+}
+
+/* Popup Enter Animation */
+@keyframes popupEnter {
+  0% { transform: translateY(40px) scale(0.9); opacity: 0; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+.animate-popupEnter {
+  animation: popupEnter 0.35s ease-out forwards;
+}
+
 </style>

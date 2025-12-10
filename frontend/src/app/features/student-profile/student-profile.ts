@@ -5,12 +5,14 @@ import { Validators } from '@angular/forms';
 import { ChangeDetectorRef } from '@angular/core';
 import { RouterModule, Router } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
+import Swal from 'sweetalert2';
 
 
 
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ProfileService } from '../../core/services/profile/profile-service';
 import { FavouriteService } from '../../core/services/favourite/favourite-service';
+import { AuthService } from '../../core/services/authService/auth.service';
 
 @Component({
   selector: 'app-student-profile',
@@ -35,8 +37,9 @@ showToast: boolean = false;
 
     isEditing = false;
   activeTab: string = 'favourites';
+    user: any = null;
 
-  constructor(private fb: FormBuilder, private profileSrv: ProfileService,private cdr: ChangeDetectorRef,   private favouriteService: FavouriteService ,  private router: Router) {
+  constructor(private fb: FormBuilder, private profileSrv: ProfileService,private cdr: ChangeDetectorRef,   private favouriteService: FavouriteService ,  private router: Router, private auth: AuthService) {
   this.profileForm = this.fb.group({
   name: ['', [Validators.required, Validators.pattern(/^(?!\s*$)[\p{L}\s]+$/u)]],
   email: ['', [Validators.required, Validators.email]],
@@ -52,6 +55,16 @@ showToast: boolean = false;
     bio:['',Validators.required],
     avatar: [''],
 });
+
+// Subscribe to user changes
+    this.auth.user$.subscribe((user) => {
+      this.user = user;});
+
+    // Listen to storage changes
+    window.addEventListener('storage', () => {
+      const user = this.auth.getUser();
+      this.user = user;
+    });
 }
 
 
@@ -340,9 +353,89 @@ prevPage() {
       habits: this.selectedHabits.join(', ')
     });
   }
+ avatarUrl(): string {
+    if (!this.user) return '/assets/default-avatar.svg';
+    if (this.user.avatar) {
+      return `${this.auth.getBackendBase()}/storage/${this.user.avatar}`;
+    }
+    const name = (this.user.name || '').trim();
+    let initials = '';
+    if (name.length === 0) initials = '??';
+    else {
+      const parts = name.split(/\s+/).filter(Boolean);
+      initials = parts.length === 1 ? parts[0].slice(0, 2).toUpperCase() : (parts[0][0] + (parts[1][0] || '')).toUpperCase();
+    }
+    const bg = '#667eea';
+    const fg = '#ffffff';
+    const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='128' height='128'>
+      <rect width='100%' height='100%' fill='${bg}' rx='16' />
+      <text x='50%' y='50%' dy='.1em' text-anchor='middle' fill='${fg}' font-family='Helvetica, Arial, sans-serif' font-size='52'>${initials}</text>
+    </svg>`;
+    return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+  }
 
+
+
+
+openAvatarModal() {
+  Swal.fire({
+    html: `
+      <div class="relative flex flex-col items-center">
+
+        <!-- Floating Glow Circle -->
+        <div class="absolute w-40 h-40 bg-gradient-to-r from-orange-500 to-pink-500
+                    rounded-full blur-2xl opacity-40 animate-glow"></div>
+
+        <!-- Avatar -->
+        <img src="${this.avatarUrl()}"
+             class="relative w-40 h-40 rounded-3xl object-cover shadow-2xl border-4
+                    border-white dark:border-gray-700 animate-pop" />
+
+        <!-- Username -->
+        <h2 class="mt-4 text-xl font-bold dark:text-white">${this.profileForm.get('name')?.value}</h2>
+
+        <!-- Email -->
+        <p class="text-gray-500 dark:text-gray-400 text-sm mb-4">
+          ${this.profile?.email}
+        </p>
+
+        <!-- Upload Button -->
+        <label for="avatarInput"
+               class="w-full mt-3 cursor-pointer py-3 rounded-xl text-white font-semibold
+                      bg-gradient-to-r from-orange-500 to-pink-500 shadow-lg
+                      hover:scale-105 transition-all flex items-center justify-center gap-2">
+          <i class="pi pi-camera"></i> Change Photo
+        </label>
+
+        <!-- Remove -->
+        <button id="removeAvatarBtn"
+                class="w-full mt-2 py-3 rounded-xl text-white font-semibold
+                       bg-gradient-to-r from-red-500 to-rose-500 shadow-lg
+                       hover:scale-105 transition-all flex items-center justify-center gap-2">
+          <i class="pi pi-times"></i> Remove Photo
+        </button>
+
+      </div>
+    `,
+    showConfirmButton: false,
+    showCloseButton: true,
+    customClass: {
+      popup: 'bg-white dark:bg-gray-900 rounded-3xl p-6 shadow-2xl animate-popupEnter',
+    },
+    didOpen: () => {
+      // Remove Avatar Function
+      const removeBtn = document.getElementById('removeAvatarBtn');
+      removeBtn?.addEventListener('click', () => {
+        this.avatarPreview = null;
+        Swal.close();
+      });
+
+    }
+  });
 }
 
+
+}
 
 
 
