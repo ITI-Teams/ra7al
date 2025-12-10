@@ -268,7 +268,7 @@ onAvatarChange(event: Event) {
   const reader = new FileReader();
   reader.onload = () => {
     this.avatarPreview = reader.result as string;
-    
+
     // Show preview confirmation dialog
     Swal.fire({
       title: 'Update Photo?',
@@ -310,18 +310,13 @@ saveAvatarOnly() {
     return;
   }
 
-  const formData = new FormData();
-  formData.append('avatar', this.selectedAvatarFile);
-
-  this.profileSrv.saveProfile(formData).subscribe({
+  this.profileSrv.uploadAvatar(this.selectedAvatarFile).subscribe({
     next: (res: any) => {
       this.showToastMessage('Photo updated successfully', 'success');
       
       if (res && res.profile && res.profile.avatar) {
         let avatarUrl = res.profile.avatar;
-        if (avatarUrl.includes('/images/users/')) {
-          avatarUrl = avatarUrl.replace('://localhost:8000/', '://localhost:8000/storage/');
-        }
+        // avatarUrl is already full URL from asset(), just use it
         this.profile.avatar = avatarUrl;
         this.user.avatar = res.profile.avatar;
       }
@@ -344,15 +339,13 @@ saveAvatarOnly() {
       });
     },
     error: (err: any) => {
-      this.showToastMessage('Failed to update photo. Please try again.', 'error');
       console.error('Error uploading avatar:', err);
+      this.showToastMessage('Failed to update photo. Please try again.', 'error');
       this.selectedAvatarFile = null;
       this.avatarPreview = null;
     }
   });
 }
-
-
 
  loadFavourites(){
     this.favouriteService.getMyFavourites().subscribe(res => {
@@ -556,7 +549,7 @@ removeAvatarFromDatabase() {
       this.selectedAvatarFile = null;
       this.user.avatar = null;
       this.cdr.detectChanges();
-      
+
       Swal.fire({
         title: 'Removed!',
         text: 'Your photo has been removed.',

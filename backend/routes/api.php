@@ -46,6 +46,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('profile')->group(function () {
         Route::get('/', [ProfileStudentController::class, 'show']);
         Route::post('/', [ProfileStudentController::class, 'storeOrUpdate']);
+        Route::post('/avatar', [ProfileStudentController::class, 'updateAvatar']);
         Route::delete('/avatar', [ProfileStudentController::class, 'removeAvatar']);
     });
 

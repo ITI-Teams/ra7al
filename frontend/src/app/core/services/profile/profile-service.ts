@@ -43,6 +43,15 @@ saveProfile(payload: Partial<StudentProfileData> | FormData): Observable<any> {
   return this.http.post<any>(`${this.base}/profile`, payload, { headers });
 }
 
+// POST /profile/avatar (upload/update avatar only)
+uploadAvatar(file: File): Observable<any> {
+  const token = localStorage.getItem('api_token');
+  const headers: any = { Authorization: `Bearer ${token}` };
+  const formData = new FormData();
+  formData.append('avatar', file);
+  return this.http.post<any>(`${this.base}/profile/avatar`, formData, { headers });
+}
+
 // DELETE /profile/avatar (remove avatar)
 removeAvatar(): Observable<any> {
   const token = localStorage.getItem('api_token');

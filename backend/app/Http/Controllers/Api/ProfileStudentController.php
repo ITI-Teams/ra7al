@@ -177,5 +177,58 @@ class ProfileStudentController extends Controller
             ]
         ]);
     }
+
+    public function updateAvatar(Request $request)
+    {
+        $request->validate([
+            'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
+
+        $userId = Auth::id();
+        $user = User::find($userId);
+
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+
+        // Delete old avatar if exists
+        if ($user->avatar) {
+            $filePath = public_path($user->avatar);
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+        }
+
+        // Upload new avatar
+        if ($request->hasFile('avatar')) {
+            $file = $request->file('avatar');
+            $extension = $file->extension() ?: 'png';
+            $fileName = 'avatar_' . Auth::id() . '_' . time() . '.' . $extension;
+            $folder = public_path('images/users/avatar');
+            
+            if (!file_exists($folder)) {
+                mkdir($folder, 0777, true);
+            }
+            
+            $file->move($folder, $fileName);
+            $avatarPath = 'images/users/avatar/' . $fileName;
+            
+            // Update user avatar
+            $user->avatar = $avatarPath;
+            $user->save();
+
+            return response()->json([
+                'message' => 'Avatar updated successfully',
+                'profile' => [
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'avatar' => asset($avatarPath)
+                ]
+            ]);
+        }
+
+        return response()->json(['error' => 'No file provided'], 400);
+    }
+
 }
 
