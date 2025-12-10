@@ -214,18 +214,18 @@ saveData() {
           }
 
           this.profile = updated;
-          
+
           // Update selectedHabits for the dropdown
           if (Array.isArray(updated.habits)) {
             this.selectedHabits = updated.habits;
           }
 
-          this.profileForm.patchValue({ 
-            ...updated, 
+          this.profileForm.patchValue({
+            ...updated,
             password: '',
             habits: Array.isArray(updated.habits) ? updated.habits.join(', ') : ''
           });
-          
+
           this.cdr.detectChanges();
         }
 
@@ -281,19 +281,19 @@ saveData() {
         }
 
         this.profile = updated;
-        
+
         // Update selectedHabits for the dropdown
         if (Array.isArray(updated.habits)) {
           this.selectedHabits = updated.habits;
         }
 
         // Ensure form shows updated values
-        this.profileForm.patchValue({ 
-          ...updated, 
+        this.profileForm.patchValue({
+          ...updated,
           password: '',
           habits: Array.isArray(updated.habits) ? updated.habits.join(', ') : ''
         });
-        
+
         this.cdr.detectChanges();
       }
 
@@ -369,7 +369,7 @@ saveAvatarOnly() {
       if (res && res.profile && res.profile.avatar) {
         // Backend returns just the path: images/users/avatar/avatar_23_1702225800.jpg
         const avatarPath = res.profile.avatar;
-        
+
         this.profile.avatar = avatarPath;
         this.user.avatar = avatarPath;
         this.auth.updateUserAvatar(avatarPath);
