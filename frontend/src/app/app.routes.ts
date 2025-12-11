@@ -22,6 +22,8 @@ import { Dashboard } from './layouts/dashboard/dashboard';
 import { PropertyDetail } from './features/property-detail/property-detail';
 import { RecommendationComponent } from './features/recommendation/recommendation';
 
+import { OwnerDashboardCharts } from './features/owner-dashboard/components/owner-dashboard-charts/owner-dashboard-charts';
+import { RentalRequests } from './features/owner-dashboard/components/rental-requests/rental-requests';
 export const routes: Routes = [
   // General layout routes (with navbar & footer)
   {
@@ -40,41 +42,42 @@ export const routes: Routes = [
       {
         path: 'login',
         component: Login,
-        canActivate: [NoAuthGuard]
+        canActivate: [NoAuthGuard],
       },
       {
         path: 'register',
         component: Register,
-        canActivate: [NoAuthGuard]
+        canActivate: [NoAuthGuard],
       },
 
       // Unauthorized page
       {
         path: 'unauthorized',
-        component: Unauthorized
+        component: Unauthorized,
       },
-       {
-    path: 'payment',
-    component: Payment
-  },
+      {
+        path: 'payment',
+        component: Payment,
+      },
       { path: 'properties/:id', component: PropertyDetail },
-    ]
+    ],
   },
-
 
   // Dashboard layout routes (no navbar & footer)
-{
-  path: 'owner-dashboard',
-  component: Dashboard,
-  canActivate: [UserRoleGuard],
-  data: { role: 'owner' },
-  children: [
-    { path: '', redirectTo: 'apartments', pathMatch: 'full' },
-    { path: 'apartments', component: Apartments },
-    { path: 'create-property', component: CreateProperty },
-    { path: 'edit-property/:id', component: EditProperty },
-  ]
-},
+  {
+    path: 'owner-dashboard',
+    component: Dashboard,
+    canActivate: [UserRoleGuard],
+    data: { role: 'owner' },
+    children: [
+      { path: '', redirectTo: 'dashboardcharts', pathMatch: 'full' },
+      { path: 'apartments', component: Apartments },
+      { path: 'create-property', component: CreateProperty },
+      { path: 'edit-property/:id', component: EditProperty },
+      { path: 'owner-dashboardcharts', component: OwnerDashboardCharts },
+      { path: 'rental-requests', component: RentalRequests },
+    ],
+  },
 
   // Student-only dashboard page
   {
@@ -82,16 +85,13 @@ export const routes: Routes = [
     component: General,
     canActivate: [UserRoleGuard],
     data: { role: 'student' },
-    children: [
-      { path: '', component: StudentProfile }
-    ]
+    children: [{ path: '', component: StudentProfile }],
   },
-
 
   // Unauthorized page
   {
     path: 'unauthorized',
-    component: Unauthorized
+    component: Unauthorized,
   },
   // MUST ALWAYS BE LAST
 

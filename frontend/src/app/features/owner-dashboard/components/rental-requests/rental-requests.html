@@ -1,0 +1,116 @@
+<div class="p-6 max-w-full">
+  <!-- Filters -->
+  <div
+    class="flex flex-col md:flex-row md:items-center md:space-x-4 mb-6 space-y-2 md:space-y-0"
+  >
+    <input
+      type="text"
+      placeholder="Search tenant or property..."
+      [(ngModel)]="search"
+      class="border rounded-md p-2 w-full md:w-1/3 focus:ring-2 focus:ring-purple-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200"
+    />
+    <select
+      [(ngModel)]="status"
+      class="border rounded-md p-2 w-full md:w-1/4 focus:ring-2 focus:ring-purple-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200"
+    >
+      <option value="">All Status</option>
+      <option value="pending">Pending</option>
+      <option value="approved">Approved</option>
+      <option value="rejected">Rejected</option>
+    </select>
+    <button
+      (click)="searchRequests()"
+      class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md transition-colors duration-200"
+    >
+      Search
+    </button>
+  </div>
+
+  <!-- Table -->
+  <div
+    class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm"
+  >
+    <table class="w-full text-left text-sm text-gray-700 dark:text-gray-300">
+      <thead
+        class="bg-gray-100 dark:bg-gray-800 uppercase text-gray-600 dark:text-gray-400"
+      >
+        <tr>
+          <th class="px-4 py-2">Request ID</th>
+          <th class="px-4 py-2">Requested At</th>
+          <th class="px-4 py-2">Tenant</th>
+          <th class="px-4 py-2">Property</th>
+          <th class="px-4 py-2">Start Date</th>
+          <th class="px-4 py-2">Duration</th>
+          <th class="px-4 py-2">Status</th>
+          <th class="px-4 py-2">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+        <tr
+          *ngFor="let req of requests"
+          class="hover:bg-gray-50 dark:hover:bg-gray-900"
+        >
+          <td class="px-4 py-3">{{ req.id }}</td>
+          <td class="px-4 py-3">{{ req.created_at | date:'medium' }}</td>
+          <td class="px-4 py-3">{{ req.user.name }}</td>
+          <td class="px-4 py-3">{{ req.property.title }}</td>
+          <td class="px-4 py-3">
+            {{ req.desired_start_date | date:'mediumDate' }}
+          </td>
+          <td class="px-4 py-3">{{ req.duration_months }} months</td>
+          <td class="px-4 py-3">
+            <span
+              [ngClass]="{
+                'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100': req.status === 'pending',
+                'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100': req.status === 'approved',
+                'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100': req.status === 'rejected'
+              }"
+              class="px-2 py-1 rounded-full text-xs font-semibold"
+            >
+              {{ req.status | titlecase }}
+            </span>
+          </td>
+          <td class="px-4 py-3 flex space-x-2">
+            <button
+              *ngIf="req.status === 'pending'"
+              (click)="approve(req.id)"
+              class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-md text-sm transition-colors"
+            >
+              Approve
+            </button>
+            <button
+              *ngIf="req.status === 'pending'"
+              (click)="reject(req.id)"
+              class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md text-sm transition-colors"
+            >
+              Reject
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="requests.length === 0">
+          <td
+            colspan="7"
+            class="px-4 py-4 text-center text-gray-500 dark:text-gray-400"
+          >
+            No rental requests found.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="mt-4 flex justify-center space-x-2">
+    <button
+      *ngFor="let p of pages"
+      (click)="changePage(p)"
+      [ngClass]="{
+      'bg-purple-600 text-white': page === p,
+      'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300': page !== p
+    }"
+      class="px-3 py-1 rounded-md hover:bg-purple-500 transition-colors"
+    >
+      {{ p }}
+    </button>
+  </div>
+</div>
