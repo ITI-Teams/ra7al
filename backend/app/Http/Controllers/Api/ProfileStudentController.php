@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\student_profile;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
@@ -101,23 +102,29 @@ class ProfileStudentController extends Controller
             }
             $file->move($folder, $fileName);
             $data['avatar'] = 'images/users/avatar/' . $fileName;
-        } elseif (isset($data['avatar']) && !empty($data['avatar']) && strpos($data['avatar'], 'data:image') === 0) {
-            preg_match('/data:image\/(\w+);base64,/', $data['avatar'], $matches);
-            $extension = $matches[1] ?? 'png';
-            $base64Str = substr($data['avatar'], strpos($data['avatar'], ',') + 1);
-            $image = base64_decode($base64Str);
-            $fileName = 'avatar_' . Auth::id() . '_' . time() . '.' . $extension;
-            $folder = storage_path('app/public/images/users/avatar');
-            if (!file_exists($folder)) {
-                mkdir($folder, 0777, true);
-            }
-            file_put_contents($folder . '/' . $fileName, $image);
-            $data['avatar'] = 'images/users/avatar/' . $fileName;
         } else {
-            // ensure avatar key is not accessed later if not provided
-            if (array_key_exists('avatar', $data)) {
-                // remove empty avatar value so we don't overwrite existing avatar with null
-                unset($data['avatar']);
+            // Also support avatar passed as base64 string in a JSON body or form field.
+            $avatarField = $data['avatar'] ?? $request->input('avatar') ?? null;
+
+            if (is_string($avatarField) && strlen($avatarField) > 0 && strpos($avatarField, 'data:image') === 0) {
+                // extract extension safely
+                preg_match('/data:image\/(\w+);base64,/', $avatarField, $matches);
+                $extension = $matches[1] ?? 'png';
+                $base64Str = substr($avatarField, strpos($avatarField, ',') + 1);
+                $image = base64_decode($base64Str);
+                $fileName = 'avatar_' . Auth::id() . '_' . time() . '.' . $extension;
+                $folder = storage_path('app/public/images/users/avatar');
+                if (!file_exists($folder)) {
+                    mkdir($folder, 0777, true);
+                }
+                file_put_contents($folder . '/' . $fileName, $image);
+                $data['avatar'] = 'images/users/avatar/' . $fileName;
+            } else {
+                // ensure avatar key is not accessed later if not provided
+                if (array_key_exists('avatar', $data)) {
+                    // remove empty avatar value so we don't overwrite existing avatar with null
+                    unset($data['avatar']);
+                }
             }
         }
 
@@ -134,9 +141,14 @@ class ProfileStudentController extends Controller
         unset($data['name'], $data['email'], $data['password'], $data['avatar']);
 
 
+        // Remove any fields that are not actual columns on the student_profiles table
+        foreach (array_keys($data) as $key) {
+            if (!Schema::hasColumn('student_profiles', $key)) {
+                unset($data[$key]);
+            }
+        }
+
         $profile = student_profile::updateOrCreate(
-
-
             ['user_id' => Auth::id()],
             $data
         );

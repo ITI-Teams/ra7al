@@ -20,6 +20,8 @@ import { Payment } from './features/payment/payment';
 import { General } from './layouts/general/general';
 import { Dashboard } from './layouts/dashboard/dashboard';
 import { PropertyDetail } from './features/property-detail/property-detail';
+import { RecommendationComponent } from './features/recommendation/recommendation';
+
 import { OwnerDashboardCharts } from './features/owner-dashboard/components/owner-dashboard-charts/owner-dashboard-charts';
 import { RentalRequests } from './features/owner-dashboard/components/rental-requests/rental-requests';
 export const routes: Routes = [
@@ -34,6 +36,7 @@ export const routes: Routes = [
       { path: 'contactus', component: Contactus },
       { path: 'filter', component: FilterPage },
       { path: 'search', component: Search },
+      { path: 'recommendations', component: RecommendationComponent },
 
       // Prevent logged-in users from accessing login/register
       {
