@@ -45,19 +45,16 @@ export class Sidebar {
       label: 'Offer for Rent',
       icon: 'fa-solid fa-handshake',
       route: '/owner-dashboard/create-property',
-      badge: 2,
     },
     {
       label: 'Apartments',
       icon: 'fa-solid fa-building',
       route: '/owner-dashboard/apartments',
-      badge: 12,
     },
     {
       label: 'Bookings',
       icon: 'fa-solid fa-calendar-check',
-      route: '/owner-dashboard/bookings',
-      badge: 5,
+      route: '/owner-dashboard/rental-requests',
     },
     {
       label: 'Tenants',
@@ -68,7 +65,6 @@ export class Sidebar {
       label: 'Comments',
       icon: 'fa-solid fa-comments',
       route: '/owner-dashboard/comments',
-      badge: 3,
     },
     {
       label: 'Payments',
