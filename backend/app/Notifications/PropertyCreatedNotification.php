@@ -43,6 +43,6 @@ class PropertyCreatedNotification extends Notification implements ShouldQueue
 
     public function broadcastOn()
     {
-        return ['admins-notifications']; // PUBLIC CHANNEL
+        return ['admin-notifications'];
     }
 }
