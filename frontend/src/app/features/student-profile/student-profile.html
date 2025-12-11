@@ -1,23 +1,66 @@
 <div
   class="w-full flex flex-col items-center py-10 px-4 bg-gradient-to-br from-orange-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 py-16 px-4 transition-colors duration-300"
 >
-  <div
-    *ngIf="toastMessage"
-    class="fixed z-50 bottom-10 right-5 px-4 py-2 rounded shadow-lg transition-opacity duration-300"
-    [ngClass]="{
-       'opacity-0': !showToast,
-       'opacity-100': showToast,
-       'bg-green-500 text-white': toastType === 'success',
-       'bg-red-500 text-white': toastType === 'error'
-     }"
-  >
-    {{ toastMessage }}
+  <!-- Toast Notification -->
+<div
+  *ngIf="toastMessage"
+  class="fixed top-5 right-5 z-50 px-5 py-3 rounded-xl shadow-lg transform transition-all duration-500 ease-out pointer-events-auto"
+  [ngClass]="{
+    'opacity-0 translate-x-8': !showToast,
+    'opacity-100 translate-x-0': showToast,
+    'bg-green-500 text-white': toastType === 'success',
+    'bg-red-500 text-white': toastType === 'error'
+  }"
+>
+  <div class="flex items-center gap-3">
+    <!-- Icon -->
+    <ng-container [ngSwitch]="toastType">
+      <i *ngSwitchCase="'success'" class="fas fa-check-circle w-5 h-5 text-white"></i>
+      <i *ngSwitchCase="'error'" class="fas fa-exclamation-circle w-5 h-5"></i>
+      <i *ngSwitchDefault class="fas fa-info-circle w-5 h-5"></i>
+    </ng-container>
+
+    <!-- Message -->
+    <span class="text-sm font-medium">{{ toastMessage }}</span>
   </div>
+</div>
+
 
   <!-- Profile Card -->
   <div class="flex relative flex-col items-center z-10 w-full max-w-5xl">
-    <div
-      class="flex relative flex-col items-center z-10 w-full max-w-md rounded-3xl shadow-xl p-8 border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 transition-all duration-300 hover:shadow-2xl"
+     <div
+  class="flex relative flex-col items-center z-10 w-full max-w-md
+         rounded-3xl shadow-xl p-8
+         border border-gray-100 dark:border-gray-800
+         bg-white dark:bg-gray-900
+         transition-all duration-300 hover:shadow-2xl"
+>
+  <!-- Avatar Wrapper -->
+  <div class="mt-2 relative w-32 h-32">
+    <!-- Avatar Preview -->
+    <img
+      *ngIf="avatarPreview; else originalAvatar"
+      [src]="avatarPreview"
+      class="w-32 h-32 rounded-full object-cover shadow-lg border-4
+             border-white dark:border-gray-800"
+    />
+
+    <!-- Avatar Normal -->
+    <ng-template #originalAvatar>
+      <img
+        [src]="avatarUrl()"
+        class="w-32 h-32 rounded-full object-cover shadow-lg border-4
+               border-white dark:border-gray-800"
+      />
+    </ng-template>
+
+    <!-- Camera Button -->
+    <label
+      class="absolute bottom-0 right-2
+             bg-gradient-to-r from-orange-500 to-pink-500
+             text-white py-2 px-3 rounded-full cursor-pointer shadow-md
+             hover:scale-110 transition-all"
+      (click)="openAvatarModal()"
     >
       <!-- Avatar Wrapper -->
       <div class="mt-2 relative w-32 h-32">
@@ -98,7 +141,7 @@
             <input
               type="text"
               formControlName="name"
-              class="w-full p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 dark:bg-gray-700 dark:border-gray-600"
+              class="w-full p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#852EE4] dark:bg-gray-700 dark:border-gray-600"
               placeholder="Enter your name"
             />
             <div
@@ -123,7 +166,7 @@
             <input
               type="email"
               formControlName="email"
-              class="w-full p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 dark:bg-gray-700 dark:border-gray-600"
+              class="w-full p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#852EE4] dark:bg-gray-700 dark:border-gray-600"
               placeholder="Enter your email"
             />
             <div
@@ -147,7 +190,7 @@
             <input
               type="password"
               formControlName="password"
-              class="w-full p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 dark:bg-gray-700 dark:border-gray-600"
+              class="w-full p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#852EE4] dark:bg-gray-700 dark:border-gray-600"
               placeholder="Enter your password"
             />
             <div
@@ -172,7 +215,7 @@
             <input
               type="number"
               formControlName="age"
-              class="w-full p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 dark:bg-gray-700 dark:border-gray-600"
+              class="w-full p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#852EE4] dark:bg-gray-700 dark:border-gray-600"
               placeholder="Enter your age"
             />
             <div
@@ -201,6 +244,12 @@
 
             <div class="relative">
               <!-- Input box -->
+                <button
+                (click)="toggleDropdown('habits')"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-xl leading-none"
+              >
+                &times;
+              </button>
               <div
                 (click)="toggleDropdown('habits')"
                 class="w-full p-4 border rounded-lg bg-white dark:bg-gray-700 dark:border-gray-600 cursor-pointer focus:ring-2 focus:ring-[#852EE4]"
@@ -335,7 +384,7 @@
             >
             <select
               formControlName="gender"
-              class="w-full mb-5 p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 dark:bg-gray-700 dark:border-gray-600"
+              class="w-full mb-5 p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#852EE4] dark:bg-gray-700 dark:border-gray-600"
             >
               <option value="">Select</option>
               <option value="male">Male</option>
@@ -359,7 +408,7 @@
               >
               <select
                 formControlName="smoking"
-                class="w-full p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 dark:bg-gray-700 dark:border-gray-600"
+                class="w-full p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#852EE4] dark:bg-gray-700 dark:border-gray-600"
               >
                 <option value="">Select</option>
                 <option value="yes">Yes</option>
@@ -382,7 +431,7 @@
               >
               <select
                 formControlName="pets"
-                class="w-full p-4 mb-20 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 dark:bg-gray-700 dark:border-gray-600"
+                class="w-full p-4 mb-20 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#852EE4] dark:bg-gray-700 dark:border-gray-600"
               >
                 <option value="">Select</option>
                 <option value="yes">Yes</option>
@@ -403,7 +452,7 @@
           >
 
           <textarea
-            class="w-full h-30 p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 dark:bg-gray-700 dark:border-gray-600"
+            class="w-full h-30 p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#852EE4] dark:bg-gray-700 dark:border-gray-600"
             placeholder="About me"
             formControlName="bio"
           ></textarea>

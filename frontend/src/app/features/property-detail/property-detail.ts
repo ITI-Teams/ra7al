@@ -140,6 +140,33 @@ export class PropertyDetail implements OnInit {
     }
   };
 
+  // ===== AUTO-SLIDE CAROUSEL =====
+autoSlideInterval: any; // store interval reference
+
+/** Start auto-slide with optional interval (ms) */
+startAutoSlide(interval: number = 5000): void {
+  this.clearAutoSlide(); // prevent multiple intervals
+  this.autoSlideInterval = setInterval(() => this.nextImage(), interval);
+}
+
+/** Pause auto-slide */
+pauseAutoSlide(): void {
+  this.clearAutoSlide();
+}
+
+/** Resume auto-slide */
+resumeAutoSlide(interval: number = 5000): void {
+  this.startAutoSlide(interval);
+}
+
+/** Clear interval safely */
+private clearAutoSlide(): void {
+  if (this.autoSlideInterval) {
+    clearInterval(this.autoSlideInterval);
+    this.autoSlideInterval = null;
+  }
+}
+
   // Computed signal for formatted price
   formattedPrice = computed(() => {
     const prop = this.property();

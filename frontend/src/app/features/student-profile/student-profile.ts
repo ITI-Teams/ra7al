@@ -374,7 +374,14 @@ export class StudentProfile {
       this.avatarPreview = reader.result as string;
 
       // Show preview confirmation dialog
+      const isDark = document.documentElement.classList.contains('dark');
+
       Swal.fire({
+        // 🔥 Dark mode support
+        background: isDark ? '#1f2937' : '#ffffff', // gray-800
+        color: isDark ? '#e5e7eb' : '#111827', // gray-200 / gray-900
+        iconColor: isDark ? '#fbbf24' : '#f59e0b', // amber
+
         title: 'Update Photo?',
         html: `
         <div class="flex flex-col items-center gap-4">
@@ -431,18 +438,6 @@ export class StudentProfile {
         this.avatarPreview = null;
         this.cdr.detectChanges();
 
-        Swal.fire({
-          title: 'Success!',
-          text: 'Your photo has been updated.',
-          icon: 'success',
-          timer: 2000,
-          showConfirmButton: false,
-          customClass: {
-            popup: 'bg-white dark:bg-gray-900 rounded-2xl',
-            title: 'dark:text-white',
-            htmlContainer: 'dark:text-gray-300',
-          },
-        });
       },
       error: (err: any) => {
         console.error('Error uploading avatar:', err);
@@ -519,7 +514,6 @@ export class StudentProfile {
       this.selectedHabits.push(option);
       this.updateFormHabits();
     }
-    this.toggleDropdown('habits');
   }
 
   // Remove selected habit
@@ -559,7 +553,13 @@ export class StudentProfile {
   }
 
   openAvatarModal() {
-    Swal.fire({
+    const isDark = document.documentElement.classList.contains('dark');
+
+      Swal.fire({
+        // 🔥 Dark mode support
+        background: isDark ? '#1f2937' : '#ffffff', // gray-800
+        color: isDark ? '#e5e7eb' : '#111827', // gray-200 / gray-900
+        iconColor: isDark ? '#fbbf24' : '#f59e0b', // amber
       html: `
       <div class="relative flex flex-col items-center">
 
@@ -629,7 +629,13 @@ export class StudentProfile {
   }
 
   confirmRemoveAvatar() {
-    Swal.fire({
+    const isDark = document.documentElement.classList.contains('dark');
+
+      Swal.fire({
+        // 🔥 Dark mode support
+        background: isDark ? '#1f2937' : '#ffffff', // gray-800
+        color: isDark ? '#e5e7eb' : '#111827', // gray-200 / gray-900
+        iconColor: isDark ? '#fbbf24' : '#f59e0b', // amber
       title: 'Remove Photo?',
       text: 'Are you sure you want to remove your profile photo?',
       icon: 'warning',
@@ -667,18 +673,8 @@ export class StudentProfile {
 
         this.cdr.detectChanges();
 
-        Swal.fire({
-          title: 'Removed!',
-          text: 'Your photo has been removed.',
-          icon: 'success',
-          timer: 2000,
-          showConfirmButton: false,
-          customClass: {
-            popup: 'bg-white dark:bg-gray-900 rounded-2xl',
-            title: 'dark:text-white',
-            htmlContainer: 'dark:text-gray-300',
-          },
-        });
+        const isDark = document.documentElement.classList.contains('dark');
+
       },
       error: (err: any) => {
         this.showToastMessage(

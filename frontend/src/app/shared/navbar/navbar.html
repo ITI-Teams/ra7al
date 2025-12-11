@@ -2,231 +2,373 @@
   [ngClass]="navbarClasses"
   class="transition-colors duration-500 bg-white dark:bg-gray-900"
 >
-
   <div class="mx-auto flex items-center justify-between">
-
     <!-- LEFT SECTION -->
-    <div class="flex items-center py-2 transition duration-500 bg-white ps-6  dark:bg-gray-900 w-1/2 h-[100%] space-x-10">
-
+    <div
+      class="flex items-center py-3 transition duration-500 bg-white ps-6 dark:bg-gray-900 w-1/2 h-[100%] space-x-10"
+    >
       <!-- LOGO -->
       <div class="flex items-center space-x-1">
         <img src="logos/rahal.png" alt="" class="w-8 h-8 object-contain" />
-        <span class="text-2xl font-bold text-[#852EE4] dark:text-[#5e1fbf]">Rahal</span>
-          <!-- Loading Circle -->
-          <span class="w-3 h-3 mt-3 rounded-full loading-circle block"></span>
+        <span class="text-2xl font-bold text-[#852EE4] dark:text-[#5e1fbf]"
+          >Rahal</span
+        >
+        <!-- Loading Circle -->
+        <span class="w-3 h-3 mt-3 rounded-full loading-circle block"></span>
       </div>
 
       <!-- DESKTOP MENU -->
-      <ul class="hidden md:flex items-center space-x-6 text-sm font-semibold text-zinc-700 dark:text-zinc-200 uppercase">
-        <li><a routerLink="/" class="hover:text-[#FA9233] dark:hover:text-white">Home</a></li>
-        <li><a routerLink="/filter" class="hover:text-[#FA9233] dark:hover:text-white">Apartments</a></li>
+      <ul
+        class="hidden md:flex items-center space-x-6 text-sm font-semibold text-zinc-700 dark:text-zinc-200 uppercase"
+      >
+        <li>
+          <a
+            routerLink="/"
+            class="hover:text-[#852EE4] dark:hover:text-[#852EE4]"
+            >Home</a
+          >
+        </li>
+        <li>
+          <a
+            routerLink="/filter"
+            class="hover:text-[#852EE4] dark:hover:text-[#852EE4]"
+            >Apartments</a
+          >
+        </li>
         <ng-container *ngIf="isLoggedIn">
-          <li><a routerLink="/Recommended" class="hover:text-[#FA9233] dark:hover:text-white">Recommended</a></li>
+          <li>
+            <a
+              routerLink="/recommendations"
+              class="hover:text-[#852EE4] dark:hover:text-[#852EE4]"
+              >Recommended</a
+            >
+          </li>
         </ng-container>
-        <li><a routerLink="/aboutus" class="hover:text-[#FA9233] dark:hover:text-white">About</a></li>
-        <li><a routerLink="/contactus" class="hover:text-[#FA9233] dark:hover:text-white">Contact</a></li>
+        <li>
+          <a
+            routerLink="/aboutus"
+            class="hover:text-[#852EE4] dark:hover:text-[#852EE4]"
+            >About</a
+          >
+        </li>
+        <li>
+          <a
+            routerLink="/contactus"
+            class="hover:text-[#852EE4] dark:hover:text-[#852EE4]"
+            >Contact</a
+          >
+        </li>
       </ul>
     </div>
 
     <!-- RIGHT SECTION -->
-    <div class="flex pe-6   items-center  space-x-4">
-
+    <div class="flex pe-6 items-center space-x-4">
       <!-- NOT LOGGED -->
       <ng-container *ngIf="!isLoggedIn">
+        <!-- THEME TOGGLE -->
+        <!-- THEME TOGGLE -->
+        <button
+          (click)="theme.toggle()"
+          class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 text-zinc-700 dark:text-zinc-200"
+          aria-label="Toggle theme"
+        >
+          @if (themeSignal() === 'light') {
+          <!-- Sun Icon for Light Mode -->
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M12 3v1m0 16v1m8.66-8.66h1M4.34 12H3m15.36 6.36l.7.7M6.34 6.34l-.7-.7m12.02 0l.7-.7M6.34 17.66l-.7.7M12 8a4 4 0 100 8 4 4 0 000-8z"
+            />
+          </svg>
+          } @else {
+          <!-- Moon Icon for Dark Mode -->
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z" />
+          </svg>
+          }
+        </button>
+
         <div class="hidden md:flex items-center space-x-2">
-          <button routerLink="/login"
-            class="text-sm font-semibold uppercase border border-[#852EE4] text-white bg-[#852EE4] px-5 py-2 rounded-md hover:bg-[#7330d1]">
+          <button
+            routerLink="/login"
+            class="text-sm font-semibold uppercase border border-[#852EE4] text-white bg-[#852EE4] px-5 py-2 rounded-md hover:bg-[#7330d1]"
+          >
             Login
           </button>
 
-          <button routerLink="/register"
-            class="text-sm font-semibold uppercase text-white bg-[#852EE4] px-5 py-2 rounded-md hover:bg-[#7330d1]">
+          <button
+            routerLink="/register"
+            class="text-sm font-semibold uppercase text-white bg-[#852EE4] px-5 py-2 rounded-md hover:bg-[#7330d1]"
+          >
             Register
           </button>
         </div>
       </ng-container>
 
-      <!-- LOGGED USER -->
-      <ng-container *ngIf="isLoggedIn">
-        <div class="hidden md:flex items-center gap-4 text-zinc-800 dark:text-zinc-200">
+    <!-- LOGGED USER -->
+<ng-container *ngIf="isLoggedIn">
+  <div class="hidden md:flex items-center gap-4 text-zinc-800 dark:text-zinc-200">
 
-          <!-- Notifications -->
-          <button class="p-2 rounded-full hover:bg-zinc-200 dark:hover:bg-zinc-700 transition">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12
-                0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6
-                0v1a3 3 0 11-6 0v-1m6 0H9" />
-            </svg>
-          </button>
-
-          <!-- Avatar -->
-          <div class="relative" [class.z-50]="profileOpen">
-            <button (click)="toggleProfile()">
-              <img [src]="avatarUrl()" class="w-10 h-10 flex items-center justify-center rounded-full object-cover cursor-pointer" />
-            </button>
-
-            <!-- DROPDOWN MENU -->
-            <div *ngIf="profileOpen" (click)="toggleProfile()"
-              class="absolute right-0 mt-3 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700">
-
-              <a routerLink="/" class="block px-4 py-2 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-                Home
-              </a>
-
-              <a [routerLink]="user?.role === 'owner' ? '/owner-dashboard/apartments' : '/profile-student'"
-                class="block px-4 py-2 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-                Profile
-              </a>
-
-              <button (click)="logout()"
-                class="w-full text-left px-4 py-2 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/20">
-                Logout
-              </button>
-            </div>
-          </div>
-        </div>
+    <!-- THEME TOGGLE -->
+    <button
+      (click)="theme.toggle()"
+      class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 text-zinc-700 dark:text-zinc-200"
+      aria-label="Toggle theme"
+    >
+      <ng-container *ngIf="themeSignal() === 'light'; else darkMode">
+        <!-- Sun Icon -->
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3v1m0 16v1m8.66-8.66h1M4.34 12H3m15.36 6.36l.7.7M6.34 6.34l-.7-.7m12.02 0l.7-.7M6.34 17.66l-.7.7M12 8a4 4 0 100 8 4 4 0 000-8z" />
+        </svg>
       </ng-container>
+      <ng-template #darkMode>
+        <!-- Moon Icon -->
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z" />
+        </svg>
+      </ng-template>
+    </button>
 
-      <!-- THEME TOGGLE -->
-      <button (click)="theme.toggle()" class="text-zinc-700 dark:text-zinc-200">
-        @if (themeSignal() === 'light') {
-          <svg class="w-6 h-6" fill="none" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M12 3v1m0 16v1m8.66-8.66h1M4.34
-              12H3m15.36 6.36l.7.7M6.34
-              6.34l-.7-.7m12.02 0l.7-.7M6.34
-              17.66l-.7.7M12
-              8a4 4 0 100 8 4 4 0 000-8z" />
-          </svg>
-        }
-        @else {
-          <svg class="w-6 h-6" fill="none" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M21 12.79A9 9 0 1111.21
-              3a7 7 0 009.79 9.79z" />
-          </svg>
-        }
+    <!-- Notifications -->
+    <button class="p-2 rounded-full dark:hover:bg-[#852EE4] hover:bg-[#5e1fbf] transition">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12
+              0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6
+              0v1a3 3 0 11-6 0v-1m6 0H9" />
+      </svg>
+    </button>
+
+    <!-- PROFILE DROPDOWN -->
+    <div class="relative" [class.z-50]="profileOpen">
+      <!-- Avatar Button -->
+      <button (click)="profileOpen = !profileOpen"
+              class="w-10 h-10 rounded-full ring-1 ring-indigo-300 dark:ring-indigo-500 overflow-hidden border border-white dark:border-gray-700 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105">
+        <img [src]="avatarUrl()" alt="User" class="w-full h-full object-cover">
       </button>
 
+      <!-- Dropdown Menu -->
+      <div *ngIf="profileOpen"
+           @dropdownAnimation
+           (clickOutside)="profileOpen = false"
+           class="absolute right-0 mt-3 w-64 rounded-2xl bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50 overflow-hidden">
+        <!-- Menu Items -->
+        <div class="py-2">
+          <!-- Home -->
+          <a routerLink="/"
+             class="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors group">
+            <i class="fas fa-home text-gray-400 group-hover:text-indigo-500 dark:group-hover:text-indigo-400 w-4 text-center"></i>
+            <span>Home</span>
+          </a>
+
+          <!-- Profile -->
+          <a [routerLink]="user?.role === 'owner' ? '/owner-dashboard/apartments' : '/profile-student'"
+             class="flex items-center gap-3 px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors group">
+            <i class="fas fa-user-circle text-gray-400 group-hover:text-indigo-500 dark:group-hover:text-indigo-400 w-4 text-center"></i>
+            <span>Profile</span>
+          </a>
+
+          <div class="border-t border-gray-100 dark:border-gray-700/50 my-1"></div>
+
+          <!-- Logout -->
+          <button (click)="logout()"
+                  class="flex items-center gap-3 px-4 py-3 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors group w-full text-left">
+            <i class="fas fa-sign-out-alt w-4 text-center"></i>
+            <span>Logout</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</ng-container>
+
+
+
       <!-- MOBILE MENU BUTTON -->
-      <button (click)="toggleMenu()" class="md:hidden text-black dark:text-white">
+      <button
+        (click)="toggleMenu()"
+        class="md:hidden text-black dark:text-white"
+      >
         @if (!menuOpen) {
-          <svg class="w-6 h-6" stroke="currentColor" fill="none">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        }
-        @else {
-          <svg class="w-6 h-6" stroke="currentColor" fill="none">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M6 18L18 6M6 6l12 12" />
-          </svg>
+        <svg class="w-6 h-6" stroke="currentColor" fill="none">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"
+          />
+        </svg>
+        } @else {
+        <svg class="w-6 h-6" stroke="currentColor" fill="none">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
         }
       </button>
     </div>
   </div>
 
   <!-- MOBILE MENU -->
-<div *ngIf="menuOpen" class="md:hidden bg-white text-center dark:bg-gray-900 border-t border-zinc-200 dark:border-gray-700 px-6 py-4">
-
-  <!-- USER MOBILE -->
-  <ng-container *ngIf="isLoggedIn">
-    <div class="flex items-center justify-center mb-6">
-      <div class="flex items-center space-x-3">
-        <!-- Notification / Icon Button -->
-        <button class="p-2 rounded-full bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 transition">
-          <svg class="w-5 h-5 text-gray-700 dark:text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M15 17h5l-1.405-1.405A2.032
+  <div
+    *ngIf="menuOpen"
+    class="md:hidden bg-white text-center dark:bg-gray-900 border-t border-zinc-200 dark:border-gray-700 px-6 py-4"
+  >
+    <!-- USER MOBILE -->
+    <ng-container *ngIf="isLoggedIn">
+      <div class="flex items-center justify-center mb-6">
+        <div class="flex items-center space-x-3">
+          <!-- Notification / Icon Button -->
+          <button
+            class="p-2 rounded-full bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 transition"
+          >
+            <svg
+              class="w-5 h-5 text-gray-700 dark:text-gray-200"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 17h5l-1.405-1.405A2.032
               2.032 0 0118 14.158V11a6 6 0 10-12
               0v3.159c0 .538-.214 1.055-.595
               1.436L4 17h5m6 0v1a3 3 0 11-6
-              0v-1m6 0H9" />
-          </svg>
-        </button>
+              0v-1m6 0H9"
+              />
+            </svg>
+          </button>
 
-        <!-- User Avatar -->
-        <a [routerLink]="user?.role === 'owner' ? '/owner-dashboard' : '/profile-student'">
-          <img [src]="avatarUrl()" class="w-10 h-10 rounded-full object-cover border-2 border-[#852EE4]" />
-        </a>
+          <!-- User Avatar -->
+          <a
+            [routerLink]="user?.role === 'owner' ? '/owner-dashboard' : '/profile-student'"
+          >
+            <img
+              [src]="avatarUrl()"
+              class="w-10 h-10 rounded-full object-cover border-2 border-[#852EE4]"
+            />
+          </a>
+        </div>
       </div>
-    </div>
-  </ng-container>
+    </ng-container>
 
-  <!-- MENU LINKS -->
-  <ul class="flex flex-col space-y-2 text-zinc-700 dark:text-zinc-200 uppercase text-sm font-semibold">
-  <li>
-    <a routerLink="/"
-       class="block px-4 py-2 rounded-lg transition
-              hover:bg-[#FA9233]/20 dark:hover:bg-white/10 hover:text-[#FA9233] dark:hover:text-white">
-      Home
-    </a>
-  </li>
-  <li>
-    <a routerLink="/filter"
-       class="block px-4 py-2 rounded-lg transition
-              hover:bg-[#FA9233]/20 dark:hover:bg-white/10 hover:text-[#FA9233] dark:hover:text-white">
-      Apartments
-    </a>
-  </li>
-  <ng-container *ngIf="isLoggedIn">
-    <li>
-      <a routerLink="/Recommended"
-         class="block px-4 py-2 rounded-lg transition
-                hover:bg-[#FA9233]/20 dark:hover:bg-white/10 hover:text-[#FA9233] dark:hover:text-white">
-        Recommended
-      </a>
-    </li>
-  </ng-container>
-  <li>
-    <a routerLink="/aboutus"
-       class="block px-4 py-2 rounded-lg transition
-              hover:bg-[#FA9233]/20 dark:hover:bg-white/10 hover:text-[#FA9233] dark:hover:text-white">
-      About
-    </a>
-  </li>
-  <li>
-    <a routerLink="/contactus"
-       class="block px-4 py-2 rounded-lg transition
-              hover:bg-[#FA9233]/20 dark:hover:bg-white/10 hover:text-[#FA9233] dark:hover:text-white">
-      Contact
-    </a>
-  </li>
+    <!-- MENU LINKS -->
+    <ul
+      class="flex flex-col space-y-2 text-zinc-700 dark:text-zinc-200 uppercase text-sm font-semibold"
+    >
+      <li>
+        <a
+          routerLink="/"
+          class="block px-4 py-2 rounded-lg transition hover:bg-[#852EE4]/20 dark:hover:bg-white/10 hover:text-[#852EE4] dark:hover:text-[#852EE4]"
+        >
+          Home
+        </a>
+      </li>
+      <li>
+        <a
+          routerLink="/filter"
+          class="block px-4 py-2 rounded-lg transition hover:bg-[#852EE4]/20 dark:hover:bg-white/10 hover:text-[#852EE4] dark:hover:text-[#852EE4]"
+        >
+          Apartments
+        </a>
+      </li>
+      <ng-container *ngIf="isLoggedIn">
+        <li>
+          <a
+            routerLink="/recommendations"
+            class="block px-4 py-2 rounded-lg transition hover:bg-[#852EE4]/20 dark:hover:bg-white/10 hover:text-[#852EE4] dark:hover:text-[#852EE4]"
+          >
+            Recommended
+          </a>
+        </li>
+      </ng-container>
+      <li>
+        <a
+          routerLink="/aboutus"
+          class="block px-4 py-2 rounded-lg transition hover:bg-[#852EE4]/20 dark:hover:bg-white/10 hover:text-[#852EE4] dark:hover:text-[#852EE4]"
+        >
+          About
+        </a>
+      </li>
+      <li>
+        <a
+          routerLink="/contactus"
+          class="block px-4 py-2 rounded-lg transition hover:bg-[#852EE4]/20 dark:hover:bg-white/10 hover:text-[#852EE4] dark:hover:text-[#852EE4]"
+        >
+          Contact
+        </a>
+      </li>
+      <li>
+        <button
+          (click)="logout()"
+          class="w-full text-center px-4 py-2 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/20"
+        >
+          Logout
+        </button>
+      </li>
 
-  <!-- LOGIN / REGISTER -->
-  <ng-container *ngIf="!isLoggedIn">
-    <li>
-      <button routerLink="/login"
-        class="w-full border border-zinc-500 px-5 py-2 rounded-lg hover:bg-[#852EE4] hover:text-white transition">
-        Login
-      </button>
-    </li>
-    <li>
-      <button routerLink="/register"
-        class="w-full bg-[#852EE4] text-white px-5 py-2 rounded-lg hover:opacity-90 transition">
-        Register
-      </button>
-    </li>
-  </ng-container>
-</ul>
-
-</div>
-
+      <!-- LOGIN / REGISTER -->
+      <ng-container *ngIf="!isLoggedIn">
+        <li>
+          <button
+            routerLink="/login"
+            class="w-full border border-zinc-500 px-5 py-2 rounded-lg hover:bg-[#852EE4] hover:text-white transition"
+          >
+            Login
+          </button>
+        </li>
+        <li>
+          <button
+            routerLink="/register"
+            class="w-full bg-[#852EE4] text-white px-5 py-2 rounded-lg hover:opacity-90 transition"
+          >
+            Register
+          </button>
+        </li>
+      </ng-container>
+    </ul>
+  </div>
 </nav>
 
 <p-toast></p-toast>
 
 <style>
-/* Loading circle animation using conic-gradient */
+  /* Loading circle animation using conic-gradient */
   .loading-circle {
-    background: conic-gradient(#852EE4 0% 25%, #DE7A18 25% 50%, #852EE4 50% 75%, #DE7A18 75% 100%);
+    background: conic-gradient(
+      #852ee4 0% 25%,
+      #de7a18 25% 50%,
+      #852ee4 50% 75%,
+      #de7a18 75% 100%
+    );
     animation: rotateCircle 1s linear infinite;
   }
 
   @keyframes rotateCircle {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 </style>
-
