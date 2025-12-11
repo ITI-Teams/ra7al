@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Dashboard\CityController;
 use App\Http\Controllers\Dashboard\AreaController;
 use App\Http\Controllers\Dashboard\UniversityController;
+use Illuminate\Support\Facades\Broadcast;
 
 Route::get('/', function () {
     return view('welcome');
@@ -94,8 +95,22 @@ Route::middleware(['auth', 'role:super,admin'])->group(function () {
     Route::post('universities/{id}/restore', [UniversityController::class, 'restore'])->name('universities.restore');
     Route::delete('universities/{id}/force-delete', [UniversityController::class, 'forceDelete'])->name('universities.force-delete');
 });
-
-
+// In routes/web.php or routes/api.php (depending on where you want it)
+Broadcast::routes(['middleware' => ['web']]); // Adjust middleware as needed
+// Add this if using web middleware
+Route::post('/broadcasting/auth', function () {
+    return Broadcast::auth(request());
+})->middleware(['web']);
+//test notification route
+Route::get('/test-notify', function () {
+    return \App\Services\NotificationService::send(
+        userId: 1,
+        title: 'Backend working!',
+        message: 'Your notification system is fully ready.',
+        type: 'test',
+        data: ['example' => true]
+    );
+});
 
 
 

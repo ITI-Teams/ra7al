@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Models\Property;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\PropertyApprovedNotification;
 
 class PropertyController extends Controller
 {
@@ -20,6 +22,8 @@ class PropertyController extends Controller
         $property->approved_at = now();
         $property->approved_by = auth()->id();
         $property->save();
+        $owner = $property->owner;
+        $owner->notify(new PropertyApprovedNotification($property));
 
         return back()->with('toast', ['type' => 'success', 'message' => 'Property approved successfully.']);
     }
@@ -43,5 +47,4 @@ class PropertyController extends Controller
 
         return back()->with('toast', ['type' => 'success', 'message' => 'Property deleted.']);
     }
-
 }
