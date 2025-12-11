@@ -41,7 +41,7 @@ export class Contactus {
     {
       icon: 'pi pi-envelope',
       title: 'Email',
-      value: 'hello@farabi.com',
+      value: 'ra7al@ra7al.com',
       bgColor: 'bg-orange-100',
       iconColor: 'text-orange-600',
       darkBgColor: 'bg-orange-900/30',

@@ -22,6 +22,8 @@ use App\Http\Controllers\Api\V1\DashboardController;
 
 use App\Http\Controllers\Api\V1\PropertyCommentController;
 use App\Http\Controllers\Api\V1\PropertySaveController;
+use App\Http\Controllers\Api\V1\OwnerDashboardController;
+use App\Http\Controllers\Api\V1\RentalRequestController;
 
 
 /*
@@ -184,4 +186,23 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/property/{id}/favourite', [PropertySaveController::class, 'toggle']);
 
     Route::get('/my-favourites', [PropertySaveController::class, 'myFavourites']);
+});
+// Owner Dashboard Route
+Route::middleware('auth:sanctum')->get('/owner/dashboard', [OwnerDashboardController::class, 'index']);
+// Rental Requests Routes
+Route::middleware('auth:sanctum')->group(function () {
+    // Get all rental requests (with pagination, search, filter)
+    Route::get('rental-requests', [RentalRequestController::class, 'index']);
+
+    // Submit a new rental request
+    Route::post('rental-requests', [RentalRequestController::class, 'store']);
+
+    // Show single rental request details
+    Route::get('rental-requests/{id}', [RentalRequestController::class, 'show']);
+
+    // Approve rental request
+    Route::post('rental-requests/{id}/approve', [RentalRequestController::class, 'approve']);
+
+    // Reject rental request
+    Route::post('rental-requests/{id}/reject', [RentalRequestController::class, 'reject']);
 });
