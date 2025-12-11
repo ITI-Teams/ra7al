@@ -90,19 +90,38 @@ class RecommendationController extends Controller
                 $sessionId
             );
 
-            // Call Node.js RAG service to get recommendations
-            $recommendations = $this->callRAGService(
-                $validated['answers'],
-                $request->user()->id,
-                $sessionId
-            );
+            // Call Node.js RAG service to get recommendations. If the RAG service
+            // is unavailable we still return a successful response with the
+            // session id so the frontend can continue (answers were persisted
+            // above). This avoids surfacing a 500 when the AI microservice is down.
+            try {
+                $recommendations = $this->callRAGService(
+                    $validated['answers'],
+                    $request->user()->id,
+                    $sessionId
+                );
 
-            return response()->json([
-                'success' => true,
-                'data' => $recommendations,
-                'session_id' => $sessionId,
-                'message' => 'Recommendations generated successfully',
-            ], 200);
+                return response()->json([
+                    'success' => true,
+                    'data' => $recommendations,
+                    'session_id' => $sessionId,
+                    'message' => 'Recommendations generated successfully',
+                ], 200);
+            } catch (\Exception $e) {
+                Log::error('RAG service unavailable when generating recommendations: ' . $e->getMessage(), [
+                    'user_id' => $request->user()?->id,
+                    'session_id' => $sessionId,
+                ]);
+
+                // Return an empty data set but signal success so the client can
+                // save session and show an appropriate message.
+                return response()->json([
+                    'success' => true,
+                    'data' => [],
+                    'session_id' => $sessionId,
+                    'message' => 'Recommendations are being processed. Recommendation engine is temporarily unavailable.',
+                ], 200);
+            }
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'success' => false,

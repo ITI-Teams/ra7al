@@ -7,8 +7,6 @@ import { RouterModule, Router } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
 
-
-
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ProfileService } from '../../core/services/profile/profile-service';
 import { FavouriteService } from '../../core/services/favourite/favourite-service';
@@ -17,57 +15,78 @@ import { AuthService } from '../../core/services/authService/auth.service';
 @Component({
   selector: 'app-student-profile',
   standalone: true,
-  imports:  [FormsModule,RouterModule , NgClass,NgIf,ReactiveFormsModule,CommonModule],
+  imports: [
+    FormsModule,
+    RouterModule,
+    NgClass,
+    NgIf,
+    ReactiveFormsModule,
+    CommonModule,
+  ],
   templateUrl: './student-profile.html',
   styleUrls: ['./student-profile.css'],
 })
 export class StudentProfile {
   properties: any[] = [];
 
-toastMessage: string = '';
-toastType: 'success' | 'error' = 'success';
-showToast: boolean = false;
+  toastMessage: string = '';
+  toastType: 'success' | 'error' = 'success';
+  showToast: boolean = false;
 
-    profile:any;
-    selectedAvatarFile: File | null = null;
-    avatarPreview: string | null = null;
+  profile: any;
+  selectedAvatarFile: File | null = null;
+  avatarPreview: string | null = null;
 
+  profileForm: FormGroup;
 
-   profileForm: FormGroup;
-
-    isEditing = false;
+  isEditing = false;
   activeTab: string = 'favourites';
-    user: any = null;
+  user: any = null;
 
-  constructor(private fb: FormBuilder, private profileSrv: ProfileService,private cdr: ChangeDetectorRef,   private favouriteService: FavouriteService ,  private router: Router, private auth: AuthService) {
-  this.profileForm = this.fb.group({
-  name: ['', [Validators.required, Validators.pattern(/^(?!\s*$)[\p{L}\s]+$/u)]],
-  email: ['', [Validators.required, Validators.email]],
-  password: ['', [Validators.minLength(6), Validators.maxLength(20)]],
-  gender:['',Validators.required],
-  age: ['', [Validators.required, Validators.min(5), Validators.max(120)]],
-    habits: [''],
-    preferences: [''],
-    roommate_style: ['', [Validators.required, Validators.pattern(/^(?!\s*$)[\p{L}\s]+$/u)]],
-    cleanliness_level: ['', [Validators.required, Validators.pattern(/^[0-9]$/)]],
-    smoking: ['', Validators.required],
-    pets: ['', Validators.required],
-    bio:['',Validators.required],
-    avatar: [''],
-});
+  constructor(
+    private fb: FormBuilder,
+    private profileSrv: ProfileService,
+    private cdr: ChangeDetectorRef,
+    private favouriteService: FavouriteService,
+    private router: Router,
+    private auth: AuthService
+  ) {
+    this.profileForm = this.fb.group({
+      name: [
+        '',
+        [Validators.required, Validators.pattern(/^(?!\s*$)[\p{L}\s]+$/u)],
+      ],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.minLength(6), Validators.maxLength(20)]],
+      gender: ['', Validators.required],
+      age: ['', [Validators.required, Validators.min(5), Validators.max(120)]],
+      habits: [''],
+      preferences: [''],
+      roommate_style: [
+        '',
+        [Validators.required, Validators.pattern(/^(?!\s*$)[\p{L}\s]+$/u)],
+      ],
+      cleanliness_level: [
+        '',
+        [Validators.required, Validators.pattern(/^[0-9]$/)],
+      ],
+      smoking: ['', Validators.required],
+      pets: ['', Validators.required],
+      bio: ['', Validators.required],
+      avatar: [''],
+    });
 
-// Subscribe to user changes
+    // Subscribe to user changes
     this.auth.user$.subscribe((user) => {
-      this.user = user;});
+      this.user = user;
+    });
 
     // Listen to storage changes
     window.addEventListener('storage', () => {
       const user = this.auth.getUser();
       this.user = user;
     });
-}
-
-
+  }
 
   changeTab(tab: string) {
     this.activeTab = tab;
@@ -76,115 +95,200 @@ showToast: boolean = false;
     this.isEditing = !this.isEditing;
   }
   ngOnInit(): void {
-      this.cdr.detectChanges();
+    this.cdr.detectChanges();
     this.loadProfile();
-      this.loadFavourites();
+    this.loadFavourites();
   }
 
-loadProfile() {
-  this.profileSrv.getProfile().subscribe({
-    next: ({ profile }) => {
-      // Backend returns avatar as path: images/users/avatar/avatar_23_...jpg
-      // avatarUrl() method will handle building the full URL
-      if (!profile.avatar) {
-        profile.avatar = undefined;
-      }
+  loadProfile() {
+    this.profileSrv.getProfile().subscribe({
+      next: ({ profile }) => {
+        // Backend returns avatar as path: images/users/avatar/avatar_23_...jpg
+        // avatarUrl() method will handle building the full URL
+        if (!profile.avatar) {
+          profile.avatar = undefined;
+        }
 
-      this.profile = profile;
-      this.cdr.detectChanges();
+        this.profile = profile;
+        this.cdr.detectChanges();
 
-      console.log(this.profile);
+        console.log(this.profile);
 
-      /** Parse fields if returned as string */
-      if (profile.habits && typeof profile.habits === 'string') {
-        profile.habits = JSON.parse(profile.habits);
-      }
+        /** Parse fields if returned as string */
+        if (profile.habits && typeof profile.habits === 'string') {
+          profile.habits = JSON.parse(profile.habits);
+        }
 
-      if (profile.preferences && typeof profile.preferences === 'string') {
-        profile.preferences = JSON.parse(profile.preferences);
-      }
+        if (profile.preferences && typeof profile.preferences === 'string') {
+          profile.preferences = JSON.parse(profile.preferences);
+        }
 
-      /** Normalize boolean values */
-      profile.smoking = Number(profile.smoking) === 1 ? 'yes' : 'no';
-      profile.pets = Number(profile.pets) === 1 ? 'yes' : 'no';
+        /** Normalize boolean values */
+        profile.smoking = Number(profile.smoking) === 1 ? 'yes' : 'no';
+        profile.pets = Number(profile.pets) === 1 ? 'yes' : 'no';
 
-      /** Protect from invalid gender */
-      if (profile.gender !== 'male' && profile.gender !== 'female') {
-        profile.gender = '';
-      }
+        /** Protect from invalid gender */
+        if (profile.gender !== 'male' && profile.gender !== 'female') {
+          profile.gender = '';
+        }
 
-      /** Update form */
-      this.profileForm.patchValue({
-        ...profile,
-        password: ''
-      });
-    },
-    error: (err) => console.error(err),
-  });
-}
-
-
-showToastMessage(message: string, type: 'success' | 'error' = 'success') {
-  this.toastMessage = message;
-  this.toastType = type;
-  this.showToast = true;
-
-  setTimeout(() => {
-    this.showToast = false;
-  }, 3000);
-}
-saveData() {
-
-  if (this.profileForm.invalid) {
-    this.profileForm.markAllAsTouched();
-      this.showToastMessage('Please fix the errors in the form before saving.','error');
-    return;
-  }
-
-
-  const raw = this.profileForm.getRawValue();
-
-
-
-
-
-  const payload = {
-  ...raw,
-  age: raw.age ? Number(raw.age) : null,
-  cleanliness_level: raw.cleanliness_level ? Number(raw.cleanliness_level) : null,
-  smoking: raw.smoking === 'yes' ? 1 : 0,
-  pets: raw.pets === 'yes' ? 1 : 0,
-  bio:raw.bio,
- gender: raw.gender || null,
-  habits: Array.isArray(raw.habits) ? raw.habits : raw.habits?.split(',').map((h:string) => h.trim()) || [],
-  preferences: Array.isArray(raw.preferences) ? raw.preferences : raw.preferences?.split(',').map((p:string) => p.trim()) || [],
-};
-
-  console.log('Payload to send:', payload);
-
-  // If avatar file selected, send as FormData so backend can process file upload
-  if (this.selectedAvatarFile) {
-    const form = new FormData();
-    Object.keys(payload).forEach((k) => {
-      const v: any = (payload as any)[k];
-      if (v === null || v === undefined) return;
-      if (Array.isArray(v) || typeof v === 'object') {
-        form.append(k, JSON.stringify(v));
-      } else {
-        form.append(k, String(v));
-      }
+        /** Update form */
+        this.profileForm.patchValue({
+          ...profile,
+          password: '',
+        });
+      },
+      error: (err) => console.error(err),
     });
-    form.append('avatar', this.selectedAvatarFile as File);
+  }
 
-    this.profileSrv.saveProfile(form).subscribe({
+  showToastMessage(message: string, type: 'success' | 'error' = 'success') {
+    this.toastMessage = message;
+    this.toastType = type;
+    this.showToast = true;
+
+    setTimeout(() => {
+      this.showToast = false;
+    }, 3000);
+  }
+  saveData() {
+    if (this.profileForm.invalid) {
+      this.profileForm.markAllAsTouched();
+      this.showToastMessage(
+        'Please fix the errors in the form before saving.',
+        'error'
+      );
+      return;
+    }
+
+    const raw = this.profileForm.getRawValue();
+
+    const payload = {
+      ...raw,
+      age: raw.age ? Number(raw.age) : null,
+      cleanliness_level: raw.cleanliness_level
+        ? Number(raw.cleanliness_level)
+        : null,
+      smoking: raw.smoking === 'yes' ? 1 : 0,
+      pets: raw.pets === 'yes' ? 1 : 0,
+      bio: raw.bio,
+      gender: raw.gender || null,
+      habits: Array.isArray(raw.habits)
+        ? raw.habits
+        : raw.habits?.split(',').map((h: string) => h.trim()) || [],
+      preferences: Array.isArray(raw.preferences)
+        ? raw.preferences
+        : raw.preferences?.split(',').map((p: string) => p.trim()) || [],
+    };
+
+    console.log('Payload to send:', payload);
+
+    // If avatar file selected, send as FormData so backend can process file upload
+    if (this.selectedAvatarFile) {
+      const form = new FormData();
+      Object.keys(payload).forEach((k) => {
+        const v: any = (payload as any)[k];
+        if (v === null || v === undefined) return;
+        if (Array.isArray(v) || typeof v === 'object') {
+          form.append(k, JSON.stringify(v));
+        } else {
+          form.append(k, String(v));
+        }
+      });
+      form.append('avatar', this.selectedAvatarFile as File);
+
+      this.profileSrv.saveProfile(form).subscribe({
+        next: (res) => {
+          this.showToastMessage('Data saved successfully', 'success');
+
+          if (res && res.profile) {
+            const updated = {
+              ...res.profile,
+              smoking: res.profile.smoking === 1 ? 'yes' : 'no',
+              pets: res.profile.pets === 1 ? 'yes' : 'no',
+            };
+
+            // Parse habits if string
+            if (updated.habits && typeof updated.habits === 'string') {
+              try {
+                updated.habits = JSON.parse(updated.habits);
+              } catch {
+                updated.habits = updated.habits
+                  .split(',')
+                  .map((h: string) => h.trim());
+              }
+            } else if (!Array.isArray(updated.habits)) {
+              updated.habits = [];
+            }
+
+            // Parse preferences if string
+            if (
+              updated.preferences &&
+              typeof updated.preferences === 'string'
+            ) {
+              try {
+                updated.preferences = JSON.parse(updated.preferences);
+              } catch {
+                updated.preferences = [updated.preferences];
+              }
+            } else if (!Array.isArray(updated.preferences)) {
+              updated.preferences = [];
+            }
+
+            if (
+              updated.avatar &&
+              typeof updated.avatar === 'string' &&
+              updated.avatar.includes('/images/users/')
+            ) {
+              updated.avatar = updated.avatar.replace(
+                '://localhost:8000/',
+                '://localhost:8000/storage/'
+              );
+            }
+
+            this.profile = updated;
+
+            // Update selectedHabits for the dropdown
+            if (Array.isArray(updated.habits)) {
+              this.selectedHabits = updated.habits;
+            }
+
+            this.profileForm.patchValue({
+              ...updated,
+              password: '',
+              habits: Array.isArray(updated.habits)
+                ? updated.habits.join(', ')
+                : '',
+            });
+
+            this.cdr.detectChanges();
+          }
+
+          this.isEditing = false;
+        },
+        error: (err) => {
+          console.log('Error status:', err.status);
+          console.log('Error body:', err.error);
+          this.showToastMessage(
+            'An error occurred while saving. Please try again.',
+            'error'
+          );
+        },
+      });
+
+      return;
+    }
+
+    this.profileSrv.saveProfile(payload).subscribe({
       next: (res) => {
         this.showToastMessage('Data saved successfully', 'success');
 
+        // Update local profile and form with server response
         if (res && res.profile) {
           const updated = {
             ...res.profile,
             smoking: res.profile.smoking === 1 ? 'yes' : 'no',
-            pets: res.profile.pets === 1 ? 'yes' : 'no'
+            pets: res.profile.pets === 1 ? 'yes' : 'no',
           };
 
           // Parse habits if string
@@ -192,7 +296,9 @@ saveData() {
             try {
               updated.habits = JSON.parse(updated.habits);
             } catch {
-              updated.habits = updated.habits.split(',').map((h: string) => h.trim());
+              updated.habits = updated.habits
+                .split(',')
+                .map((h: string) => h.trim());
             }
           } else if (!Array.isArray(updated.habits)) {
             updated.habits = [];
@@ -209,8 +315,16 @@ saveData() {
             updated.preferences = [];
           }
 
-          if (updated.avatar && typeof updated.avatar === 'string' && updated.avatar.includes('/images/users/')) {
-            updated.avatar = updated.avatar.replace('://localhost:8000/', '://localhost:8000/storage/');
+          // replace avatar path if necessary
+          if (
+            updated.avatar &&
+            typeof updated.avatar === 'string' &&
+            updated.avatar.includes('/images/users/')
+          ) {
+            updated.avatar = updated.avatar.replace(
+              '://localhost:8000/',
+              '://localhost:8000/storage/'
+            );
           }
 
           this.profile = updated;
@@ -220,10 +334,13 @@ saveData() {
             this.selectedHabits = updated.habits;
           }
 
+          // Ensure form shows updated values
           this.profileForm.patchValue({
             ...updated,
             password: '',
-            habits: Array.isArray(updated.habits) ? updated.habits.join(', ') : ''
+            habits: Array.isArray(updated.habits)
+              ? updated.habits.join(', ')
+              : '',
           });
 
           this.cdr.detectChanges();
@@ -232,178 +349,111 @@ saveData() {
         this.isEditing = false;
       },
       error: (err) => {
+        // console.error('Error while saving:', err);
+
         console.log('Error status:', err.status);
         console.log('Error body:', err.error);
-        this.showToastMessage('An error occurred while saving. Please try again.','error');
-      }
+        console.log('Full error:', err);
+        this.showToastMessage(
+          'An error occurred while saving. Please try again.',
+          'error'
+        );
+      },
     });
-
-    return;
   }
 
-  this.profileSrv.saveProfile(payload).subscribe({
-    next: (res) => {
-      this.showToastMessage('Data saved successfully', 'success');
+  onAvatarChange(event: Event) {
+    const input = event.target as HTMLInputElement;
 
-      // Update local profile and form with server response
-      if (res && res.profile) {
-        const updated = {
-          ...res.profile,
-          smoking: res.profile.smoking === 1 ? 'yes' : 'no',
-          pets: res.profile.pets === 1 ? 'yes' : 'no'
-        };
+    if (!input.files || input.files.length === 0) return;
 
-        // Parse habits if string
-        if (updated.habits && typeof updated.habits === 'string') {
-          try {
-            updated.habits = JSON.parse(updated.habits);
-          } catch {
-            updated.habits = updated.habits.split(',').map((h: string) => h.trim());
-          }
-        } else if (!Array.isArray(updated.habits)) {
-          updated.habits = [];
-        }
+    this.selectedAvatarFile = input.files[0];
 
-        // Parse preferences if string
-        if (updated.preferences && typeof updated.preferences === 'string') {
-          try {
-            updated.preferences = JSON.parse(updated.preferences);
-          } catch {
-            updated.preferences = [updated.preferences];
-          }
-        } else if (!Array.isArray(updated.preferences)) {
-          updated.preferences = [];
-        }
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.avatarPreview = reader.result as string;
 
-        // replace avatar path if necessary
-        if (updated.avatar && typeof updated.avatar === 'string' && updated.avatar.includes('/images/users/')) {
-          updated.avatar = updated.avatar.replace('://localhost:8000/', '://localhost:8000/storage/');
-        }
+      // Show preview confirmation dialog
+      const isDark = document.documentElement.classList.contains('dark');
 
-        this.profile = updated;
+      Swal.fire({
+        // 🔥 Dark mode support
+        background: isDark ? '#1f2937' : '#ffffff', // gray-800
+        color: isDark ? '#e5e7eb' : '#111827', // gray-200 / gray-900
+        iconColor: isDark ? '#fbbf24' : '#f59e0b', // amber
 
-        // Update selectedHabits for the dropdown
-        if (Array.isArray(updated.habits)) {
-          this.selectedHabits = updated.habits;
-        }
-
-        // Ensure form shows updated values
-        this.profileForm.patchValue({
-          ...updated,
-          password: '',
-          habits: Array.isArray(updated.habits) ? updated.habits.join(', ') : ''
-        });
-
-        this.cdr.detectChanges();
-      }
-
-      this.isEditing = false;
-    },
-    error: (err) => {
-      // console.error('Error while saving:', err);
-
-      console.log('Error status:', err.status);
-      console.log('Error body:', err.error);
-      console.log('Full error:', err);
-      this.showToastMessage('An error occurred while saving. Please try again.','error');
-    },
-  });
-}
-
-onAvatarChange(event: Event) {
-  const input = event.target as HTMLInputElement;
-
-  if (!input.files || input.files.length === 0) return;
-
-  this.selectedAvatarFile = input.files[0];
-
-  const reader = new FileReader();
-  reader.onload = () => {
-    this.avatarPreview = reader.result as string;
-
-    // Show preview confirmation dialog
-    Swal.fire({
-      title: 'Update Photo?',
-      html: `
+        title: 'Update Photo?',
+        html: `
         <div class="flex flex-col items-center gap-4">
           <img src="${this.avatarPreview}" class="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg" />
           <p class="text-gray-600 dark:text-gray-300">Confirm to update your profile photo</p>
         </div>
       `,
-      showCancelButton: true,
-      confirmButtonText: 'Update Photo',
-      cancelButtonText: 'Cancel',
-      confirmButtonColor: '#f97316',
-      cancelButtonColor: '#6b7280',
-      customClass: {
-        popup: 'bg-white dark:bg-gray-900 rounded-2xl',
-        title: 'dark:text-white',
-        htmlContainer: 'dark:text-gray-300',
-        confirmButton: 'py-2 px-6 rounded-lg',
-        cancelButton: 'py-2 px-6 rounded-lg',
-      }
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.saveAvatarOnly();
-      } else {
-        // Reset on cancel
-        this.selectedAvatarFile = null;
-        this.avatarPreview = null;
-        input.value = '';
-      }
-    });
-  };
-  reader.readAsDataURL(this.selectedAvatarFile);
-}
-
-saveAvatarOnly() {
-  if (!this.selectedAvatarFile) {
-    this.showToastMessage('No file selected', 'error');
-    return;
-  }
-
-  this.profileSrv.uploadAvatar(this.selectedAvatarFile).subscribe({
-    next: (res: any) => {
-      this.showToastMessage('Photo updated successfully', 'success');
-
-      if (res && res.profile && res.profile.avatar) {
-        // Backend returns just the path: images/users/avatar/avatar_23_1702225800.jpg
-        const avatarPath = res.profile.avatar;
-
-        this.profile.avatar = avatarPath;
-        this.user.avatar = avatarPath;
-        this.auth.updateUserAvatar(avatarPath);
-      }
-
-      this.selectedAvatarFile = null;
-      this.avatarPreview = null;
-      this.cdr.detectChanges();
-
-      Swal.fire({
-        title: 'Success!',
-        text: 'Your photo has been updated.',
-        icon: 'success',
-        timer: 2000,
-        showConfirmButton: false,
+        showCancelButton: true,
+        confirmButtonText: 'Update Photo',
+        cancelButtonText: 'Cancel',
+        confirmButtonColor: '#f97316',
+        cancelButtonColor: '#6b7280',
         customClass: {
           popup: 'bg-white dark:bg-gray-900 rounded-2xl',
           title: 'dark:text-white',
           htmlContainer: 'dark:text-gray-300',
+          confirmButton: 'py-2 px-6 rounded-lg',
+          cancelButton: 'py-2 px-6 rounded-lg',
+        },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.saveAvatarOnly();
+        } else {
+          // Reset on cancel
+          this.selectedAvatarFile = null;
+          this.avatarPreview = null;
+          input.value = '';
         }
       });
-    },
-    error: (err: any) => {
-      console.error('Error uploading avatar:', err);
-      this.showToastMessage('Failed to update photo. Please try again.', 'error');
-      this.selectedAvatarFile = null;
-      this.avatarPreview = null;
-    }
-  });
-}
+    };
+    reader.readAsDataURL(this.selectedAvatarFile);
+  }
 
- loadFavourites(){
-    this.favouriteService.getMyFavourites().subscribe(res => {
-      console.log(this.properties = res);
+  saveAvatarOnly() {
+    if (!this.selectedAvatarFile) {
+      this.showToastMessage('No file selected', 'error');
+      return;
+    }
+
+    this.profileSrv.uploadAvatar(this.selectedAvatarFile).subscribe({
+      next: (res: any) => {
+        this.showToastMessage('Photo updated successfully', 'success');
+
+        if (res && res.profile && res.profile.avatar) {
+          // Backend returns just the path: images/users/avatar/avatar_23_1702225800.jpg
+          const avatarPath = res.profile.avatar;
+
+          this.profile.avatar = avatarPath;
+          this.user.avatar = avatarPath;
+          this.auth.updateUserAvatar(avatarPath);
+        }
+
+        this.selectedAvatarFile = null;
+        this.avatarPreview = null;
+        this.cdr.detectChanges();
+
+      },
+      error: (err: any) => {
+        console.error('Error uploading avatar:', err);
+        this.showToastMessage(
+          'Failed to update photo. Please try again.',
+          'error'
+        );
+        this.selectedAvatarFile = null;
+        this.avatarPreview = null;
+      },
+    });
+  }
+
+  loadFavourites() {
+    this.favouriteService.getMyFavourites().subscribe((res) => {
+      console.log((this.properties = res));
     });
   }
 
@@ -411,40 +461,40 @@ saveAvatarOnly() {
     this.router.navigate(['/properties', property.id]);
   }
 
- // Pagination
-currentPage: number = 1;
-itemsPerPage: number = 3; // 3 per row × 2 rows
+  // Pagination
+  currentPage: number = 1;
+  itemsPerPage: number = 3; // 3 per row × 2 rows
 
-get paginatedProperties() {
-  const start = (this.currentPage - 1) * this.itemsPerPage;
-  const end = start + this.itemsPerPage;
-  return this.properties.slice(start, end);
-}
-
-get totalPages() {
-  return Math.ceil(this.properties.length / this.itemsPerPage);
-}
-
-goToPage(page: number) {
-  if (page >= 1 && page <= this.totalPages) {
-    this.currentPage = page;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  get paginatedProperties() {
+    const start = (this.currentPage - 1) * this.itemsPerPage;
+    const end = start + this.itemsPerPage;
+    return this.properties.slice(start, end);
   }
-}
 
-nextPage() {
-  if (this.currentPage < this.totalPages) {
-    this.goToPage(this.currentPage + 1);
+  get totalPages() {
+    return Math.ceil(this.properties.length / this.itemsPerPage);
   }
-}
 
-prevPage() {
-  if (this.currentPage > 1) {
-    this.goToPage(this.currentPage - 1);
+  goToPage(page: number) {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }
-}
-// Dropdown state
-// Dropdown toggle
+
+  nextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.goToPage(this.currentPage + 1);
+    }
+  }
+
+  prevPage() {
+    if (this.currentPage > 1) {
+      this.goToPage(this.currentPage - 1);
+    }
+  }
+  // Dropdown state
+  // Dropdown toggle
   dropdown = { habits: false };
 
   // Options list
@@ -452,7 +502,6 @@ prevPage() {
 
   // Selected items
   selectedHabits: string[] = [];
-
 
   // Toggle dropdown open/close
   toggleDropdown(type: 'habits') {
@@ -465,22 +514,21 @@ prevPage() {
       this.selectedHabits.push(option);
       this.updateFormHabits();
     }
-    this.toggleDropdown('habits');
   }
 
   // Remove selected habit
   removeHabit(option: string) {
-    this.selectedHabits = this.selectedHabits.filter(h => h !== option);
+    this.selectedHabits = this.selectedHabits.filter((h) => h !== option);
     this.updateFormHabits();
   }
 
   // Update form control
   private updateFormHabits() {
     this.profileForm.patchValue({
-      habits: this.selectedHabits.join(', ')
+      habits: this.selectedHabits.join(', '),
     });
   }
- avatarUrl(): string {
+  avatarUrl(): string {
     if (!this.user) return '/assets/default-avatar.svg';
     if (this.user.avatar) {
       return `${this.auth.getBackendBase()}/storage/${this.user.avatar}`;
@@ -490,7 +538,10 @@ prevPage() {
     if (name.length === 0) initials = '??';
     else {
       const parts = name.split(/\s+/).filter(Boolean);
-      initials = parts.length === 1 ? parts[0].slice(0, 2).toUpperCase() : (parts[0][0] + (parts[1][0] || '')).toUpperCase();
+      initials =
+        parts.length === 1
+          ? parts[0].slice(0, 2).toUpperCase()
+          : (parts[0][0] + (parts[1][0] || '')).toUpperCase();
     }
     const bg = '#667eea';
     const fg = '#ffffff';
@@ -501,12 +552,15 @@ prevPage() {
     return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
   }
 
+  openAvatarModal() {
+    const isDark = document.documentElement.classList.contains('dark');
 
-
-
-openAvatarModal() {
-  Swal.fire({
-    html: `
+      Swal.fire({
+        // 🔥 Dark mode support
+        background: isDark ? '#1f2937' : '#ffffff', // gray-800
+        color: isDark ? '#e5e7eb' : '#111827', // gray-200 / gray-900
+        iconColor: isDark ? '#fbbf24' : '#f59e0b', // amber
+      html: `
       <div class="relative flex flex-col items-center">
 
         <!-- Floating Glow Circle -->
@@ -519,7 +573,9 @@ openAvatarModal() {
                     border-white dark:border-gray-700 animate-pop" />
 
         <!-- Username -->
-        <h2 class="mt-4 text-xl font-bold dark:text-white">${this.profileForm.get('name')?.value}</h2>
+        <h2 class="mt-4 text-xl font-bold dark:text-white">${
+          this.profileForm.get('name')?.value
+        }</h2>
 
         <!-- Email -->
         <p class="text-gray-500 dark:text-gray-400 text-sm mb-4">
@@ -544,92 +600,89 @@ openAvatarModal() {
 
       </div>
     `,
-    showConfirmButton: false,
-    showCloseButton: true,
-    customClass: {
-      popup: 'bg-white dark:bg-gray-900 rounded-3xl p-6 shadow-2xl animate-popupEnter',
-      title: 'dark:text-white',
-      htmlContainer: 'dark:text-gray-300',
-    },
-    didOpen: () => {
-      // Change Photo Button - Click file input
-      const changePhotoBtn = document.getElementById('changePhotoBtn');
-      changePhotoBtn?.addEventListener('click', () => {
-        const fileInput = document.getElementById('avatarInput') as HTMLInputElement;
-        fileInput?.click();
-      });
+      showConfirmButton: false,
+      showCloseButton: true,
+      customClass: {
+        popup:
+          'bg-white dark:bg-gray-900 rounded-3xl p-6 shadow-2xl animate-popupEnter',
+        title: 'dark:text-white',
+        htmlContainer: 'dark:text-gray-300',
+      },
+      didOpen: () => {
+        // Change Photo Button - Click file input
+        const changePhotoBtn = document.getElementById('changePhotoBtn');
+        changePhotoBtn?.addEventListener('click', () => {
+          const fileInput = document.getElementById(
+            'avatarInput'
+          ) as HTMLInputElement;
+          fileInput?.click();
+        });
 
-      // Remove Avatar Button - Confirm removal
-      const removeBtn = document.getElementById('removeAvatarBtn');
-      removeBtn?.addEventListener('click', () => {
-        Swal.close();
-        this.confirmRemoveAvatar();
-      });
-    }
-  });
-}
+        // Remove Avatar Button - Confirm removal
+        const removeBtn = document.getElementById('removeAvatarBtn');
+        removeBtn?.addEventListener('click', () => {
+          Swal.close();
+          this.confirmRemoveAvatar();
+        });
+      },
+    });
+  }
 
-confirmRemoveAvatar() {
-  Swal.fire({
-    title: 'Remove Photo?',
-    text: 'Are you sure you want to remove your profile photo?',
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: '#dc2626',
-    cancelButtonColor: '#6b7280',
-    confirmButtonText: 'Yes, Remove',
-    cancelButtonText: 'Cancel',
-    customClass: {
-      popup: 'bg-white dark:bg-gray-900 rounded-2xl',
-      title: 'dark:text-white',
-      htmlContainer: 'dark:text-gray-300',
-      confirmButton: 'py-2 px-6 rounded-lg',
-      cancelButton: 'py-2 px-6 rounded-lg',
-    }
-  }).then((result) => {
-    if (result.isConfirmed) {
-      this.removeAvatarFromDatabase();
-    }
-  });
-}
-
-removeAvatarFromDatabase() {
-  this.profileSrv.removeAvatar().subscribe({
-    next: (res: any) => {
-      this.showToastMessage('Photo removed successfully', 'success');
-      this.profile.avatar = null;
-      this.profileForm.patchValue({ avatar: null });
-      this.avatarPreview = null;
-      this.selectedAvatarFile = null;
-      this.user.avatar = null;
-
-      // Update user in localStorage
-      this.auth.updateUserAvatar(null);
-
-      this.cdr.detectChanges();
+  confirmRemoveAvatar() {
+    const isDark = document.documentElement.classList.contains('dark');
 
       Swal.fire({
-        title: 'Removed!',
-        text: 'Your photo has been removed.',
-        icon: 'success',
-        timer: 2000,
-        showConfirmButton: false,
-        customClass: {
-          popup: 'bg-white dark:bg-gray-900 rounded-2xl',
-          title: 'dark:text-white',
-          htmlContainer: 'dark:text-gray-300',
-        }
-      });
-    },
-    error: (err: any) => {
-      this.showToastMessage('Failed to remove photo. Please try again.', 'error');
-      console.error('Error removing avatar:', err);
-    }
-  });
+        // 🔥 Dark mode support
+        background: isDark ? '#1f2937' : '#ffffff', // gray-800
+        color: isDark ? '#e5e7eb' : '#111827', // gray-200 / gray-900
+        iconColor: isDark ? '#fbbf24' : '#f59e0b', // amber
+      title: 'Remove Photo?',
+      text: 'Are you sure you want to remove your profile photo?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#dc2626',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: 'Yes, Remove',
+      cancelButtonText: 'Cancel',
+      customClass: {
+        popup: 'bg-white dark:bg-gray-900 rounded-2xl',
+        title: 'dark:text-white',
+        htmlContainer: 'dark:text-gray-300',
+        confirmButton: 'py-2 px-6 rounded-lg',
+        cancelButton: 'py-2 px-6 rounded-lg',
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.removeAvatarFromDatabase();
+      }
+    });
+  }
+
+  removeAvatarFromDatabase() {
+    this.profileSrv.removeAvatar().subscribe({
+      next: (res: any) => {
+        this.showToastMessage('Photo removed successfully', 'success');
+        this.profile.avatar = null;
+        this.profileForm.patchValue({ avatar: null });
+        this.avatarPreview = null;
+        this.selectedAvatarFile = null;
+        this.user.avatar = null;
+
+        // Update user in localStorage
+        this.auth.updateUserAvatar(null);
+
+        this.cdr.detectChanges();
+
+        const isDark = document.documentElement.classList.contains('dark');
+
+      },
+      error: (err: any) => {
+        this.showToastMessage(
+          'Failed to remove photo. Please try again.',
+          'error'
+        );
+        console.error('Error removing avatar:', err);
+      },
+    });
+  }
 }
-
-
-}
-
-
-

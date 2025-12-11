@@ -169,12 +169,13 @@
               type="range"
               [min]="getOptions(question)?.[0]?.min || 0"
               [max]="getOptions(question)?.[0]?.max || 100"
-              [value]="formAnswers()[question.id] || 50"
+              [value]="formAnswers()[question.id] || 500"
+              step="500"
               (change)="updateAnswer(question.id, $event.target.value)"
               class="w-full h-2 bg-gray-300 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer accent-[#9810fa]">
             <div class="flex justify-between text-sm text-gray-600 dark:text-gray-400">
               <span>{{getOptions(question)?.[0]?.min || 0}}</span>
-              <span class="font-semibold text-[#9810fa] text-lg">{{formAnswers()[question.id] || 50}}</span>
+              <span class="font-semibold text-[#9810fa] text-lg">{{formAnswers()[question.id] || 1000}}</span>
               <span>{{getOptions(question)?.[0]?.max || 100}}</span>
             </div>
           </div>
