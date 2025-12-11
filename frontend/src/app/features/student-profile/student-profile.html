@@ -26,7 +26,6 @@
 </div>
 
 
-
   <!-- Profile Card -->
   <div class="flex relative flex-col items-center z-10 w-full max-w-5xl">
      <div
@@ -63,32 +62,51 @@
              hover:scale-110 transition-all"
       (click)="openAvatarModal()"
     >
-      <i class="pi pi-camera text-lg"></i>
-    </label>
-  </div>
+      <!-- Avatar Wrapper -->
+      <div class="mt-2 relative w-32 h-32">
+        <!-- Avatar Preview -->
+        <img
+          *ngIf="avatarPreview; else originalAvatar"
+          [src]="avatarPreview"
+          class="w-32 h-32 rounded-full object-cover shadow-lg border-4 border-white dark:border-gray-800"
+        />
 
-  <!-- NAME -->
-  <h2 class="mt-5 text-3xl font-bold dark:text-white text-center">
-    {{ profileForm.get('name')?.value || 'Your Name' }}
-  </h2>
+        <!-- Avatar Normal -->
+        <ng-template #originalAvatar>
+          <img
+            [src]="avatarUrl()"
+            class="w-32 h-32 rounded-full object-cover shadow-lg border-4 border-white dark:border-gray-800"
+          />
+        </ng-template>
 
-  <!-- EMAIL -->
-  <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 text-center">
-    {{ profile?.email || profileForm.get('email')?.value }}
-  </p>
+        <!-- Camera Button -->
+        <label
+          for="avatarInput"
+          class="absolute bottom-0 right-2 bg-gradient-to-r from-orange-500 to-pink-500 text-white py-2 px-3 rounded-full cursor-pointer shadow-md hover:scale-110 transition-all"
+          (click)="openAvatarModal()"
+        >
+          <i class="pi pi-camera text-lg"></i>
+        </label>
+      </div>
 
-  <!-- EDIT BUTTON -->
-  <button
-    class="mt-4 px-8 py-2 rounded-xl font-semibold
-           bg-gradient-to-r from-[#852EE4] to-[#A758FF]
-           text-white shadow-md hover:shadow-xl
-           transition-all duration-300 focus:outline-none
-           focus:ring-2 focus:ring-[#852EE4]"
-    (click)="toggleEdit()"
-  >
-    {{ isEditing ? 'Cancel' : 'Edit my info' }}
-  </button>
-</div>
+      <!-- NAME -->
+      <h2 class="mt-5 text-3xl font-bold dark:text-white text-center">
+        {{ profileForm.get('name')?.value || 'Your Name' }}
+      </h2>
+
+      <!-- EMAIL -->
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 text-center">
+        {{ profile?.email || profileForm.get('email')?.value }}
+      </p>
+
+      <!-- EDIT BUTTON -->
+      <button
+        class="mt-4 px-8 py-2 rounded-xl font-semibold bg-gradient-to-r from-[#852EE4] to-[#A758FF] text-white shadow-md hover:shadow-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#852EE4]"
+        (click)="toggleEdit()"
+      >
+        {{ isEditing ? 'Cancel' : 'Edit my info' }}
+      </button>
+    </div>
 
     <!-- EDIT PROFILE SLIDE PANEL -->
 
@@ -469,411 +487,453 @@
             </button>
           </div>
         </form>
-    </div>
-  </div>
-
-  <!-- Tabs -->
-  <div
-    class="flex flex-wrap justify-center gap-10 mt-10 border-b w-full max-w-4xl pb-2 text-gray-600 dark:text-gray-300"
-  >
-    <!-- Favourites -->
-    <button
-      class="flex items-center gap-2 pb-2 transition"
-      [ngClass]="{'text-red-500 font-semibold border-b-2 border-red-500': activeTab === 'favourites'}"
-      (click)="changeTab('favourites')"
-    >
-      <i class="fa-solid fa-heart"></i>
-      Favourites
-    </button>
-
-    <!-- About Me -->
-    <button
-      class="flex items-center gap-2 pb-2 transition"
-      [ngClass]="{'text-blue-500 font-semibold border-b-2 border-blue-500': activeTab === 'about'}"
-      (click)="changeTab('about')"
-    >
-      <i class="fa-solid fa-user"></i>
-      About Me
-    </button>
-
-    <!-- Roommates -->
-    <button
-      class="flex items-center gap-2 pb-2 transition"
-      [ngClass]="{'text-green-500 font-semibold border-b-2 border-green-500': activeTab === 'roommates'}"
-      (click)="changeTab('roommates')"
-    >
-      <i class="fa-solid fa-users"></i>
-      Roommates
-    </button>
-
-    <!-- History -->
-    <button
-      class="flex items-center gap-2 pb-2 transition"
-      [ngClass]="{'text-orange-500 font-semibold border-b-2 border-orange-500': activeTab === 'history'}"
-      (click)="changeTab('history')"
-    >
-      <i class="fa-solid fa-clock"></i>
-      History
-    </button>
-  </div>
-
-  <!-- Tab Contents -->
-  <!-- Tab Contents -->
-  <div
-    *ngIf="activeTab === 'favourites'"
-    class="mt-10 w-full max-w-4xl text-gray-700 dark:text-gray-300"
-  >
-    <!-- <p *ngIf="!properties || properties.length === 0" class="text-center text-gray-500 dark:text-gray-400">
-    No favourites yet.
-  </p> -->
-    <!-- Loading State -->
-    <div
-      *ngIf="!properties || properties.length === 0"
-      class="flex justify-center items-center py-20"
-    >
-      <div class="relative">
-        <div
-          class="w-12 h-12 rounded-full border-4 border-gray-300 dark:border-gray-700"
-        ></div>
-        <div
-          class="absolute top-0 left-0 w-12 h-12 rounded-full border-4 border-[#9810fa] border-t-transparent animate-spin"
-        ></div>
       </div>
     </div>
 
-    <!-- Properties Grid -->
+    <!-- Tabs -->
     <div
-      *ngIf="properties && properties.length > 0"
-      class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 w-full"
+      class="flex flex-wrap justify-center gap-10 mt-10 border-b w-full max-w-4xl pb-2 text-gray-600 dark:text-gray-300"
     >
-      <article
-        *ngFor="let item of paginatedProperties"
-        class="group bg-white dark:bg-gray-900 rounded-2xl overflow-hidden transition-all duration-300 shadow-xl -translate-y-1 border border-gray-200 dark:border-gray-700 hover:border-[#9810fa]"
-      >
-        <!-- IMAGE -->
-        <div class="relative h-40 border-none overflow-hidden">
-          <img
-            class="w-full h-full object-cover border-none scale-105 transition-transform duration-500"
-            [src]="item.images?.length ? item.images[0].path : 'asset/defualt.png'"
-            alt="{{item.title}}"
-          />
-
-          <!-- Overlay -->
-          <div
-            class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-100 transition-opacity"
-          ></div>
-
-          <!-- Badges -->
-          <div class="absolute top-3 right-2 flex flex-col gap-2">
-            <span
-              class="px-3 py-1 bg-[#9810fa] text-white text-xs font-semibold rounded-full shadow-md"
-            >
-              <i class="fa-solid fa-user-group"></i> {{item.available_spots}}
-              Spots
-            </span>
-          </div>
-
-          <!-- University -->
-          <span
-            class="absolute bottom-3 left-3 px-3 py-1.5 bg-white/20 backdrop-blur-sm text-white text-xs font-semibold rounded-full"
-          >
-            <i class="fa-solid fa-university"></i>
-            {{item.university.name}}
-          </span>
-        </div>
-
-        <!-- CONTENT -->
-        <div class="p-4">
-          <!-- Title -->
-          <h3
-            class="font-semibold text-lg text-gray-900 dark:text-white mb-1 line-clamp-1 text-[#9810fa] transition-colors"
-          >
-            {{item.title}}
-          </h3>
-
-          <!-- Address -->
-          <p
-            class="text-xs text-gray-500 dark:text-gray-400 mb-4 flex items-center gap-1"
-          >
-            <i class="fa-solid fa-location-dot text-[#9810fa]"></i>
-            {{item.address}}
-          </p>
-
-          <!-- Stats (shorter version) -->
-          <div
-            class="flex justify-between text-xs text-gray-600 dark:text-gray-300 mb-4"
-          >
-            <span class="flex items-center gap-1">
-              <i class="fa-solid fa-door-closed"></i> {{item.total_rooms}}
-            </span>
-
-            <span class="flex items-center gap-1">
-              <i class="fa-solid fa-bath"></i> {{item.bathrooms_count}}
-            </span>
-
-            <span class="flex items-center gap-1">
-              <i class="fa-solid fa-bed"></i> {{item.beds}}
-            </span>
-
-            <span class="flex items-center gap-1">
-              <i class="fa-solid fa-user-group"></i> {{item.accommodation_type}}
-            </span>
-          </div>
-
-          <!-- Price -->
-          <div
-            class="flex justify-between items-center pt-4 border-t border-gray-100 dark:border-gray-700"
-          >
-            <div>
-              <p class="font-bold text-xl text-[#9810fa]">${{item.price}}</p>
-              <span class="text-xs text-gray-500 dark:text-gray-400"
-                >/month</span
-              >
-            </div>
-
-            <button
-              (click)="viewProperty(item)"
-              class="bg-[#9810fa] hover:bg-purple-700 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 shadow-md hover:shadow-lg flex items-center gap-2"
-            >
-              View
-              <i class="fa-solid fa-arrow-right"></i>
-            </button>
-          </div>
-        </div>
-      </article>
-    </div>
-    <!-- Pagination -->
-    <div
-      *ngIf="totalPages > 1"
-      class="flex justify-center items-center mt-10 gap-2"
-    >
-      <!-- Prev -->
+      <!-- Favourites -->
       <button
-        (click)="prevPage()"
-        [disabled]="currentPage === 1"
-        class="px-4 py-2 rounded-lg text-sm font-medium border bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
+        class="flex items-center gap-2 pb-2 transition"
+        [ngClass]="{'text-red-500 font-semibold border-b-2 border-red-500': activeTab === 'favourites'}"
+        (click)="changeTab('favourites')"
       >
-        ← Prev
+        <i class="fa-solid fa-heart"></i>
+        Favourites
       </button>
 
-      <!-- Page Numbers -->
+      <!-- About Me -->
       <button
-        *ngFor="let page of [].constructor(totalPages); let i = index"
-        (click)="goToPage(i+1)"
-        [ngClass]="{
+        class="flex items-center gap-2 pb-2 transition"
+        [ngClass]="{'text-blue-500 font-semibold border-b-2 border-blue-500': activeTab === 'about'}"
+        (click)="changeTab('about')"
+      >
+        <i class="fa-solid fa-user"></i>
+        About Me
+      </button>
+
+      <!-- Roommates -->
+      <button
+        class="flex items-center gap-2 pb-2 transition"
+        [ngClass]="{'text-green-500 font-semibold border-b-2 border-green-500': activeTab === 'roommates'}"
+        (click)="changeTab('roommates')"
+      >
+        <i class="fa-solid fa-users"></i>
+        Roommates
+      </button>
+
+      <!-- History -->
+      <button
+        class="flex items-center gap-2 pb-2 transition"
+        [ngClass]="{'text-orange-500 font-semibold border-b-2 border-orange-500': activeTab === 'history'}"
+        (click)="changeTab('history')"
+      >
+        <i class="fa-solid fa-clock"></i>
+        History
+      </button>
+    </div>
+
+    <!-- Tab Contents -->
+    <!-- Tab Contents -->
+    <div
+      *ngIf="activeTab === 'favourites'"
+      class="mt-10 w-full max-w-4xl text-gray-700 dark:text-gray-300"
+    >
+      <!-- <p *ngIf="!properties || properties.length === 0" class="text-center text-gray-500 dark:text-gray-400">
+    No favourites yet.
+  </p> -->
+      <!-- Loading State -->
+      <div
+        *ngIf="!properties || properties.length === 0"
+        class="flex justify-center items-center py-20"
+      >
+        <div class="relative">
+          <div
+            class="w-12 h-12 rounded-full border-4 border-gray-300 dark:border-gray-700"
+          ></div>
+          <div
+            class="absolute top-0 left-0 w-12 h-12 rounded-full border-4 border-[#9810fa] border-t-transparent animate-spin"
+          ></div>
+        </div>
+      </div>
+
+      <!-- Properties Grid -->
+      <div
+        *ngIf="properties && properties.length > 0"
+        class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 w-full"
+      >
+        <article
+          *ngFor="let item of paginatedProperties"
+          class="group bg-white dark:bg-gray-900 rounded-2xl overflow-hidden transition-all duration-300 shadow-xl -translate-y-1 border border-gray-200 dark:border-gray-700 hover:border-[#9810fa]"
+        >
+          <!-- IMAGE -->
+          <div class="relative h-40 border-none overflow-hidden">
+            <img
+              class="w-full h-full object-cover border-none scale-105 transition-transform duration-500"
+              [src]="item.images?.length ? item.images[0].path : 'asset/defualt.png'"
+              alt="{{item.title}}"
+            />
+
+            <!-- Overlay -->
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-100 transition-opacity"
+            ></div>
+
+            <!-- Badges -->
+            <div class="absolute top-3 right-2 flex flex-col gap-2">
+              <span
+                class="px-3 py-1 bg-[#9810fa] text-white text-xs font-semibold rounded-full shadow-md"
+              >
+                <i class="fa-solid fa-user-group"></i> {{item.available_spots}}
+                Spots
+              </span>
+            </div>
+
+            <!-- University -->
+            <span
+              class="absolute bottom-3 left-3 px-3 py-1.5 bg-white/20 backdrop-blur-sm text-white text-xs font-semibold rounded-full"
+            >
+              <i class="fa-solid fa-university"></i>
+              {{item.university.name}}
+            </span>
+          </div>
+
+          <!-- CONTENT -->
+          <div class="p-4">
+            <!-- Title -->
+            <h3
+              class="font-semibold text-lg text-gray-900 dark:text-white mb-1 line-clamp-1 text-[#9810fa] transition-colors"
+            >
+              {{item.title}}
+            </h3>
+
+            <!-- Address -->
+            <p
+              class="text-xs text-gray-500 dark:text-gray-400 mb-4 flex items-center gap-1"
+            >
+              <i class="fa-solid fa-location-dot text-[#9810fa]"></i>
+              {{item.address}}
+            </p>
+
+            <!-- Stats (shorter version) -->
+            <div
+              class="flex justify-between text-xs text-gray-600 dark:text-gray-300 mb-4"
+            >
+              <span class="flex items-center gap-1">
+                <i class="fa-solid fa-door-closed"></i> {{item.total_rooms}}
+              </span>
+
+              <span class="flex items-center gap-1">
+                <i class="fa-solid fa-bath"></i> {{item.bathrooms_count}}
+              </span>
+
+              <span class="flex items-center gap-1">
+                <i class="fa-solid fa-bed"></i> {{item.beds}}
+              </span>
+
+              <span class="flex items-center gap-1">
+                <i class="fa-solid fa-user-group"></i>
+                {{item.accommodation_type}}
+              </span>
+            </div>
+
+            <!-- Price -->
+            <div
+              class="flex justify-between items-center pt-4 border-t border-gray-100 dark:border-gray-700"
+            >
+              <div>
+                <p class="font-bold text-xl text-[#9810fa]">${{item.price}}</p>
+                <span class="text-xs text-gray-500 dark:text-gray-400"
+                  >/month</span
+                >
+              </div>
+
+              <button
+                (click)="viewProperty(item)"
+                class="bg-[#9810fa] hover:bg-purple-700 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 shadow-md hover:shadow-lg flex items-center gap-2"
+              >
+                View
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+        </article>
+      </div>
+      <!-- Pagination -->
+      <div
+        *ngIf="totalPages > 1"
+        class="flex justify-center items-center mt-10 gap-2"
+      >
+        <!-- Prev -->
+        <button
+          (click)="prevPage()"
+          [disabled]="currentPage === 1"
+          class="px-4 py-2 rounded-lg text-sm font-medium border bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
+        >
+          ← Prev
+        </button>
+
+        <!-- Page Numbers -->
+        <button
+          *ngFor="let page of [].constructor(totalPages); let i = index"
+          (click)="goToPage(i+1)"
+          [ngClass]="{
       'bg-[#9810fa] text-white': currentPage === i+1,
       'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300': currentPage !== i+1
     }"
-        class="px-4 py-2 rounded-lg text-sm font-semibold border hover:bg-[#9810fa] hover:text-white transition shadow-sm"
-      >
-        {{ i + 1 }}
-      </button>
-
-      <!-- Next -->
-      <button
-        (click)="nextPage()"
-        [disabled]="currentPage === totalPages"
-        class="px-4 py-2 rounded-lg text-sm font-medium border bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
-      >
-        Next →
-      </button>
-    </div>
-  </div>
-
-<div
-  *ngIf="activeTab === 'about'"
-  class="mt-10 w-full max-w-4xl text-gray-700 dark:text-gray-300 mx-auto"
->
-
- <!-- ================= TOP GRID (AGE, GENDER, CLEANLINESS, ETC.) ================= -->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-10">
-
-  <!-- AGE -->
-  <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-5 rounded-2xl shadow-sm flex items-center gap-4">
-    <i class="fa-solid fa-user text-indigo-500 text-xl"></i>
-    <div>
-      <span class="text-xs font-semibold text-gray-500">AGE</span>
-      <p class="mt-1 font-medium">{{ profile?.age ?? '-' }}</p>
-    </div>
-  </div>
-
-  <!-- GENDER -->
-  <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-5 rounded-2xl shadow-sm flex items-center gap-4">
-    <i class="fa-solid fa-venus-mars text-pink-500 text-xl"></i>
-    <div>
-      <span class="text-xs font-semibold text-gray-500">GENDER</span>
-      <p class="mt-1 font-medium">{{ profile?.gender || '-' }}</p>
-    </div>
-  </div>
-
-  <!-- ROOMMATE STYLE -->
-  <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-5 rounded-2xl shadow-sm flex items-center gap-4">
-    <i class="fa-solid fa-people-roof text-blue-500 text-xl"></i>
-    <div>
-      <span class="text-xs font-semibold text-gray-500">ROOMMATE STYLE</span>
-      <p class="mt-1 font-medium">{{ profile?.roommate_style || '-' }}</p>
-    </div>
-  </div>
-
-  <!-- CLEANLINESS -->
-  <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-5 rounded-2xl shadow-sm flex items-center gap-4">
-    <i class="fa-solid fa-broom text-green-500 text-xl"></i>
-    <div>
-      <span class="text-xs font-semibold text-gray-500">CLEANLINESS LEVEL</span>
-      <p class="mt-1 font-medium">{{ profile?.cleanliness_level ?? '-' }}</p>
-    </div>
-  </div>
-
-  <!-- SMOKING -->
-  <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-5 rounded-2xl shadow-sm flex items-center gap-4">
-    <i class="fa-solid fa-smoking text-red-500 text-xl"></i>
-    <div>
-      <span class="text-xs font-semibold text-gray-500">SMOKING</span>
-      <p class="mt-1 font-medium">
-        {{ profile?.smoking === 'yes' ? 'Yes' :
-           profile?.smoking === 'no' ? 'No' : '-' }}
-      </p>
-    </div>
-  </div>
-
-  <!-- PETS -->
-  <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-5 rounded-2xl shadow-sm flex items-center gap-4">
-    <i class="fa-solid fa-paw text-orange-500 text-xl"></i>
-    <div>
-      <span class="text-xs font-semibold text-gray-500">PETS</span>
-      <p class="mt-1 font-medium">
-        {{ profile?.pets === 'yes' ? 'Yes' :
-           profile?.pets === 'no' ? 'No' : '-' }}
-      </p>
-    </div>
-  </div>
-
-</div>
-
-<!-- ================= HABITS SECTION ================= -->
-<div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6 rounded-2xl shadow-sm mt-8">
-  <h3 class="text-sm font-semibold text-gray-500 mb-4 flex items-center gap-2">
-    <i class="fa-solid fa-heart text-red-500"></i> HABITS
-  </h3>
-
-  <div class="flex flex-wrap gap-2">
-    <ng-container *ngIf="profile?.habits?.length > 0; else noHabits">
-      <span
-        *ngFor="let h of profile.habits"
-        class="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-sm rounded-xl flex items-center gap-2"
-      >
-        <i class="fa-solid fa-check text-purple-500 text-xs"></i> {{ h }}
-      </span>
-    </ng-container>
-
-    <ng-template #noHabits>
-      <span class="text-gray-500">-</span>
-    </ng-template>
-  </div>
-</div>
-
-
-  <!-- ================= PREFERENCES (HOBBIES) ================= -->
-  <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6 rounded-2xl shadow-sm mt-8">
-    <h3 class="text-sm font-semibold text-gray-500 mb-4">PREFERENCES</h3>
-
-    <div class="flex flex-wrap gap-2">
-      <ng-container *ngIf="profile?.preferences?.length > 0; else noPrefs">
-        <span
-          *ngFor="let p of profile.preferences"
-          class="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-sm rounded-xl flex items-center gap-2"
+          class="px-4 py-2 rounded-lg text-sm font-semibold border hover:bg-[#9810fa] hover:text-white transition shadow-sm"
         >
-          <i class="fa-solid fa-tag text-yellow-500 text-xs"></i> {{ p }}
-        </span>
-      </ng-container>
+          {{ i + 1 }}
+        </button>
 
-      <ng-template #noPrefs>
-        <span class="text-gray-500">-</span>
-      </ng-template>
+        <!-- Next -->
+        <button
+          (click)="nextPage()"
+          [disabled]="currentPage === totalPages"
+          class="px-4 py-2 rounded-lg text-sm font-medium border bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
+        >
+          Next →
+        </button>
+      </div>
+    </div>
+
+    <div
+      *ngIf="activeTab === 'about'"
+      class="mt-10 w-full max-w-4xl text-gray-700 dark:text-gray-300 mx-auto"
+    >
+      <!-- ================= TOP GRID (AGE, GENDER, CLEANLINESS, ETC.) ================= -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-10">
+        <!-- AGE -->
+        <div
+          class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-5 rounded-2xl shadow-sm flex items-center gap-4"
+        >
+          <i class="fa-solid fa-user text-indigo-500 text-xl"></i>
+          <div>
+            <span class="text-xs font-semibold text-gray-500">AGE</span>
+            <p class="mt-1 font-medium">{{ profile?.age ?? '-' }}</p>
+          </div>
+        </div>
+
+        <!-- GENDER -->
+        <div
+          class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-5 rounded-2xl shadow-sm flex items-center gap-4"
+        >
+          <i class="fa-solid fa-venus-mars text-pink-500 text-xl"></i>
+          <div>
+            <span class="text-xs font-semibold text-gray-500">GENDER</span>
+            <p class="mt-1 font-medium">{{ profile?.gender || '-' }}</p>
+          </div>
+        </div>
+
+        <!-- ROOMMATE STYLE -->
+        <div
+          class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-5 rounded-2xl shadow-sm flex items-center gap-4"
+        >
+          <i class="fa-solid fa-people-roof text-blue-500 text-xl"></i>
+          <div>
+            <span class="text-xs font-semibold text-gray-500"
+              >ROOMMATE STYLE</span
+            >
+            <p class="mt-1 font-medium">{{ profile?.roommate_style || '-' }}</p>
+          </div>
+        </div>
+
+        <!-- CLEANLINESS -->
+        <div
+          class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-5 rounded-2xl shadow-sm flex items-center gap-4"
+        >
+          <i class="fa-solid fa-broom text-green-500 text-xl"></i>
+          <div>
+            <span class="text-xs font-semibold text-gray-500"
+              >CLEANLINESS LEVEL</span
+            >
+            <p class="mt-1 font-medium">
+              {{ profile?.cleanliness_level ?? '-' }}
+            </p>
+          </div>
+        </div>
+
+        <!-- SMOKING -->
+        <div
+          class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-5 rounded-2xl shadow-sm flex items-center gap-4"
+        >
+          <i class="fa-solid fa-smoking text-red-500 text-xl"></i>
+          <div>
+            <span class="text-xs font-semibold text-gray-500">SMOKING</span>
+            <p class="mt-1 font-medium">
+              {{ profile?.smoking === 'yes' ? 'Yes' : profile?.smoking === 'no'
+              ? 'No' : '-' }}
+            </p>
+          </div>
+        </div>
+
+        <!-- PETS -->
+        <div
+          class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-5 rounded-2xl shadow-sm flex items-center gap-4"
+        >
+          <i class="fa-solid fa-paw text-orange-500 text-xl"></i>
+          <div>
+            <span class="text-xs font-semibold text-gray-500">PETS</span>
+            <p class="mt-1 font-medium">
+              {{ profile?.pets === 'yes' ? 'Yes' : profile?.pets === 'no' ? 'No'
+              : '-' }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= HABITS SECTION ================= -->
+      <div
+        class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6 rounded-2xl shadow-sm mt-8"
+      >
+        <h3
+          class="text-sm font-semibold text-gray-500 mb-4 flex items-center gap-2"
+        >
+          <i class="fa-solid fa-heart text-red-500"></i> HABITS
+        </h3>
+
+        <div class="flex flex-wrap gap-2">
+          <ng-container *ngIf="profile?.habits?.length > 0; else noHabits">
+            <span
+              *ngFor="let h of profile.habits"
+              class="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-sm rounded-xl flex items-center gap-2"
+            >
+              <i class="fa-solid fa-check text-purple-500 text-xs"></i> {{ h }}
+            </span>
+          </ng-container>
+
+          <ng-template #noHabits>
+            <span class="text-gray-500">-</span>
+          </ng-template>
+        </div>
+      </div>
+
+      <!-- ================= PREFERENCES (HOBBIES) ================= -->
+      <div
+        class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6 rounded-2xl shadow-sm mt-8"
+      >
+        <h3 class="text-sm font-semibold text-gray-500 mb-4">PREFERENCES</h3>
+
+        <div class="flex flex-wrap gap-2">
+          <ng-container *ngIf="profile?.preferences?.length > 0; else noPrefs">
+            <span
+              *ngFor="let p of profile.preferences"
+              class="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-sm rounded-xl flex items-center gap-2"
+            >
+              <i class="fa-solid fa-tag text-yellow-500 text-xs"></i> {{ p }}
+            </span>
+          </ng-container>
+
+          <ng-template #noPrefs>
+            <span class="text-gray-500">-</span>
+          </ng-template>
+        </div>
+      </div>
+
+      <!-- ================= BIO SECTION ================= -->
+      <div
+        class="bg-white overflow-auto dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6 rounded-2xl shadow-sm mt-8"
+      >
+        <h3 class="text-sm font-semibold text-gray-500 mb-3">ABOUT ME</h3>
+
+        <p class="text-base leading-relaxed text-gray-700 dark:text-gray-300">
+          {{ profile?.bio || 'Add personal information here...' }}
+        </p>
+      </div>
+    </div>
+
+    <div
+      *ngIf="activeTab === 'roommates'"
+      class="mt-10 w-full max-w-3xl text-gray-700 dark:text-gray-300"
+    >
+      <h3 class="text-xl font-semibold mb-4">Roommates</h3>
+      <p class="text-sm">No roommates found.</p>
+    </div>
+
+    <div
+      *ngIf="activeTab === 'history'"
+      class="mt-10 w-full max-w-3xl text-gray-700 dark:text-gray-300"
+    >
+      <h3 class="text-xl font-semibold mb-4">History</h3>
+      <p class="text-sm">No history available.</p>
     </div>
   </div>
 
-  <!-- ================= BIO SECTION ================= -->
-  <div class="bg-white overflow-auto dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6 rounded-2xl shadow-sm mt-8">
-    <h3 class="text-sm font-semibold text-gray-500 mb-3">ABOUT ME</h3>
+  <!-- Hidden File Input for Avatar Upload -->
+  <input
+    type="file"
+    id="avatarInput"
+    accept="image/*"
+    (change)="onAvatarChange($event)"
+    class="hidden"
+  />
 
-    <p class="text-base leading-relaxed text-gray-700 dark:text-gray-300">
-      {{ profile?.bio || 'Add personal information here...' }}
-    </p>
-  </div>
-</div>
-
-
-
-  <div
-    *ngIf="activeTab === 'roommates'"
-    class="mt-10 w-full max-w-3xl text-gray-700 dark:text-gray-300"
-  >
-    <h3 class="text-xl font-semibold mb-4">Roommates</h3>
-    <p class="text-sm">No roommates found.</p>
-  </div>
-
-  <div
-    *ngIf="activeTab === 'history'"
-    class="mt-10 w-full max-w-3xl text-gray-700 dark:text-gray-300"
-  >
-    <h3 class="text-xl font-semibold mb-4">History</h3>
-    <p class="text-sm">No history available.</p>
-  </div>
-</div>
-
-<!-- Hidden File Input for Avatar Upload -->
-<input
-  type="file"
-  id="avatarInput"
-  accept="image/*"
-  (change)="onAvatarChange($event)"
-  class="hidden"
-/>
-
-<style>
-  @keyframes slideLeft {
-    from {
-      transform: translateX(-100%);
-      opacity: 0;
+  <style>
+    @keyframes slideLeft {
+      from {
+        transform: translateX(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
     }
-    to {
-      transform: translateX(0);
-      opacity: 1;
+
+    .animate-slideLeft {
+      animation: slideLeft 1s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
     }
-  }
 
-  .animate-slideLeft {
-    animation: slideLeft 1s cubic-bezier(0.16, 1, 0.3, 1);
-    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-  }
+    /* Glow Animation */
+    @keyframes glow {
+      0% {
+        transform: scale(1);
+        opacity: 0.4;
+      }
+      50% {
+        transform: scale(1.15);
+        opacity: 0.6;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 0.4;
+      }
+    }
+    .animate-glow {
+      animation: glow 3s infinite ease-in-out;
+    }
 
-  /* Glow Animation */
-@keyframes glow {
-  0% { transform: scale(1); opacity: 0.4; }
-  50% { transform: scale(1.15); opacity: 0.6; }
-  100% { transform: scale(1); opacity: 0.4; }
-}
-.animate-glow {
-  animation: glow 3s infinite ease-in-out;
-}
+    /* Avatar Pop Animation */
+    @keyframes pop {
+      0% {
+        transform: scale(0.6);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    .animate-pop {
+      animation: pop 0.35s ease-out forwards;
+    }
 
-/* Avatar Pop Animation */
-@keyframes pop {
-  0% { transform: scale(0.6); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
-}
-.animate-pop {
-  animation: pop 0.35s ease-out forwards;
-}
-
-/* Popup Enter Animation */
-@keyframes popupEnter {
-  0% { transform: translateY(40px) scale(0.9); opacity: 0; }
-  100% { transform: translateY(0) scale(1); opacity: 1; }
-}
-.animate-popupEnter {
-  animation: popupEnter 0.35s ease-out forwards;
-}
-
-</style>
+    /* Popup Enter Animation */
+    @keyframes popupEnter {
+      0% {
+        transform: translateY(40px) scale(0.9);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+    }
+    .animate-popupEnter {
+      animation: popupEnter 0.35s ease-out forwards;
+    }
+  </style>
+</div>
