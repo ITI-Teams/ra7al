@@ -11,6 +11,11 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { ProfileService } from '../../core/services/profile/profile-service';
 import { FavouriteService } from '../../core/services/favourite/favourite-service';
 import { AuthService } from '../../core/services/authService/auth.service';
+import {
+  RentalRequest,
+  RentalRequestService,
+  RentalRequestResponse,
+} from '../../core/services/rental-request-service';
 
 @Component({
   selector: 'app-student-profile',
@@ -29,6 +34,13 @@ import { AuthService } from '../../core/services/authService/auth.service';
 export class StudentProfile {
   properties: any[] = [];
 
+  // Rental Requests
+  rentalRequests: RentalRequest[] = [];
+  rentalRequestsLoading: boolean = false;
+  selectedRequestStatus: string = '';
+  currentRequestPage: number = 1;
+  totalRequestPages: number = 1;
+  totalRequests: number = 0;
   toastMessage: string = '';
   toastType: 'success' | 'error' = 'success';
   showToast: boolean = false;
@@ -49,7 +61,8 @@ export class StudentProfile {
     private cdr: ChangeDetectorRef,
     private favouriteService: FavouriteService,
     private router: Router,
-    private auth: AuthService
+    private auth: AuthService,
+    private rentalRequestService: RentalRequestService
   ) {
     this.profileForm = this.fb.group({
       name: [
@@ -90,6 +103,9 @@ export class StudentProfile {
 
   changeTab(tab: string) {
     this.activeTab = tab;
+    if (tab === 'requests') {
+      this.loadRentalRequests();
+    }
   }
   toggleEdit() {
     this.isEditing = !this.isEditing;
@@ -437,7 +453,6 @@ export class StudentProfile {
         this.selectedAvatarFile = null;
         this.avatarPreview = null;
         this.cdr.detectChanges();
-
       },
       error: (err: any) => {
         console.error('Error uploading avatar:', err);
@@ -555,11 +570,11 @@ export class StudentProfile {
   openAvatarModal() {
     const isDark = document.documentElement.classList.contains('dark');
 
-      Swal.fire({
-        // 🔥 Dark mode support
-        background: isDark ? '#1f2937' : '#ffffff', // gray-800
-        color: isDark ? '#e5e7eb' : '#111827', // gray-200 / gray-900
-        iconColor: isDark ? '#fbbf24' : '#f59e0b', // amber
+    Swal.fire({
+      // 🔥 Dark mode support
+      background: isDark ? '#1f2937' : '#ffffff', // gray-800
+      color: isDark ? '#e5e7eb' : '#111827', // gray-200 / gray-900
+      iconColor: isDark ? '#fbbf24' : '#f59e0b', // amber
       html: `
       <div class="relative flex flex-col items-center">
 
@@ -631,11 +646,11 @@ export class StudentProfile {
   confirmRemoveAvatar() {
     const isDark = document.documentElement.classList.contains('dark');
 
-      Swal.fire({
-        // 🔥 Dark mode support
-        background: isDark ? '#1f2937' : '#ffffff', // gray-800
-        color: isDark ? '#e5e7eb' : '#111827', // gray-200 / gray-900
-        iconColor: isDark ? '#fbbf24' : '#f59e0b', // amber
+    Swal.fire({
+      // 🔥 Dark mode support
+      background: isDark ? '#1f2937' : '#ffffff', // gray-800
+      color: isDark ? '#e5e7eb' : '#111827', // gray-200 / gray-900
+      iconColor: isDark ? '#fbbf24' : '#f59e0b', // amber
       title: 'Remove Photo?',
       text: 'Are you sure you want to remove your profile photo?',
       icon: 'warning',
@@ -674,7 +689,6 @@ export class StudentProfile {
         this.cdr.detectChanges();
 
         const isDark = document.documentElement.classList.contains('dark');
-
       },
       error: (err: any) => {
         this.showToastMessage(
@@ -684,5 +698,96 @@ export class StudentProfile {
         console.error('Error removing avatar:', err);
       },
     });
+  }
+
+  // Load Rental Requests
+  loadRentalRequests() {
+    this.rentalRequestsLoading = true;
+    this.rentalRequestService
+      .getMyRequests(
+        this.selectedRequestStatus || undefined,
+        this.currentRequestPage,
+        6
+      )
+      .subscribe({
+        next: (response: RentalRequestResponse) => {
+          this.rentalRequests = response.data;
+          this.currentRequestPage = response.current_page;
+          this.totalRequestPages = response.last_page;
+          this.totalRequests = response.total;
+          this.rentalRequestsLoading = false;
+          this.cdr.detectChanges();
+        },
+        error: (error) => {
+          console.error('Error loading rental requests:', error);
+          this.rentalRequestsLoading = false;
+          this.showToastMessage('Failed to load rental requests', 'error');
+        },
+      });
+  }
+
+  // Filter requests by status
+  filterRequestsByStatus(status: string) {
+    this.selectedRequestStatus = status;
+    this.currentRequestPage = 1;
+    this.loadRentalRequests();
+  }
+
+  // Change request page
+  changeRequestPage(page: number) {
+    if (page >= 1 && page <= this.totalRequestPages) {
+      this.currentRequestPage = page;
+      this.loadRentalRequests();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  // Get status badge class
+  getStatusClass(status: string): string {
+    switch (status) {
+      case 'approved':
+        return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
+      case 'rejected':
+        return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
+      case 'pending':
+        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
+      case 'cancelled':
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200';
+      default:
+        return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200';
+    }
+  }
+
+  // Get status text in Arabic
+  getStatusText(status: string): string {
+    switch (status) {
+      case 'approved':
+        return 'accepted';
+      case 'rejected':
+        return 'rejected';
+      case 'pending':
+        return 'pending';
+      case 'cancelled':
+        return 'cancelled';
+      default:
+        return status;
+    }
+  }
+
+  // View property details
+  viewPropertyFromRequest(propertyId: number) {
+    this.router.navigate(['/properties', propertyId]);
+  }
+
+  goToPayment(request: RentalRequest) {
+    this.router.navigate(['/payment'], {
+      state: {
+        request: request,
+        propertyDetails: request.property,
+      },
+    });
+  }
+  onAddProperty(){
+    this.router.navigate(['filter']);
   }
 }

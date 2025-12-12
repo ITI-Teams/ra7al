@@ -2,96 +2,87 @@
   class="w-full flex flex-col items-center py-10 px-4 bg-gradient-to-br from-orange-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 py-16 px-4 transition-colors duration-300"
 >
   <!-- Toast Notification -->
-<div
-  *ngIf="toastMessage"
-  class="fixed top-5 right-5 z-50 px-5 py-3 rounded-xl shadow-lg transform transition-all duration-500 ease-out pointer-events-auto"
-  [ngClass]="{
+  <div
+    *ngIf="toastMessage"
+    class="fixed top-5 right-5 z-50 px-5 py-3 rounded-xl shadow-lg transform transition-all duration-500 ease-out pointer-events-auto"
+    [ngClass]="{
     'opacity-0 translate-x-8': !showToast,
     'opacity-100 translate-x-0': showToast,
     'bg-green-500 text-white': toastType === 'success',
     'bg-red-500 text-white': toastType === 'error'
   }"
->
-  <div class="flex items-center gap-3">
-    <!-- Icon -->
-    <ng-container [ngSwitch]="toastType">
-      <i *ngSwitchCase="'success'" class="fas fa-check-circle w-5 h-5 text-white"></i>
-      <i *ngSwitchCase="'error'" class="fas fa-exclamation-circle w-5 h-5"></i>
-      <i *ngSwitchDefault class="fas fa-info-circle w-5 h-5"></i>
-    </ng-container>
+  >
+    <div class="flex items-center gap-3">
+      <!-- Icon -->
+      <ng-container [ngSwitch]="toastType">
+        <i
+          *ngSwitchCase="'success'"
+          class="fas fa-check-circle w-5 h-5 text-white"
+        ></i>
+        <i
+          *ngSwitchCase="'error'"
+          class="fas fa-exclamation-circle w-5 h-5"
+        ></i>
+        <i *ngSwitchDefault class="fas fa-info-circle w-5 h-5"></i>
+      </ng-container>
 
-    <!-- Message -->
-    <span class="text-sm font-medium">{{ toastMessage }}</span>
+      <!-- Message -->
+      <span class="text-sm font-medium">{{ toastMessage }}</span>
+    </div>
   </div>
-</div>
-
-
 
   <!-- Profile Card -->
   <div class="flex relative flex-col items-center z-10 w-full max-w-5xl">
-     <div
-  class="flex relative flex-col items-center z-10 w-full max-w-md
-         rounded-3xl shadow-xl p-8
-         border border-gray-100 dark:border-gray-800
-         bg-white dark:bg-gray-900
-         transition-all duration-300 hover:shadow-2xl"
->
-  <!-- Avatar Wrapper -->
-  <div class="mt-2 relative w-32 h-32">
-    <!-- Avatar Preview -->
-    <img
-      *ngIf="avatarPreview; else originalAvatar"
-      [src]="avatarPreview"
-      class="w-32 h-32 rounded-full object-cover shadow-lg border-4
-             border-white dark:border-gray-800"
-    />
-
-    <!-- Avatar Normal -->
-    <ng-template #originalAvatar>
-      <img
-        [src]="avatarUrl()"
-        class="w-32 h-32 rounded-full object-cover shadow-lg border-4
-               border-white dark:border-gray-800"
-      />
-    </ng-template>
-
-    <!-- Camera Button -->
-    <label
-      class="absolute bottom-0 right-2
-             bg-gradient-to-r from-orange-500 to-pink-500
-             text-white py-2 px-3 rounded-full cursor-pointer shadow-md
-             hover:scale-110 transition-all"
-      (click)="openAvatarModal()"
+    <div
+      class="flex relative flex-col items-center z-10 w-full max-w-md rounded-3xl shadow-xl p-8 border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 transition-all duration-300 hover:shadow-2xl"
     >
-      <i class="pi pi-camera text-lg"></i>
-    </label>
-  </div>
+      <!-- Avatar Wrapper -->
+      <div class="mt-2 relative w-32 h-32">
+        <!-- Avatar Preview -->
+        <img
+          *ngIf="avatarPreview; else originalAvatar"
+          [src]="avatarPreview"
+          class="w-32 h-32 rounded-full object-cover shadow-lg border-4 border-white dark:border-gray-800"
+        />
 
-  <!-- NAME -->
-  <h2 class="mt-5 text-3xl font-bold dark:text-white text-center">
-    {{ profileForm.get('name')?.value || 'Your Name' }}
-  </h2>
+        <!-- Avatar Normal -->
+        <ng-template #originalAvatar>
+          <img
+            [src]="avatarUrl()"
+            class="w-32 h-32 rounded-full object-cover shadow-lg border-4 border-white dark:border-gray-800"
+          />
+        </ng-template>
 
-  <!-- EMAIL -->
-  <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 text-center">
-    {{ profile?.email || profileForm.get('email')?.value }}
-  </p>
+        <!-- Camera Button -->
+        <label
+          for="avatarInput"
+          class="absolute bottom-0 right-2 bg-gradient-to-r from-orange-500 to-pink-500 text-white py-2 px-3 rounded-full cursor-pointer shadow-md hover:scale-110 transition-all"
+          (click)="openAvatarModal()"
+        >
+          <i class="pi pi-camera text-lg"></i>
+        </label>
+      </div>
 
-  <!-- EDIT BUTTON -->
-  <button
-    class="mt-4 px-8 py-2 rounded-xl font-semibold
-           bg-gradient-to-r from-[#852EE4] to-[#A758FF]
-           text-white shadow-md hover:shadow-xl
-           transition-all duration-300 focus:outline-none
-           focus:ring-2 focus:ring-[#852EE4]"
-    (click)="toggleEdit()"
-  >
-    {{ isEditing ? 'Cancel' : 'Edit my info' }}
-  </button>
-</div>
+      <!-- NAME -->
+      <h2 class="mt-5 text-3xl font-bold dark:text-white text-center">
+        {{ profileForm.get('name')?.value || 'Your Name' }}
+      </h2>
+
+      <!-- EMAIL -->
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 text-center">
+        {{ profile?.email || profileForm.get('email')?.value }}
+      </p>
+
+      <!-- EDIT BUTTON -->
+      <button
+        class="mt-4 px-8 py-2 rounded-xl font-semibold bg-gradient-to-r from-[#852EE4] to-[#A758FF] text-white shadow-md hover:shadow-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#852EE4]"
+        (click)="toggleEdit()"
+      >
+        {{ isEditing ? 'Cancel' : 'Edit my info' }}
+      </button>
+    </div>
 
     <!-- EDIT PROFILE SLIDE PANEL -->
-
     <div
       *ngIf="isEditing"
       class="fixed inset-0 w-full md:max-w-lg animate-slideLeft bg-transparent flex items-start justify-start z-50"
@@ -163,6 +154,7 @@
               </div>
             </div>
           </div>
+
           <!-- Password -->
           <div>
             <label
@@ -215,7 +207,6 @@
             </div>
           </div>
 
-          <!-- HABITS -->
           <!-- HABITS TAG MULTI SELECT -->
           <div class="mb-6">
             <label
@@ -226,15 +217,9 @@
 
             <div class="relative">
               <!-- Input box -->
-                <button
-                (click)="toggleDropdown('habits')"
-                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-xl leading-none"
-              >
-                &times;
-              </button>
               <div
                 (click)="toggleDropdown('habits')"
-                class="w-full p-4 border rounded-lg bg-white dark:bg-gray-700 dark:border-gray-600 cursor-pointer focus:ring-2 focus:ring-[#852EE4]"
+                class="w-full p-4 border rounded-lg bg-white dark:bg-gray-700 dark:border-gray-600 cursor-pointer focus:ring-2 focus:ring-[#852EE4] min-h-[56px] relative"
               >
                 <span class="text-gray-500" *ngIf="selectedHabits.length === 0">
                   Select one or more habits
@@ -248,13 +233,21 @@
                   >
                     {{ item }}
                     <button
-                      (click)="removeHabit(item)"
-                      class="text-white font-bold"
+                      (click)="removeHabit(item); $event.stopPropagation()"
+                      class="text-white font-bold hover:text-gray-200"
                     >
                       ×
                     </button>
                   </span>
                 </div>
+
+                <button
+                  type="button"
+                  (click)="toggleDropdown('habits'); $event.stopPropagation()"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-xl leading-none"
+                >
+                  {{ dropdown['habits'] ? '▲' : '▼' }}
+                </button>
               </div>
 
               <!-- Dropdown list -->
@@ -266,6 +259,8 @@
                   *ngFor="let option of habitsOptions"
                   (click)="selectHabit(option)"
                   class="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer"
+                  [class.opacity-50]="selectedHabits.includes(option)"
+                  [class.cursor-not-allowed]="selectedHabits.includes(option)"
                 >
                   {{ option }}
                 </div>
@@ -279,7 +274,6 @@
               class="block text-gray-700 dark:text-gray-300 mb-2 font-medium"
               >Preferences</label
             >
-
             <select
               formControlName="preferences"
               class="w-full p-4 border rounded-lg bg-white dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#852EE4]"
@@ -291,7 +285,6 @@
               <option value="Sociable">Sociable</option>
               <option value="Flexible">Flexible</option>
             </select>
-
             <div
               class="text-red-500 text-sm mt-1"
               *ngIf="profileForm.get('preferences')?.invalid && profileForm.get('preferences')?.touched"
@@ -306,7 +299,6 @@
               class="block text-gray-700 dark:text-gray-300 mb-2 font-medium"
               >Roommate Style</label
             >
-
             <select
               formControlName="roommate_style"
               class="w-full p-4 border rounded-lg bg-white dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#852EE4]"
@@ -318,7 +310,6 @@
               <option value="Independent">Independent</option>
               <option value="Clean">Clean</option>
             </select>
-
             <div
               class="text-red-500 text-sm mt-1"
               *ngIf="profileForm.get('roommate_style')?.invalid && profileForm.get('roommate_style')?.touched"
@@ -333,7 +324,6 @@
               class="block text-gray-700 dark:text-gray-300 mb-2 font-medium"
               >Cleanliness Level</label
             >
-
             <select
               formControlName="cleanliness_level"
               class="w-full p-4 border rounded-lg bg-white dark:bg-gray-700 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-[#852EE4]"
@@ -349,7 +339,6 @@
               <option value="8">8</option>
               <option value="9">9 - Very clean</option>
             </select>
-
             <div
               class="text-red-500 text-sm mt-1"
               *ngIf="profileForm.get('cleanliness_level')?.invalid && profileForm.get('cleanliness_level')?.touched"
@@ -358,15 +347,15 @@
             </div>
           </div>
 
+          <!-- GENDER -->
           <div>
-            <!-- gender -->
             <label
               class="block text-gray-700 dark:text-gray-300 mb-2 font-medium"
               >Gender</label
             >
             <select
               formControlName="gender"
-              class="w-full mb-5 p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#852EE4] dark:bg-gray-700 dark:border-gray-600"
+              class="w-full p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#852EE4] dark:bg-gray-700 dark:border-gray-600"
             >
               <option value="">Select</option>
               <option value="male">Male</option>
@@ -377,10 +366,11 @@
               *ngIf="profileForm.get('gender')?.invalid && profileForm.get('gender')?.touched"
             >
               <div *ngIf="profileForm.get('gender')?.errors?.['required']">
-                gender field is required.
+                Gender field is required.
               </div>
             </div>
           </div>
+
           <!-- Smoking & Pets -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -413,7 +403,7 @@
               >
               <select
                 formControlName="pets"
-                class="w-full p-4 mb-20 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#852EE4] dark:bg-gray-700 dark:border-gray-600"
+                class="w-full p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#852EE4] dark:bg-gray-700 dark:border-gray-600"
               >
                 <option value="">Select</option>
                 <option value="yes">Yes</option>
@@ -429,26 +419,28 @@
               </div>
             </div>
           </div>
-          <label class="block text-gray-700 dark:text-gray-300 mb-2 font-medium"
-            >About Me</label
-          >
 
-          <textarea
-            class="w-full h-30 p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#852EE4] dark:bg-gray-700 dark:border-gray-600"
-            placeholder="About me"
-            formControlName="bio"
-          ></textarea>
-
-          <div
-            class="text-red-500 text-sm"
-            *ngIf="profileForm.get('bio')?.invalid && profileForm.get('bio')?.touched"
-          >
-            <div *ngIf="profileForm.get('bio')?.errors?.['required']">
-              About Me field is required.
+          <!-- BIO -->
+          <div>
+            <label
+              class="block text-gray-700 dark:text-gray-300 mb-2 font-medium"
+              >About Me</label
+            >
+            <textarea
+              class="w-full h-30 p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#852EE4] dark:bg-gray-700 dark:border-gray-600"
+              placeholder="About me"
+              formControlName="bio"
+              rows="4"
+            ></textarea>
+            <div
+              class="text-red-500 text-sm mt-1"
+              *ngIf="profileForm.get('bio')?.invalid && profileForm.get('bio')?.touched"
+            >
+              <div *ngIf="profileForm.get('bio')?.errors?.['required']">
+                About Me field is required.
+              </div>
             </div>
           </div>
-
-          <!-- ⬇️ PASTE YOUR FORM HERE (no changes needed) -->
 
           <!-- Buttons -->
           <div class="flex justify-end gap-4 mt-6">
@@ -469,411 +461,685 @@
             </button>
           </div>
         </form>
-    </div>
-  </div>
-
-  <!-- Tabs -->
-  <div
-    class="flex flex-wrap justify-center gap-10 mt-10 border-b w-full max-w-4xl pb-2 text-gray-600 dark:text-gray-300"
-  >
-    <!-- Favourites -->
-    <button
-      class="flex items-center gap-2 pb-2 transition"
-      [ngClass]="{'text-red-500 font-semibold border-b-2 border-red-500': activeTab === 'favourites'}"
-      (click)="changeTab('favourites')"
-    >
-      <i class="fa-solid fa-heart"></i>
-      Favourites
-    </button>
-
-    <!-- About Me -->
-    <button
-      class="flex items-center gap-2 pb-2 transition"
-      [ngClass]="{'text-blue-500 font-semibold border-b-2 border-blue-500': activeTab === 'about'}"
-      (click)="changeTab('about')"
-    >
-      <i class="fa-solid fa-user"></i>
-      About Me
-    </button>
-
-    <!-- Roommates -->
-    <button
-      class="flex items-center gap-2 pb-2 transition"
-      [ngClass]="{'text-green-500 font-semibold border-b-2 border-green-500': activeTab === 'roommates'}"
-      (click)="changeTab('roommates')"
-    >
-      <i class="fa-solid fa-users"></i>
-      Roommates
-    </button>
-
-    <!-- History -->
-    <button
-      class="flex items-center gap-2 pb-2 transition"
-      [ngClass]="{'text-orange-500 font-semibold border-b-2 border-orange-500': activeTab === 'history'}"
-      (click)="changeTab('history')"
-    >
-      <i class="fa-solid fa-clock"></i>
-      History
-    </button>
-  </div>
-
-  <!-- Tab Contents -->
-  <!-- Tab Contents -->
-  <div
-    *ngIf="activeTab === 'favourites'"
-    class="mt-10 w-full max-w-4xl text-gray-700 dark:text-gray-300"
-  >
-    <!-- <p *ngIf="!properties || properties.length === 0" class="text-center text-gray-500 dark:text-gray-400">
-    No favourites yet.
-  </p> -->
-    <!-- Loading State -->
-    <div
-      *ngIf="!properties || properties.length === 0"
-      class="flex justify-center items-center py-20"
-    >
-      <div class="relative">
-        <div
-          class="w-12 h-12 rounded-full border-4 border-gray-300 dark:border-gray-700"
-        ></div>
-        <div
-          class="absolute top-0 left-0 w-12 h-12 rounded-full border-4 border-[#9810fa] border-t-transparent animate-spin"
-        ></div>
       </div>
     </div>
 
-    <!-- Properties Grid -->
+    <!-- Tabs -->
     <div
-      *ngIf="properties && properties.length > 0"
-      class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 w-full"
+      class="flex flex-wrap justify-center gap-10 mt-10 border-b w-full max-w-4xl pb-2 text-gray-600 dark:text-gray-300"
     >
-      <article
-        *ngFor="let item of paginatedProperties"
-        class="group bg-white dark:bg-gray-900 rounded-2xl overflow-hidden transition-all duration-300 shadow-xl -translate-y-1 border border-gray-200 dark:border-gray-700 hover:border-[#9810fa]"
-      >
-        <!-- IMAGE -->
-        <div class="relative h-40 border-none overflow-hidden">
-          <img
-            class="w-full h-full object-cover border-none scale-105 transition-transform duration-500"
-            [src]="item.images?.length ? item.images[0].path : 'asset/defualt.png'"
-            alt="{{item.title}}"
-          />
-
-          <!-- Overlay -->
-          <div
-            class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-100 transition-opacity"
-          ></div>
-
-          <!-- Badges -->
-          <div class="absolute top-3 right-2 flex flex-col gap-2">
-            <span
-              class="px-3 py-1 bg-[#9810fa] text-white text-xs font-semibold rounded-full shadow-md"
-            >
-              <i class="fa-solid fa-user-group"></i> {{item.available_spots}}
-              Spots
-            </span>
-          </div>
-
-          <!-- University -->
-          <span
-            class="absolute bottom-3 left-3 px-3 py-1.5 bg-white/20 backdrop-blur-sm text-white text-xs font-semibold rounded-full"
-          >
-            <i class="fa-solid fa-university"></i>
-            {{item.university.name}}
-          </span>
-        </div>
-
-        <!-- CONTENT -->
-        <div class="p-4">
-          <!-- Title -->
-          <h3
-            class="font-semibold text-lg text-gray-900 dark:text-white mb-1 line-clamp-1 text-[#9810fa] transition-colors"
-          >
-            {{item.title}}
-          </h3>
-
-          <!-- Address -->
-          <p
-            class="text-xs text-gray-500 dark:text-gray-400 mb-4 flex items-center gap-1"
-          >
-            <i class="fa-solid fa-location-dot text-[#9810fa]"></i>
-            {{item.address}}
-          </p>
-
-          <!-- Stats (shorter version) -->
-          <div
-            class="flex justify-between text-xs text-gray-600 dark:text-gray-300 mb-4"
-          >
-            <span class="flex items-center gap-1">
-              <i class="fa-solid fa-door-closed"></i> {{item.total_rooms}}
-            </span>
-
-            <span class="flex items-center gap-1">
-              <i class="fa-solid fa-bath"></i> {{item.bathrooms_count}}
-            </span>
-
-            <span class="flex items-center gap-1">
-              <i class="fa-solid fa-bed"></i> {{item.beds}}
-            </span>
-
-            <span class="flex items-center gap-1">
-              <i class="fa-solid fa-user-group"></i> {{item.accommodation_type}}
-            </span>
-          </div>
-
-          <!-- Price -->
-          <div
-            class="flex justify-between items-center pt-4 border-t border-gray-100 dark:border-gray-700"
-          >
-            <div>
-              <p class="font-bold text-xl text-[#9810fa]">${{item.price}}</p>
-              <span class="text-xs text-gray-500 dark:text-gray-400"
-                >/month</span
-              >
-            </div>
-
-            <button
-              (click)="viewProperty(item)"
-              class="bg-[#9810fa] hover:bg-purple-700 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 shadow-md hover:shadow-lg flex items-center gap-2"
-            >
-              View
-              <i class="fa-solid fa-arrow-right"></i>
-            </button>
-          </div>
-        </div>
-      </article>
-    </div>
-    <!-- Pagination -->
-    <div
-      *ngIf="totalPages > 1"
-      class="flex justify-center items-center mt-10 gap-2"
-    >
-      <!-- Prev -->
+      <!-- Favourites -->
       <button
-        (click)="prevPage()"
-        [disabled]="currentPage === 1"
-        class="px-4 py-2 rounded-lg text-sm font-medium border bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
+        class="flex items-center gap-2 pb-2 transition"
+        [ngClass]="{'text-red-500 font-semibold border-b-2 border-red-500': activeTab === 'favourites'}"
+        (click)="changeTab('favourites')"
       >
-        ← Prev
+        <i class="fa-solid fa-heart"></i>
+        Favourites
       </button>
 
-      <!-- Page Numbers -->
+      <!-- About Me -->
       <button
-        *ngFor="let page of [].constructor(totalPages); let i = index"
-        (click)="goToPage(i+1)"
-        [ngClass]="{
-      'bg-[#9810fa] text-white': currentPage === i+1,
-      'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300': currentPage !== i+1
-    }"
-        class="px-4 py-2 rounded-lg text-sm font-semibold border hover:bg-[#9810fa] hover:text-white transition shadow-sm"
+        class="flex items-center gap-2 pb-2 transition"
+        [ngClass]="{'text-blue-500 font-semibold border-b-2 border-blue-500': activeTab === 'about'}"
+        (click)="changeTab('about')"
       >
-        {{ i + 1 }}
+        <i class="fa-solid fa-user"></i>
+        About Me
       </button>
 
-      <!-- Next -->
+      <!-- My Requests Tab -->
       <button
-        (click)="nextPage()"
-        [disabled]="currentPage === totalPages"
-        class="px-4 py-2 rounded-lg text-sm font-medium border bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
+        class="flex items-center gap-2 pb-2 transition relative"
+        [ngClass]="{'text-orange-500 font-semibold border-b-2 border-orange-500': activeTab === 'requests'}"
+        (click)="changeTab('requests')"
       >
-        Next →
+        <i class="fa-solid fa-file-contract"></i>
+        My Requests
+        <span
+          *ngIf="totalRequests > 0"
+          class="absolute -top-2 -right-2 px-2 py-0.5 text-xs rounded-full bg-orange-500 text-white font-bold"
+        >
+          {{ totalRequests }}
+        </span>
+      </button>
+
+      <!-- Roommates -->
+      <button
+        class="flex items-center gap-2 pb-2 transition"
+        [ngClass]="{'text-green-500 font-semibold border-b-2 border-green-500': activeTab === 'roommates'}"
+        (click)="changeTab('roommates')"
+      >
+        <i class="fa-solid fa-users"></i>
+        Roommates
+      </button>
+
+      <!-- History -->
+      <button
+        class="flex items-center gap-2 pb-2 transition"
+        [ngClass]="{'text-orange-500 font-semibold border-b-2 border-orange-500': activeTab === 'history'}"
+        (click)="changeTab('history')"
+      >
+        <i class="fa-solid fa-clock"></i>
+        History
       </button>
     </div>
-  </div>
 
+    <!-- ============================================ -->
+    <!-- TAB CONTENTS -->
+    <!-- ============================================ -->
+
+    <!-- FAVOURITES TAB -->
+    <div
+      *ngIf="activeTab === 'favourites'"
+      class="mt-10 w-full max-w-4xl text-gray-700 dark:text-gray-300"
+    >
+     <!-- No Property Found -->
 <div
-  *ngIf="activeTab === 'about'"
-  class="mt-10 w-full max-w-4xl text-gray-700 dark:text-gray-300 mx-auto"
+  *ngIf="properties && properties.length === 0"
+  class="flex flex-col items-center justify-center py-20 text-center px-4"
 >
 
- <!-- ================= TOP GRID (AGE, GENDER, CLEANLINESS, ETC.) ================= -->
-<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-10">
+  <div class=" shadow-xl rounded-2xl p-10 max-w-md w-full transform transition-all hover:scale-105">
 
-  <!-- AGE -->
-  <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-5 rounded-2xl shadow-sm flex items-center gap-4">
-    <i class="fa-solid fa-user text-indigo-500 text-xl"></i>
-    <div>
-      <span class="text-xs font-semibold text-gray-500">AGE</span>
-      <p class="mt-1 font-medium">{{ profile?.age ?? '-' }}</p>
+    <!-- Icon -->
+    <div class="flex justify-center mb-5">
+      <div class="w-16 h-16 flex items-center justify-center rounded-full bg-purple-100 dark:bg-purple-800 animate-bounce">
+        <svg class="w-8 h-8 text-purple-600 dark:text-purple-300" xmlns="http://www.w3.org/2000/svg" fill="none"
+          viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M3 7l9-4 9 4M4 10h16v7a2 2 0 01-2 2H6a2 2 0 01-2-2v-7z" />
+        </svg>
+      </div>
     </div>
-  </div>
 
-  <!-- GENDER -->
-  <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-5 rounded-2xl shadow-sm flex items-center gap-4">
-    <i class="fa-solid fa-venus-mars text-pink-500 text-xl"></i>
-    <div>
-      <span class="text-xs font-semibold text-gray-500">GENDER</span>
-      <p class="mt-1 font-medium">{{ profile?.gender || '-' }}</p>
-    </div>
-  </div>
+    <!-- Title -->
+    <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2">
+      No Properties Found
+    </h2>
 
-  <!-- ROOMMATE STYLE -->
-  <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-5 rounded-2xl shadow-sm flex items-center gap-4">
-    <i class="fa-solid fa-people-roof text-blue-500 text-xl"></i>
-    <div>
-      <span class="text-xs font-semibold text-gray-500">ROOMMATE STYLE</span>
-      <p class="mt-1 font-medium">{{ profile?.roommate_style || '-' }}</p>
-    </div>
-  </div>
-
-  <!-- CLEANLINESS -->
-  <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-5 rounded-2xl shadow-sm flex items-center gap-4">
-    <i class="fa-solid fa-broom text-green-500 text-xl"></i>
-    <div>
-      <span class="text-xs font-semibold text-gray-500">CLEANLINESS LEVEL</span>
-      <p class="mt-1 font-medium">{{ profile?.cleanliness_level ?? '-' }}</p>
-    </div>
-  </div>
-
-  <!-- SMOKING -->
-  <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-5 rounded-2xl shadow-sm flex items-center gap-4">
-    <i class="fa-solid fa-smoking text-red-500 text-xl"></i>
-    <div>
-      <span class="text-xs font-semibold text-gray-500">SMOKING</span>
-      <p class="mt-1 font-medium">
-        {{ profile?.smoking === 'yes' ? 'Yes' :
-           profile?.smoking === 'no' ? 'No' : '-' }}
-      </p>
-    </div>
-  </div>
-
-  <!-- PETS -->
-  <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-5 rounded-2xl shadow-sm flex items-center gap-4">
-    <i class="fa-solid fa-paw text-orange-500 text-xl"></i>
-    <div>
-      <span class="text-xs font-semibold text-gray-500">PETS</span>
-      <p class="mt-1 font-medium">
-        {{ profile?.pets === 'yes' ? 'Yes' :
-           profile?.pets === 'no' ? 'No' : '-' }}
-      </p>
-    </div>
-  </div>
-
-</div>
-
-<!-- ================= HABITS SECTION ================= -->
-<div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6 rounded-2xl shadow-sm mt-8">
-  <h3 class="text-sm font-semibold text-gray-500 mb-4 flex items-center gap-2">
-    <i class="fa-solid fa-heart text-red-500"></i> HABITS
-  </h3>
-
-  <div class="flex flex-wrap gap-2">
-    <ng-container *ngIf="profile?.habits?.length > 0; else noHabits">
-      <span
-        *ngFor="let h of profile.habits"
-        class="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-sm rounded-xl flex items-center gap-2"
-      >
-        <i class="fa-solid fa-check text-purple-500 text-xs"></i> {{ h }}
-      </span>
-    </ng-container>
-
-    <ng-template #noHabits>
-      <span class="text-gray-500">-</span>
-    </ng-template>
-  </div>
-</div>
-
-
-  <!-- ================= PREFERENCES (HOBBIES) ================= -->
-  <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6 rounded-2xl shadow-sm mt-8">
-    <h3 class="text-sm font-semibold text-gray-500 mb-4">PREFERENCES</h3>
-
-    <div class="flex flex-wrap gap-2">
-      <ng-container *ngIf="profile?.preferences?.length > 0; else noPrefs">
-        <span
-          *ngFor="let p of profile.preferences"
-          class="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-sm rounded-xl flex items-center gap-2"
-        >
-          <i class="fa-solid fa-tag text-yellow-500 text-xs"></i> {{ p }}
-        </span>
-      </ng-container>
-
-      <ng-template #noPrefs>
-        <span class="text-gray-500">-</span>
-      </ng-template>
-    </div>
-  </div>
-
-  <!-- ================= BIO SECTION ================= -->
-  <div class="bg-white overflow-auto dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6 rounded-2xl shadow-sm mt-8">
-    <h3 class="text-sm font-semibold text-gray-500 mb-3">ABOUT ME</h3>
-
-    <p class="text-base leading-relaxed text-gray-700 dark:text-gray-300">
-      {{ profile?.bio || 'Add personal information here...' }}
+    <!-- Message -->
+    <p class="text-gray-500 dark:text-gray-400 mb-6">
+      There are no properties available at the moment. Add a new property to get started.
     </p>
+
+    <!-- Button -->
+    <button
+      (click)="onAddProperty()"
+      class="inline-flex items-center gap-2 justify-center px-6 py-3 text-white bg-[#9810fa] hover:bg-[#7c0dc9] font-semibold transition-all rounded-lg shadow-md transform hover:scale-105"
+    >
+      <i class="fa-solid fa-plus"></i>
+      Add New Property
+    </button>
+
   </div>
+
 </div>
 
 
 
-  <div
-    *ngIf="activeTab === 'roommates'"
-    class="mt-10 w-full max-w-3xl text-gray-700 dark:text-gray-300"
-  >
-    <h3 class="text-xl font-semibold mb-4">Roommates</h3>
-    <p class="text-sm">No roommates found.</p>
+
+
+      <!-- Properties Grid -->
+      <div
+        *ngIf="properties && properties.length > 0"
+        class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 w-full"
+      >
+        <article
+          *ngFor="let item of paginatedProperties"
+          class="group bg-white dark:bg-gray-900 rounded-2xl overflow-hidden transition-all duration-300 shadow-xl hover:-translate-y-1 border border-gray-200 dark:border-gray-700 hover:border-[#9810fa]"
+        >
+          <!-- IMAGE -->
+          <div class="relative h-40 border-none overflow-hidden">
+            <img
+              class="w-full h-full object-cover border-none group-hover:scale-105 transition-transform duration-500"
+              [src]="item.images?.length ? item.images[0].path : 'asset/defualt.png'"
+              [alt]="item.title"
+            />
+
+            <!-- Overlay -->
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-100 transition-opacity"
+            ></div>
+
+            <!-- Badges -->
+            <div class="absolute top-3 right-2 flex flex-col gap-2">
+              <span
+                class="px-3 py-1 bg-[#9810fa] text-white text-xs font-semibold rounded-full shadow-md"
+              >
+                <i class="fa-solid fa-user-group"></i> {{item.available_spots}}
+                Spots
+              </span>
+            </div>
+
+            <!-- University -->
+            <span
+              class="absolute bottom-3 left-3 px-3 py-1.5 bg-white/20 backdrop-blur-sm text-white text-xs font-semibold rounded-full"
+            >
+              <i class="fa-solid fa-university"></i>
+              {{item.university.name}}
+            </span>
+          </div>
+
+          <!-- CONTENT -->
+          <div class="p-4">
+            <!-- Title -->
+            <h3
+              class="font-semibold text-lg text-gray-900 dark:text-white mb-1 line-clamp-1 group-hover:text-[#9810fa] transition-colors"
+            >
+              {{item.title}}
+            </h3>
+
+            <!-- Address -->
+            <p
+              class="text-xs text-gray-500 dark:text-gray-400 mb-4 flex items-center gap-1"
+            >
+              <i class="fa-solid fa-location-dot text-[#9810fa]"></i>
+              {{item.address}}
+            </p>
+
+            <!-- Stats -->
+            <div
+              class="flex justify-between text-xs text-gray-600 dark:text-gray-300 mb-4"
+            >
+              <span class="flex items-center gap-1">
+                <i class="fa-solid fa-door-closed"></i> {{item.total_rooms}}
+              </span>
+
+              <span class="flex items-center gap-1">
+                <i class="fa-solid fa-bath"></i> {{item.bathrooms_count}}
+              </span>
+
+              <span class="flex items-center gap-1">
+                <i class="fa-solid fa-bed"></i> {{item.beds}}
+              </span>
+
+              <span class="flex items-center gap-1">
+                <i class="fa-solid fa-user-group"></i>
+                {{item.accommodation_type}}
+              </span>
+            </div>
+
+            <!-- Price -->
+            <div
+              class="flex justify-between items-center pt-4 border-t border-gray-100 dark:border-gray-700"
+            >
+              <div>
+                <p class="font-bold text-xl text-[#9810fa]">${{item.price}}</p>
+                <span class="text-xs text-gray-500 dark:text-gray-400"
+                  >/month</span
+                >
+              </div>
+
+              <button
+                (click)="viewProperty(item)"
+                class="bg-[#9810fa] hover:bg-purple-700 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 shadow-md hover:shadow-lg flex items-center gap-2"
+              >
+                View
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- Pagination -->
+      <div
+        *ngIf="totalPages > 1"
+        class="flex justify-center items-center mt-10 gap-2"
+      >
+        <!-- Prev -->
+        <button
+          (click)="prevPage()"
+          [disabled]="currentPage === 1"
+          class="px-4 py-2 rounded-lg text-sm font-medium border bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
+        >
+          ← Prev
+        </button>
+
+        <!-- Page Numbers -->
+        <button
+          *ngFor="let page of [].constructor(totalPages); let i = index"
+          (click)="goToPage(i+1)"
+          [ngClass]="{
+            'bg-[#9810fa] text-white': currentPage === i+1,
+            'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300': currentPage !== i+1
+          }"
+          class="px-4 py-2 rounded-lg text-sm font-semibold border hover:bg-[#9810fa] hover:text-white transition shadow-sm"
+        >
+          {{ i + 1 }}
+        </button>
+
+        <!-- Next -->
+        <button
+          (click)="nextPage()"
+          [disabled]="currentPage === totalPages"
+          class="px-4 py-2 rounded-lg text-sm font-medium border bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
+        >
+          Next →
+        </button>
+      </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- REQUESTS TAB CONTENT -->
+    <!-- ============================================ -->
+    <div
+      *ngIf="activeTab === 'requests'"
+      class="mt-10 w-full max-w-4xl text-gray-700 dark:text-gray-300"
+    >
+      <!-- Filter Buttons -->
+      <div class="flex flex-wrap gap-3 mb-6">
+        <button
+          (click)="filterRequestsByStatus('')"
+          [class.bg-orange-500]="selectedRequestStatus === ''"
+          [class.text-white]="selectedRequestStatus === ''"
+          [class.bg-white]="selectedRequestStatus !== ''"
+          [class.dark:bg-gray-800]="selectedRequestStatus !== ''"
+          [class.text-gray-700]="selectedRequestStatus !== ''"
+          [class.dark:text-gray-300]="selectedRequestStatus !== ''"
+          class="px-6 py-2 rounded-full font-semibold transition-all hover:scale-105 shadow-md"
+        >
+          All ({{ totalRequests }})
+        </button>
+
+        <button
+          (click)="filterRequestsByStatus('pending')"
+          [class.bg-yellow-500]="selectedRequestStatus === 'pending'"
+          [class.text-white]="selectedRequestStatus === 'pending'"
+          [class.bg-white]="selectedRequestStatus !== 'pending'"
+          [class.dark:bg-gray-800]="selectedRequestStatus !== 'pending'"
+          [class.text-gray-700]="selectedRequestStatus !== 'pending'"
+          [class.dark:text-gray-300]="selectedRequestStatus !== 'pending'"
+          class="px-6 py-2 rounded-full font-semibold transition-all hover:scale-105 shadow-md flex items-center gap-2"
+        >
+          <i class="fa-solid fa-clock"></i>
+          Pending
+        </button>
+
+        <button
+          (click)="filterRequestsByStatus('approved')"
+          [class.bg-green-500]="selectedRequestStatus === 'approved'"
+          [class.text-white]="selectedRequestStatus === 'approved'"
+          [class.bg-white]="selectedRequestStatus !== 'approved'"
+          [class.dark:bg-gray-800]="selectedRequestStatus !== 'approved'"
+          [class.text-gray-700]="selectedRequestStatus !== 'approved'"
+          [class.dark:text-gray-300]="selectedRequestStatus !== 'approved'"
+          class="px-6 py-2 rounded-full font-semibold transition-all hover:scale-105 shadow-md flex items-center gap-2"
+        >
+          <i class="fa-solid fa-check-circle"></i>
+          Accepted
+        </button>
+
+        <button
+          (click)="filterRequestsByStatus('rejected')"
+          [class.bg-red-500]="selectedRequestStatus === 'rejected'"
+          [class.text-white]="selectedRequestStatus === 'rejected'"
+          [class.bg-white]="selectedRequestStatus !== 'rejected'"
+          [class.dark:bg-gray-800]="selectedRequestStatus !== 'rejected'"
+          [class.text-gray-700]="selectedRequestStatus !== 'rejected'"
+          [class.dark:text-gray-300]="selectedRequestStatus !== 'rejected'"
+          class="px-6 py-2 rounded-full font-semibold transition-all hover:scale-105 shadow-md flex items-center gap-2"
+        >
+          <i class="fa-solid fa-times-circle"></i>
+          Rejected
+        </button>
+      </div>
+
+      <!-- Loading State -->
+      <div
+        *ngIf="rentalRequestsLoading"
+        class="flex justify-center items-center py-20"
+      >
+        <div class="relative">
+          <div
+            class="w-12 h-12 rounded-full border-4 border-gray-300 dark:border-gray-700"
+          ></div>
+          <div
+            class="absolute top-0 left-0 w-12 h-12 rounded-full border-4 border-orange-500 border-t-transparent animate-spin"
+          ></div>
+        </div>
+      </div>
+
+      <!-- Requests List -->
+      <div
+        *ngIf="!rentalRequestsLoading && rentalRequests.length > 0"
+        class="space-y-4"
+      >
+        <div
+          *ngFor="let request of rentalRequests"
+          class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 hover:shadow-lg transition-all"
+        >
+          <div class="flex flex-col md:flex-row justify-between gap-4">
+            <!-- Request Info -->
+            <div class="flex-1">
+              <h3 class="text-lg font-bold mb-2 dark:text-white">
+                {{ request.property?.title || 'Property Request' }}
+              </h3>
+              <div class="flex flex-wrap gap-4 text-sm">
+                <span class="flex items-center gap-2">
+                  <i class="fa-solid fa-calendar"></i>
+                  {{ request.created_at | date: 'short' }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Status & Actions -->
+            <div class="flex flex-col items-end justify-between gap-3">
+              <span
+                [ngClass]="getStatusClass(request.status)"
+                class="px-4 py-2 rounded-full text-sm font-semibold"
+              >
+                {{ getStatusText(request.status) }}
+              </span>
+
+              <button
+                (click)="viewPropertyFromRequest(request.property.id)"
+                class="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-xl text-sm font-semibold transition-all flex items-center gap-2"
+              >
+                View Property
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+              <!-- Payment Button - Only show when status is approved -->
+              <button
+                *ngIf="request.status === 'approved'"
+                (click)="goToPayment(request)"
+                class="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-5 py-2 rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+              >
+                <i class="fa-solid fa-credit-card"></i>
+                Proceed to Payment
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div
+        *ngIf="!rentalRequestsLoading && rentalRequests.length === 0"
+        class="text-center py-20"
+      >
+        <i
+          class="fa-solid fa-file-circle-exclamation text-6xl text-gray-300 dark:text-gray-700 mb-4"
+        ></i>
+        <p class="text-gray-500 dark:text-gray-400">No rental requests found</p>
+      </div>
+
+      <!-- Pagination -->
+      <div
+        *ngIf="totalRequestPages > 1 && !rentalRequestsLoading"
+        class="flex justify-center items-center mt-10 gap-2"
+      >
+        <button
+          (click)="changeRequestPage(currentRequestPage - 1)"
+          [disabled]="currentRequestPage === 1"
+          class="px-4 py-2 rounded-lg text-sm font-medium border bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
+        >
+          ← Prev
+        </button>
+
+        <button
+          *ngFor="let page of [].constructor(totalRequestPages); let i = index"
+          (click)="changeRequestPage(i+1)"
+          [ngClass]="{
+            'bg-orange-500 text-white': currentRequestPage === i+1,
+            'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300': currentRequestPage !== i+1
+          }"
+          class="px-4 py-2 rounded-lg text-sm font-semibold border hover:bg-orange-500 hover:text-white transition shadow-sm"
+        >
+          {{ i + 1 }}
+        </button>
+
+        <button
+          (click)="changeRequestPage(currentRequestPage + 1)"
+          [disabled]="currentRequestPage === totalRequestPages"
+          class="px-4 py-2 rounded-lg text-sm font-medium border bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 disabled:opacity-40 disabled:cursor-not-allowed transition shadow-sm"
+        >
+          Next →
+        </button>
+      </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- ABOUT ME TAB -->
+    <!-- ============================================ -->
+    <div
+      *ngIf="activeTab === 'about'"
+      class="mt-10 w-full max-w-4xl text-gray-700 dark:text-gray-300 mx-auto"
+    >
+      <!-- TOP GRID -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-10">
+        <!-- AGE -->
+        <div
+          class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-5 rounded-2xl shadow-sm flex items-center gap-4"
+        >
+          <i class="fa-solid fa-user text-indigo-500 text-xl"></i>
+          <div>
+            <span class="text-xs font-semibold text-gray-500">AGE</span>
+            <p class="mt-1 font-medium">{{ profile?.age ?? '-' }}</p>
+          </div>
+        </div>
+
+        <!-- GENDER -->
+        <div
+          class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-5 rounded-2xl shadow-sm flex items-center gap-4"
+        >
+          <i class="fa-solid fa-venus-mars text-pink-500 text-xl"></i>
+          <div>
+            <span class="text-xs font-semibold text-gray-500">GENDER</span>
+            <p class="mt-1 font-medium">{{ profile?.gender || '-' }}</p>
+          </div>
+        </div>
+
+        <!-- ROOMMATE STYLE -->
+        <div
+          class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-5 rounded-2xl shadow-sm flex items-center gap-4"
+        >
+          <i class="fa-solid fa-people-roof text-blue-500 text-xl"></i>
+          <div>
+            <span class="text-xs font-semibold text-gray-500"
+              >ROOMMATE STYLE</span
+            >
+            <p class="mt-1 font-medium">{{ profile?.roommate_style || '-' }}</p>
+          </div>
+        </div>
+
+        <!-- CLEANLINESS -->
+        <div
+          class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-5 rounded-2xl shadow-sm flex items-center gap-4"
+        >
+          <i class="fa-solid fa-broom text-green-500 text-xl"></i>
+          <div>
+            <span class="text-xs font-semibold text-gray-500"
+              >CLEANLINESS LEVEL</span
+            >
+            <p class="mt-1 font-medium">
+              {{ profile?.cleanliness_level ?? '-' }}
+            </p>
+          </div>
+        </div>
+
+        <!-- SMOKING -->
+        <div
+          class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-5 rounded-2xl shadow-sm flex items-center gap-4"
+        >
+          <i class="fa-solid fa-smoking text-red-500 text-xl"></i>
+          <div>
+            <span class="text-xs font-semibold text-gray-500">SMOKING</span>
+            <p class="mt-1 font-medium">
+              {{ profile?.smoking === 'yes' ? 'Yes' : profile?.smoking === 'no'
+              ? 'No' : '-' }}
+            </p>
+          </div>
+        </div>
+
+        <!-- PETS -->
+        <div
+          class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-5 rounded-2xl shadow-sm flex items-center gap-4"
+        >
+          <i class="fa-solid fa-paw text-orange-500 text-xl"></i>
+          <div>
+            <span class="text-xs font-semibold text-gray-500">PETS</span>
+            <p class="mt-1 font-medium">
+              {{ profile?.pets === 'yes' ? 'Yes' : profile?.pets === 'no' ? 'No'
+              : '-' }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- HABITS SECTION -->
+      <div
+        class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6 rounded-2xl shadow-sm mt-8"
+      >
+        <h3
+          class="text-sm font-semibold text-gray-500 mb-4 flex items-center gap-2"
+        >
+          <i class="fa-solid fa-heart text-red-500"></i> HABITS
+        </h3>
+
+        <div class="flex flex-wrap gap-2">
+          <ng-container *ngIf="profile?.habits?.length > 0; else noHabits">
+            <span
+              *ngFor="let h of profile.habits"
+              class="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-sm rounded-xl flex items-center gap-2"
+            >
+              <i class="fa-solid fa-check text-purple-500 text-xs"></i> {{ h }}
+            </span>
+          </ng-container>
+
+          <ng-template #noHabits>
+            <span class="text-gray-500">-</span>
+          </ng-template>
+        </div>
+      </div>
+
+      <!-- PREFERENCES SECTION -->
+      <div
+        class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6 rounded-2xl shadow-sm mt-8"
+      >
+        <h3 class="text-sm font-semibold text-gray-500 mb-4">PREFERENCES</h3>
+
+        <div class="flex flex-wrap gap-2">
+          <ng-container *ngIf="profile?.preferences?.length > 0; else noPrefs">
+            <span
+              *ngFor="let p of profile.preferences"
+              class="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-sm rounded-xl flex items-center gap-2"
+            >
+              <i class="fa-solid fa-tag text-yellow-500 text-xs"></i> {{ p }}
+            </span>
+          </ng-container>
+
+          <ng-template #noPrefs>
+            <span class="text-gray-500">-</span>
+          </ng-template>
+        </div>
+      </div>
+
+      <!-- BIO SECTION -->
+      <div
+        class="bg-white overflow-auto dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6 rounded-2xl shadow-sm mt-8"
+      >
+        <h3 class="text-sm font-semibold text-gray-500 mb-3">ABOUT ME</h3>
+
+        <p class="text-base leading-relaxed text-gray-700 dark:text-gray-300">
+          {{ profile?.bio || 'Add personal information here...' }}
+        </p>
+      </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- ROOMMATES TAB -->
+    <!-- ============================================ -->
+    <div
+      *ngIf="activeTab === 'roommates'"
+      class="mt-10 w-full max-w-3xl text-gray-700 dark:text-gray-300"
+    >
+      <h3 class="text-xl font-semibold mb-4">Roommates</h3>
+      <p class="text-sm">No roommates found.</p>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- HISTORY TAB -->
+    <!-- ============================================ -->
+    <div
+      *ngIf="activeTab === 'history'"
+      class="mt-10 w-full max-w-3xl text-gray-700 dark:text-gray-300"
+    >
+      <h3 class="text-xl font-semibold mb-4">History</h3>
+      <p class="text-sm">No history available.</p>
+    </div>
   </div>
 
-  <div
-    *ngIf="activeTab === 'history'"
-    class="mt-10 w-full max-w-3xl text-gray-700 dark:text-gray-300"
-  >
-    <h3 class="text-xl font-semibold mb-4">History</h3>
-    <p class="text-sm">No history available.</p>
-  </div>
+  <!-- Hidden File Input for Avatar Upload -->
+  <input
+    type="file"
+    id="avatarInput"
+    accept="image/*"
+    (change)="onAvatarChange($event)"
+    class="hidden"
+  />
+
+  <style>
+    @keyframes slideLeft {
+      from {
+        transform: translateX(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .animate-slideLeft {
+      animation: slideLeft 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @keyframes glow {
+      0% {
+        transform: scale(1);
+        opacity: 0.4;
+      }
+      50% {
+        transform: scale(1.15);
+        opacity: 0.6;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 0.4;
+      }
+    }
+    .animate-glow {
+      animation: glow 3s infinite ease-in-out;
+    }
+
+    @keyframes pop {
+      0% {
+        transform: scale(0.6);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    .animate-pop {
+      animation: pop 0.35s ease-out forwards;
+    }
+
+    @keyframes popupEnter {
+      0% {
+        transform: translateY(40px) scale(0.9);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+    }
+    .animate-popupEnter {
+      animation: popupEnter 0.35s ease-out forwards;
+    }
+  </style>
 </div>
-
-<!-- Hidden File Input for Avatar Upload -->
-<input
-  type="file"
-  id="avatarInput"
-  accept="image/*"
-  (change)="onAvatarChange($event)"
-  class="hidden"
-/>
-
-<style>
-  @keyframes slideLeft {
-    from {
-      transform: translateX(-100%);
-      opacity: 0;
-    }
-    to {
-      transform: translateX(0);
-      opacity: 1;
-    }
-  }
-
-  .animate-slideLeft {
-    animation: slideLeft 1s cubic-bezier(0.16, 1, 0.3, 1);
-    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-  }
-
-  /* Glow Animation */
-@keyframes glow {
-  0% { transform: scale(1); opacity: 0.4; }
-  50% { transform: scale(1.15); opacity: 0.6; }
-  100% { transform: scale(1); opacity: 0.4; }
-}
-.animate-glow {
-  animation: glow 3s infinite ease-in-out;
-}
-
-/* Avatar Pop Animation */
-@keyframes pop {
-  0% { transform: scale(0.6); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
-}
-.animate-pop {
-  animation: pop 0.35s ease-out forwards;
-}
-
-/* Popup Enter Animation */
-@keyframes popupEnter {
-  0% { transform: translateY(40px) scale(0.9); opacity: 0; }
-  100% { transform: translateY(0) scale(1); opacity: 1; }
-}
-.animate-popupEnter {
-  animation: popupEnter 0.35s ease-out forwards;
-}
-
-</style>

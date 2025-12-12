@@ -2,6 +2,7 @@ import { Component, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PropertySearch } from '../../core/services/property-search';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 // PrimeNG v20
 import { SelectModule } from 'primeng/select';
@@ -39,6 +40,7 @@ interface Listing {
     ButtonModule,
     PaginatorModule,
     InputTextModule,
+       ProgressSpinnerModule,
   ],
   templateUrl: './search.html',
   styleUrl: './search.css',
@@ -50,6 +52,13 @@ export class Search implements OnInit {
   ) {}
   // Search signal
   searchQuery = signal('');
+
+
+  showClear = signal(false);
+
+  dataLoaded = signal(false);
+
+  isLoading = signal(false);
 
   // Sort signal
   selectedSort = signal<string | null>(null);
@@ -72,11 +81,13 @@ export class Search implements OnInit {
 
     return this.allListings.filter(
       (item) =>
-        item.university.toLowerCase().includes(query) ||
-        item.city.toLowerCase().includes(query) ||
-        item.area.toLowerCase().includes(query) ||
-        item.location.toLowerCase().includes(query) ||
-        item.title.toLowerCase().includes(query)
+
+
+    (item.university?.toLowerCase() ?? '').includes(query) ||
+    (item.city?.toLowerCase() ?? '').includes(query) ||
+    (item.area?.toLowerCase() ?? '').includes(query) ||
+    (item.location?.toLowerCase() ?? '').includes(query) ||
+    (item.title?.toLowerCase() ?? '').includes(query)
     );
   });
 
@@ -127,18 +138,28 @@ export class Search implements OnInit {
     const page = this.currentPage();
     const perPage = this.rows();
 
+ this.isLoading.set(true);
+
     this.propertyService.searchProperties(keyword, page, perPage).subscribe({
       next: (res) => {
         this.allListings = res.data;
         this.totalRecords.set(res.meta?.total ?? res.data.length);
+          // this.dataLoaded.set(true);
+
+           this.isLoading.set(false);
       },
-      error: (err) => console.error(err),
+      error: (err) =>{
+        console.error(err);
+            // this.dataLoaded.set(true);
+              this.isLoading.set(false);
+      }
     });
   }
 
   onSearch() {
     this.currentPage.set(1);
     this.loadListings();
+    this.showClear.set(false);
   }
 
   onSortChange() {
@@ -157,6 +178,7 @@ export class Search implements OnInit {
     this.searchQuery.set('');
     this.currentPage.set(1);
     this.loadListings();
+     this.showClear.set(true);
   }
   getTypeIcon(accommodationType: string): string {
     return accommodationType === 'SHARED' ? '👥' : '🏠';
