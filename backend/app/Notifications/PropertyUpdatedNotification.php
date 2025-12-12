@@ -4,8 +4,11 @@ namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 
-class PropertyCreatedNotification extends Notification
+class PropertyUpdatedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 

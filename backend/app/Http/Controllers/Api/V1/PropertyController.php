@@ -22,6 +22,7 @@ use App\Notifications\PropertyCreatedNotification;
 use App\Notifications\PropertyUpdatedNotification;
 use App\Models\User;
 
+
 class PropertyController extends Controller
 {
 

@@ -56,7 +56,7 @@
                     </span>
                 </a>
             </li>
-            <li>
+            {{-- <li>
                 <a href="{{ route('mails.index') }}"
                     class="sidebar-item {{ request()->routeIs('mails.*') ? 'active' : '' }}">
                     <i class="fas fa-envelope"></i>
@@ -66,7 +66,7 @@
                         Mails
                     </span>
                 </a>
-            </li>
+            </li> --}}
             <li>
                 <a href="{{ route('users.index') }}"
                     class="sidebar-item {{ request()->routeIs('users.*') && !(request()->routeIs('users.assign')) ? 'active' : '' }}">
