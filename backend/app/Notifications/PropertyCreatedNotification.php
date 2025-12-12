@@ -7,6 +7,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Broadcasting\PrivateChannel;
+use App\Models\Property;
 
 class PropertyCreatedNotification extends Notification implements ShouldQueue
 {
@@ -14,7 +15,7 @@ class PropertyCreatedNotification extends Notification implements ShouldQueue
 
     protected $property;
 
-    public function __construct($property)
+    public function __construct(Property $property)
     {
         $this->property = $property;
     }

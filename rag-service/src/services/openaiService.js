@@ -132,7 +132,7 @@ OUTPUT FORMAT (strict JSON):
   }
 }
 
-Be helpful, accurate, and student-focused in your recommendations.`;
+Be helpful, accurate, and student-focused in your recommendations. And at least return one property return the closest`;
   }
 
   /**
