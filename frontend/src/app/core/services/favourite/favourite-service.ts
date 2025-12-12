@@ -14,9 +14,9 @@ constructor(private http:HttpClient){}
 return this.http.post(`${this.base}/property/${propertyId}/favourite`, {});
   }
 
-    getMyFavourites(): Observable<any> {
-    return this.http.get(`${this.base}/my-favourites`);
-  }
+  getMyFavourites(): Observable<any> {
+  return this.http.get(`${this.base}/my-favourites`)
+}
 
 
 

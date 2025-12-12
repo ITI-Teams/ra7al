@@ -22,7 +22,11 @@ import { AuthService } from '../../core/services/authService/auth.service';
   styleUrls: ['./student-profile.css'],
 })
 export class StudentProfile {
+
+
   properties: any[] = [];
+
+ 
 
 toastMessage: string = '';
 toastType: 'success' | 'error' = 'success';
@@ -78,7 +82,7 @@ showToast: boolean = false;
   ngOnInit(): void {
       this.cdr.detectChanges();
     this.loadProfile();
-      this.loadFavourites();
+   this.loadFavourites()
   }
 
 loadProfile() {
@@ -406,6 +410,9 @@ saveAvatarOnly() {
       console.log(this.properties = res);
     });
   }
+
+
+
 
   viewProperty(property: any) {
     this.router.navigate(['/properties', property.id]);
