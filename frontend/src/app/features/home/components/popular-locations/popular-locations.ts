@@ -25,7 +25,7 @@ interface CityRating {
   standalone: true,
   selector: 'app-popular-locations',
   templateUrl: './popular-locations.html',
-  imports: [RouterLink ,  CommonModule ]
+  imports: [RouterLink, CommonModule],
 })
 export class PopularLocations implements OnInit {
   popularLocations: Property[] = [];
@@ -45,12 +45,12 @@ export class PopularLocations implements OnInit {
   loadAPI() {
     this.popularLocationsService.getLatestPropertiesByCity().subscribe({
       next: (response: { cities: { name: string; properties: any[] }[] }) => {
-
-        this.popularLocations = response.cities.flatMap((city) =>
-          city.properties.map((p) => ({
-            ...p,
-            city: city.name,
-          })) as Property[]
+        this.popularLocations = response.cities.flatMap(
+          (city) =>
+            city.properties.map((p) => ({
+              ...p,
+              city: city.name,
+            })) as Property[]
         );
 
         // Get top rating per city
@@ -62,7 +62,7 @@ export class PopularLocations implements OnInit {
         // Pick top 3 cities
         const top3Cities = cityRatings
           .sort((a, b) => b.topRating - a.topRating)
-          .slice(0, 3)
+          .slice(0, 5)
           .map((c) => c.name);
 
         this.cities = ['All', ...top3Cities];
@@ -81,8 +81,8 @@ export class PopularLocations implements OnInit {
       groups[item.city!].push(item);
     });
 
-    this.topLocations = Object.values(groups).map((group) =>
-      group.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0))[0]
+    this.topLocations = Object.values(groups).map(
+      (group) => group.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0))[0]
     );
   }
 
@@ -130,18 +130,17 @@ export class PopularLocations implements OnInit {
     return Math.ceil(this.topLocations.length / this.itemsPerPage);
   }
 
- goToPage(page: number) {
-  if (page >= 1 && page <= this.totalPages) {
-    this.currentPage = page;
+  goToPage(page: number) {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
 
-    // Scroll inside the same section only
-    const section = document.getElementById('popular-section');
-    if (section) {
-      section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // Scroll inside the same section only
+      const section = document.getElementById('popular-section');
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }
   }
-}
-
 
   nextPage() {
     if (this.currentPage < this.totalPages) {
