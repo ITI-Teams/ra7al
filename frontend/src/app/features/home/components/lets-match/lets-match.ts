@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-lets-match',
@@ -8,5 +9,9 @@ import { Component } from '@angular/core';
   styleUrl: './lets-match.css',
 })
 export class LetsMatch {
+  constructor(private router: Router) {}
 
+  navigateToRecommendation() {
+    this.router.navigate(['/recommendations']);
+  }
 }
