@@ -167,4 +167,33 @@ class RentalRequestController extends Controller
             'rental_request' => $rentalRequest
         ], 201);
     }
+
+    /**
+     * Get all rental requests for the authenticated user (tenant)
+     */
+    public function myRequests(Request $request)
+    {
+        $query = RentalRequest::with(['property', 'property.owner'])
+            ->where('user_id', Auth::id());
+
+        // Filter by status (optional)
+        if ($request->status) {
+            $query->where('status', $request->status);
+        }
+
+        // Sort newest first
+        $query->orderBy('created_at', 'desc');
+
+        // Pagination
+        $perPage = $request->per_page ?? 10;
+        $requests = $query->paginate($perPage);
+
+        return response()->json([
+            'data' => $requests->items(),
+            'current_page' => $requests->currentPage(),
+            'last_page' => $requests->lastPage(),
+            'per_page' => $requests->perPage(),
+            'total' => $requests->total(),
+        ]);
+    }
 }
