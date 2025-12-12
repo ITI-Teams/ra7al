@@ -16,6 +16,11 @@ use App\Models\Area;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
+use App\Services\NotificationService;
+use App\Notifications\PropertyCreatedNotification;
+use App\Notifications\PropertyUpdatedNotification;
+use App\Models\User;
 
 class PropertyController extends Controller
 {
@@ -298,6 +303,12 @@ class PropertyController extends Controller
             if ($request->has('amenities')) {
                 $property->amenities()->sync($request->amenities);
             }
+            // Get all admins
+            $admins = User::where('role', 'admin')->get();
+            foreach ($admins as $admin) {
+                $admin->notify(new PropertyCreatedNotification($property));
+            }
+
 
             DB::commit();
 
@@ -500,6 +511,12 @@ class PropertyController extends Controller
             if ($request->has('amenities')) {
                 $property->amenities()->sync($request->amenities);
             }
+            // Get all admins
+            $admins = User::where('role', 'admin')->get();
+
+            // Send notification to all of them
+            NotificationService::sendToMany($admins, new PropertyUpdatedNotification($property));
+
 
             DB::commit();
 

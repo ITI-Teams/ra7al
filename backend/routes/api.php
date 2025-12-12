@@ -25,6 +25,9 @@ use App\Http\Controllers\Api\V1\PropertySaveController;
 use App\Http\Controllers\Api\V1\OwnerDashboardController;
 use App\Http\Controllers\Api\V1\RentalRequestController;
 
+//Broadcast
+use Illuminate\Support\Facades\Broadcast;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -37,7 +40,7 @@ Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->post('logout', [AuthController::class, 'logout']);
 
-
+Broadcast::routes(['middleware' => ['api', 'auth:sanctum']]);
 /*
 |--------------------------------------------------------------------------
 | Authenticated User Routes
