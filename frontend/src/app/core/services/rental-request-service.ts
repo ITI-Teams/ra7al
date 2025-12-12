@@ -80,4 +80,24 @@ export class RentalRequestService {
       ...data,
     });
   }
+
+  // Get user's own rental requests
+  getMyRequests(
+    status?: string,
+    page?: number,
+    perPage: number = 10
+  ): Observable<RentalRequestResponse> {
+    let params = new HttpParams()
+      .set('page', page?.toString() || '1')
+      .set('per_page', perPage.toString());
+
+    if (status) {
+      params = params.set('status', status);
+    }
+
+    return this.http.get<RentalRequestResponse>(
+      `${this.apiUrl}/my-rental-requests`,
+      { params }
+    );
+  }
 }

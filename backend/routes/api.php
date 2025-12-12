@@ -193,6 +193,8 @@ Route::middleware('auth:sanctum')->get('/owner/dashboard', [OwnerDashboardContro
 Route::middleware('auth:sanctum')->group(function () {
     // Get all rental requests (with pagination, search, filter)
     Route::get('rental-requests', [RentalRequestController::class, 'index']);
+    Route::get('/my-rental-requests', [RentalRequestController::class, 'myRequests']);
+    Route::post('/rental-requests', [RentalRequestController::class, 'store']);
 
     // Submit a new rental request
     Route::post('rental-requests', [RentalRequestController::class, 'store']);
