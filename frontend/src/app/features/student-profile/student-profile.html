@@ -32,7 +32,7 @@
   </div>
 
   <!-- Profile Card -->
-  <div class="flex relative flex-col items-center z-10 w-full max-w-5xl">
+  <div class="flex relative flex-col items-center z-10 w-full  max-w-5xl">
     <div
       class="flex relative flex-col items-center z-10 w-full max-w-md rounded-3xl shadow-xl p-8 border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 transition-all duration-300 hover:shadow-2xl"
     >
@@ -468,7 +468,7 @@
 
     <!-- Tabs -->
     <div
-      class="flex flex-wrap justify-center gap-10 mt-10 border-b w-full max-w-4xl pb-2 text-gray-600 dark:text-gray-300"
+      class="flex flex-wrap justify-center gap-10 mt-10 border-b w-full   max-w-5xl pb-2 text-gray-600 dark:text-gray-300"
     >
       <!-- Favourites -->
       <button
@@ -534,7 +534,7 @@
     <!-- FAVOURITES TAB -->
     <div
       *ngIf="activeTab === 'favourites'"
-      class="mt-10 w-full max-w-4xl text-gray-700 dark:text-gray-300"
+      class="mt-10 w-full  text-gray-700 dark:text-gray-300"
     >
       <!-- Loading State -->
       <div
@@ -561,7 +561,7 @@
           class="group bg-white dark:bg-gray-900 rounded-2xl overflow-hidden transition-all duration-300 shadow-xl hover:-translate-y-1 border border-gray-200 dark:border-gray-700 hover:border-[#9810fa]"
         >
           <!-- IMAGE -->
-          <div class="relative h-40 border-none overflow-hidden">
+          <div class="relative h-40  border-none overflow-hidden">
             <img
               class="w-full h-full object-cover border-none group-hover:scale-105 transition-transform duration-500"
               [src]="item.images?.length ? item.images[0].path : 'asset/defualt.png'"
