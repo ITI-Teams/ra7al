@@ -178,8 +178,8 @@ private clearAutoSlide(): void {
     const prop = this.property();
     if (!prop) return { label: 'Unknown', severity: 'secondary' as const };
 
-    return prop.is_available
-      ? { label: '80% occupied', severity: 'success' as const }
+    return prop.status == 'available'
+      ? { label: 'available', severity: 'success' as const }
       : { label: 'Fully Occupied', severity: 'danger' as const };
   });
 

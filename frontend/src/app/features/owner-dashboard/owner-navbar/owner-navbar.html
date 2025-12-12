@@ -1,64 +1,92 @@
-<nav class="w-full h-16  bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow flex items-center px-5 justify-between transition-colors duration-300">
+<nav class="w-full h-20 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow flex items-center px-5 justify-between transition-colors duration-300">
 
-  <!-- Title -->
-  <h1 class="text-xl ms-11 font-semibold text-gray-700 dark:text-gray-200">
-    Owner Dashboard
-  </h1>
+  <!-- Breadcrumb -->
+  <div class="text-sm breadcrumbs hidden md:flex">
+    <ul class="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+      <li><a routerLink="/owner-dashboard" class="text-indigo-600 dark:text-indigo-400 hover:underline">Dashboard</a></li>
+      <li><i class="fas fa-chevron-right text-xs mx-2"></i> Owner</li>
+    </ul>
+  </div>
 
-  <!-- Desktop Right Section -->
+  <!-- Right Section (Desktop) -->
   <div class="hidden md:flex items-center gap-4">
 
-    <!-- Notifications -->
-    <i class="fas fa-bell text-gray-600 dark:text-gray-300 text-xl cursor-pointer
-              hover:text-gray-900 dark:hover:text-white transition-colors duration-300"></i>
-
-    <!-- User Avatar -->
-    <div class="relative" [class.z-50]="profileOpen">
-      <button (click)="toggleProfile()">
-        <img [src]="avatarUrl()" class="w-10 h-10 rounded-full object-cover cursor-pointer" />
-      </button>
-
-      <!-- DROPDOWN MENU -->
-      <div *ngIf="profileOpen" (click)="toggleProfile()"
-           class="absolute right-0 mt-3 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden z-50">
-
-        <a routerLink="/"
-           class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#5e1fbf]/20 transition">
-          Home
-        </a>
-
-        <a [routerLink]="user?.role === 'owner' ? '/owner-dashboard/apartments' : '/profile-student'"
-           class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#5e1fbf]/20 transition">
-          Profile
-        </a>
-
-        <button (click)="logout()"
-                class="w-full text-left px-4 py-2 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/20 transition">
-          Logout
-        </button>
-      </div>
-    </div>
-
     <!-- Theme Toggle -->
-    <button (click)="theme.toggle()" class="text-zinc-700 dark:text-gray-200 px-2">
-      <ng-container *ngIf="themeSignal() === 'light'; else darkModeIcon">
-        <svg class="w-7 h-7" fill="none" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M12 3v1m0 16v1m8.66-8.66h1M4.34 12H3m15.36 6.36l.7.7M6.34 6.34l-.7-.7m12.02 0l.7-.7M6.34 17.66l-.7.7M12 8a4 4 0 100 8 4 4 0 000-8z" />
-        </svg>
+    <button (click)="theme.toggle()" class="text-zinc-700 dark:text-gray-200 px-2 text-xl">
+      <ng-container *ngIf="themeSignal() === 'light'; else darkModeIconDesktop">
+        <i class="fas fa-moon"></i>
       </ng-container>
-      <ng-template #darkModeIcon>
-        <svg class="w-7 h-7" fill="none" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z" />
-        </svg>
+      <ng-template #darkModeIconDesktop>
+        <i class="fas fa-sun text-yellow-400"></i>
       </ng-template>
     </button>
 
+    <!-- Notifications -->
+    <button class="relative p-3 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-800 transition">
+      <i class="fas fa-bell text-xl text-gray-600 dark:text-gray-400"></i>
+      <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+        3
+      </span>
+    </button>
+
+    <!-- Profile Dropdown -->
+<div class="relative" [class.z-50]="profileOpen">
+  <!-- Avatar Button -->
+  <button
+    (click)="toggleProfile()"
+    class="w-10 h-10 rounded-full overflow-hidden border border-white dark:border-slate-700 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 focus:outline-none"
+  >
+    <img [src]="avatarUrl()" alt="User" class="w-full h-full object-cover">
+  </button>
+
+  <!-- Dropdown Menu -->
+  <div
+    *ngIf="profileOpen"
+    class="absolute top-full right-0 m-4 w-64 rounded-2xl bg-white/95 dark:bg-slate-800/95 backdrop-blur-md shadow-2xl border border-gray-200/50 dark:border-slate-700/50 overflow-hidden flex flex-col transition-transform duration-200 transform scale-95 opacity-0"
+    [class.scale-100]="profileOpen"
+    [class.opacity-100]="profileOpen"
+  >
+    <!-- User Info -->
+    <div class="px-4 py-3 border-b border-gray-100/50 dark:border-slate-700/50 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-slate-700 dark:to-slate-800">
+      <p class="font-semibold text-gray-800 dark:text-white text-sm truncate">{{ user?.name }}</p>
+      <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 truncate">{{ user?.email }}</p>
+    </div>
+
+    <!-- Menu Links -->
+    <div class="flex flex-col py-1">
+      <a
+        routerLink="/"
+        class="group flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#5e1fbf]/20 transition-colors rounded-lg"
+      >
+        <i class="fas fa-home w-4 text-gray-400 group-hover:text-indigo-500 dark:group-hover:text-indigo-400"></i>
+        <span>Home</span>
+      </a>
+
+      <a
+        routerLink="/profile-student"
+        class="group flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#5e1fbf]/20 transition-colors rounded-lg"
+      >
+        <i class="fas fa-user-circle w-4 text-gray-400 group-hover:text-indigo-500 dark:group-hover:text-indigo-400"></i>
+        <span>Profile</span>
+      </a>
+
+      <div class="border-t border-gray-100 dark:border-slate-700/50 my-1"></div>
+
+      <button
+        (click)="logout()"
+        class="group flex items-center gap-3 px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors rounded-lg w-full text-left"
+      >
+        <i class="fas fa-sign-out-alt w-4 text-center group-hover:text-red-500 dark:group-hover:text-red-400"></i>
+        <span>Logout</span>
+      </button>
+    </div>
+  </div>
+</div>
+
   </div>
 
-  <!-- Mobile Toggle Button -->
-  <button class="md:hidden text-gray-700 dark:text-gray-200 p-2 rounded-md" (click)="mobileMenuOpen = !mobileMenuOpen">
+  <!-- Mobile Menu Button -->
+  <button class="md:hidden ms-auto text-gray-700 dark:text-gray-200 p-2 rounded-md text-xl" (click)="mobileMenuOpen = !mobileMenuOpen">
     <i class="fas" [ngClass]="mobileMenuOpen ? 'fa-times' : 'fa-bars'"></i>
   </button>
 </nav>
@@ -66,58 +94,80 @@
 <!-- Mobile Menu -->
 <div *ngIf="mobileMenuOpen" class="md:hidden bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow flex flex-col p-4 space-y-3 transition">
 
-  <!-- Top Section: Notifications + Profile + Theme Toggle -->
+  <!-- Theme Toggle + Notifications + Profile -->
   <div class="flex items-center justify-between w-full px-2 space-x-3">
 
-    <!-- Notifications -->
-    <i class="fas fa-bell text-gray-600 dark:text-gray-300 text-xl cursor-pointer hover:text-gray-900 dark:hover:text-white transition-colors duration-300"></i>
-
-    <!-- Profile -->
-    <div class="relative">
-      <button (click)="toggleProfile()" class="focus:outline-none">
-        <img [src]="avatarUrl()" class="w-10 h-10 rounded-full object-cover cursor-pointer" />
-      </button>
-
-      <!-- DROPDOWN MENU -->
-      <div *ngIf="profileOpen"
-           class="absolute top-full right-0 mt-2 w-40 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden z-50 flex flex-col">
-        <a routerLink="/"
-           class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#5e1fbf]/20 transition">
-          Home
-        </a>
-
-        <a [routerLink]="user?.role === 'owner' ? '/owner-dashboard/apartments' : '/profile-student'"
-           class="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#5e1fbf]/20 transition">
-          Profile
-        </a>
-
-        <button (click)="logout()"
-                class="w-full text-left px-4 py-2 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/20 transition">
-          Logout
-        </button>
-      </div>
-    </div>
-
     <!-- Theme Toggle -->
-    <button (click)="theme.toggle()" class="text-zinc-700 dark:text-gray-200 px-2">
+    <button (click)="theme.toggle()" class="text-zinc-700 dark:text-gray-200 px-2 text-xl">
       <ng-container *ngIf="themeSignal() === 'light'; else darkModeIconMobile">
-        <svg class="w-7 h-7" fill="none" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M12 3v1m0 16v1m8.66-8.66h1M4.34 12H3m15.36 6.36l.7.7M6.34 6.34l-.7-.7m12.02 0l.7-.7M6.34 17.66l-.7.7M12 8a4 4 0 100 8 4 4 0 000-8z" />
-        </svg>
+        <i class="fas fa-moon"></i>
       </ng-container>
       <ng-template #darkModeIconMobile>
-        <svg class="w-7 h-7" fill="none" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z" />
-        </svg>
+        <i class="fas fa-sun text-yellow-400"></i>
       </ng-template>
     </button>
 
-  </div>
+    <!-- Notifications -->
+    <button class="relative p-3 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-800 transition">
+      <i class="fas fa-bell text-xl text-gray-600 dark:text-gray-300"></i>
+      <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+        3
+      </span>
+    </button>
 
+    <!-- Profile Dropdown -->
+<div class="relative" [class.z-50]="profileOpen">
+  <!-- Avatar Button -->
+  <button
+    (click)="toggleProfile()"
+    class="w-10 h-10 rounded-full overflow-hidden border border-white dark:border-slate-700 shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 focus:outline-none"
+  >
+    <img [src]="avatarUrl()" alt="User" class="w-full h-full object-cover">
+  </button>
+
+  <!-- Dropdown Menu -->
+  <div
+    *ngIf="profileOpen"
+    class="absolute top-full right-0 mt-3 w-48 rounded-2xl bg-white/95 dark:bg-slate-800/95 backdrop-blur-md shadow-2xl border border-gray-200/50 dark:border-slate-700/50 overflow-hidden flex flex-col transition-transform duration-200 transform scale-95 opacity-0"
+    [class.scale-100]="profileOpen"
+    [class.opacity-100]="profileOpen"
+  >
+    <!-- User Info -->
+    <div class="px-4 py-3 border-b border-gray-100/50 dark:border-slate-700/50 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-slate-700 dark:to-slate-800">
+      <p class="font-semibold text-gray-800 dark:text-white text-sm truncate">{{ user?.name }}</p>
+      <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 truncate">{{ user?.email }}</p>
+    </div>
+
+    <!-- Menu Links -->
+    <div class="flex flex-col py-1">
+      <a
+        routerLink="/"
+        class="group flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#5e1fbf]/20 transition-colors rounded-lg"
+      >
+        <i class="fas fa-home w-4 text-gray-400 group-hover:text-indigo-500 dark:group-hover:text-indigo-400"></i>
+        <span>Home</span>
+      </a>
+
+      <a
+        routerLink="/profile-student"
+        class="group flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#5e1fbf]/20 transition-colors rounded-lg"
+      >
+        <i class="fas fa-user-circle w-4 text-gray-400 group-hover:text-indigo-500 dark:group-hover:text-indigo-400"></i>
+        <span>Profile</span>
+      </a>
+
+      <div class="border-t border-gray-100 dark:border-slate-700/50 my-1"></div>
+
+      <button
+        (click)="logout()"
+        class="group flex items-center gap-3 px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors rounded-lg w-full text-left"
+      >
+        <i class="fas fa-sign-out-alt w-4 text-center group-hover:text-red-500 dark:group-hover:text-red-400"></i>
+        <span>Logout</span>
+      </button>
+    </div>
+  </div>
 </div>
 
-
-
-
+  </div>
+</div>

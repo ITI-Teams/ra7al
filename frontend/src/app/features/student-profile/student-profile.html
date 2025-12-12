@@ -534,20 +534,51 @@
       *ngIf="activeTab === 'favourites'"
       class="mt-10 w-full max-w-4xl text-gray-700 dark:text-gray-300"
     >
-      <!-- Loading State -->
-      <div
-        *ngIf="!properties || properties.length === 0"
-        class="flex justify-center items-center py-20"
-      >
-        <div class="relative">
-          <div
-            class="w-12 h-12 rounded-full border-4 border-gray-300 dark:border-gray-700"
-          ></div>
-          <div
-            class="absolute top-0 left-0 w-12 h-12 rounded-full border-4 border-[#9810fa] border-t-transparent animate-spin"
-          ></div>
-        </div>
+     <!-- No Property Found -->
+<div
+  *ngIf="properties && properties.length === 0"
+  class="flex flex-col items-center justify-center py-20 text-center px-4"
+>
+
+  <div class=" shadow-xl rounded-2xl p-10 max-w-md w-full transform transition-all hover:scale-105">
+
+    <!-- Icon -->
+    <div class="flex justify-center mb-5">
+      <div class="w-16 h-16 flex items-center justify-center rounded-full bg-purple-100 dark:bg-purple-800 animate-bounce">
+        <svg class="w-8 h-8 text-purple-600 dark:text-purple-300" xmlns="http://www.w3.org/2000/svg" fill="none"
+          viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M3 7l9-4 9 4M4 10h16v7a2 2 0 01-2 2H6a2 2 0 01-2-2v-7z" />
+        </svg>
       </div>
+    </div>
+
+    <!-- Title -->
+    <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-2">
+      No Properties Found
+    </h2>
+
+    <!-- Message -->
+    <p class="text-gray-500 dark:text-gray-400 mb-6">
+      There are no properties available at the moment. Add a new property to get started.
+    </p>
+
+    <!-- Button -->
+    <button
+      (click)="onAddProperty()"
+      class="inline-flex items-center gap-2 justify-center px-6 py-3 text-white bg-[#9810fa] hover:bg-[#7c0dc9] font-semibold transition-all rounded-lg shadow-md transform hover:scale-105"
+    >
+      <i class="fa-solid fa-plus"></i>
+      Add New Property
+    </button>
+
+  </div>
+
+</div>
+
+
+
+
 
       <!-- Properties Grid -->
       <div

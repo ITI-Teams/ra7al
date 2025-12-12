@@ -1,6 +1,19 @@
 <p-toast></p-toast>
 <p-confirmDialog></p-confirmDialog>
 
+<!-- No Properties Found -->
+<div *ngIf="!isLoading && (!properties || properties.length === 0)"
+     class="flex flex-col items-center justify-center py-20 text-center text-gray-500 dark:text-gray-400">
+  <i class="pi pi-box text-6xl mb-4"></i>
+  <h3 class="text-xl font-semibold mb-2">No Properties Found</h3>
+  <p class="text-sm mb-4">It looks like you don't have any properties yet. Start by adding one!</p>
+  <button
+    (click)="addProperty()"
+    class="px-4 py-2 bg-[#9810fa] text-white rounded-lg shadow-md hover:bg-purple-700 transition">
+    Add Property
+  </button>
+</div>
+
 <!-- Properties Grid -->
 <div *ngIf="!isLoading && properties.length > 0"
      class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">

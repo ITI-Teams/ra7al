@@ -1,141 +1,147 @@
 <x-guest-layout>
+
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
-    <div>
-        <div class="grid lg:grid-cols-5 md:grid-cols-2 items-center gap-y-4 h-full">
+    <div class="flex flex-col md:flex-row w-full h-screen
+                bg-gradient-to-br from-[#f7f2ff] to-white dark:from-gray-900 dark:to-gray-800">
 
-            <!-- LEFT SIDE IMAGE -->
-            <div
-                class="max-md:order-1 lg:col-span-3 md:h-screen w-full bg-[#000842] md:rounded-tr-xl md:rounded-br-xl lg:p-0 p-0">
-                <img src="{{ Storage::url('admin/login.png') }}" class="w-full h-full object-cover block mx-auto"
-                    alt="login-image" />
-            </div>
+        <!-- LEFT IMAGE -->
+        <div class="relative w-full md:w-1/2 h-1/2 md:h-full order-2 md:order-1">
+            <img src="/assets/auth.avif"
+                class="w-full h-full object-cover rounded-b-3xl md:rounded-none shadow-lg"
+                alt="Login Image" />
 
-            <!-- RIGHT SIDE FORM -->
-            <div class="lg:col-span-2 w-full p-10 bg-[#0b0b14] h-screen flex flex-col justify-center">
-                <form method="POST" action="{{ route('login') }}">
+            <!-- overlay mobile -->
+            <div class="md:hidden absolute inset-0 bg-black/50"></div>
+        </div>
+
+        <!-- RIGHT FORM -->
+        <div class="w-full min-h-screen z-30 absolute md:static md:w-1/2 flex items-center justify-center
+                    p-8 md:p-20 order-1 md:order-2">
+
+            <div class="w-full max-w-md bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl
+                        shadow-xl rounded-3xl p-8 md:p-10 border border-white/30 dark:border-white/10">
+
+                <h2 class="text-4xl font-extrabold mb-8 text-center
+                           bg-gradient-to-r from-[#5e1fbf] to-[#9b4dff]
+                           text-transparent bg-clip-text">
+                    Sign in
+                </h2>
+
+                <form method="POST" action="{{ route('login') }}" class="space-y-7">
                     @csrf
 
-                    <div class="space-y-8">
+                    <!-- Email -->
+                    <div>
+                        <label class="text-purple-700 dark:text-purple-300 text-[15px] font-medium mb-1 block">
+                            Email
+                        </label>
 
-                        <!-- EMAIL -->
-                        <div>
-                            <label for="email" class="text-yellow-400 text-[15px] font-medium mb-1 block">Email</label>
-                            <div class="relative flex items-center">
-                                <input id="email" name="email" type="email" value="{{ old('email') }}" required
-                                    autocomplete="email" class="w-full text-sm text-white bg-[#14141f] pl-4 pr-10 py-3.5 rounded-md border outline-none transition-all duration-300
-                   @error('email') border-red-500 @enderror" style="
-                border-image: linear-gradient(to bottom, #D4AF37 0%, #C49A2C 35%, #8F6A15 80%, #5E450C 100%) 1;
-                box-shadow: inset 0 0 6px rgba(212,175,55,0.2);
-            " onfocus="this.style.boxShadow='0 0 12px rgba(212,175,55,0.55), inset 0 0 8px rgba(212,175,55,0.4)'; this.style.background='#1a1a27'"
-                                    onblur="this.style.boxShadow='inset 0 0 6px rgba(212,175,55,0.2)'; this.style.background='#14141f'"
-                                    placeholder="Enter email" />
-                            </div>
-                            @error('email')
-                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                            @enderror
+                        <input id="email" type="email" name="email"
+                            value="{{ old('email') }}" required autocomplete="email"
+                            placeholder="Enter your email"
+                            class="w-full bg-white/40 dark:bg-black/30 px-5 py-3.5 rounded-xl
+                                   border border-[#7a30e3]/40 text-gray-900 dark:text-white
+                                   shadow-sm focus:ring-2 focus:ring-[#7a30e3] outline-none transition
+                                   @error('email') border-red-500 @enderror">
+
+                        @error('email')
+                            <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <!-- Password -->
+                    <div>
+                        <label class="text-purple-700 dark:text-purple-300 text-[15px] font-medium mb-1 block">
+                            Password
+                        </label>
+
+                        <div class="relative">
+                            <input id="password" type="password" name="password" required
+                                autocomplete="current-password"
+                                placeholder="Enter password"
+                                class="w-full bg-white/40 dark:bg-black/30 px-5 py-3.5 pr-12 rounded-xl
+                                       border border-[#7a30e3]/40 text-gray-900 dark:text-white
+                                       shadow-sm focus:ring-2 focus:ring-[#7a30e3] outline-none transition
+                                       @error('password') border-red-500 @enderror">
+
+                            <!-- Toggle Eye -->
+                            <button type="button" onclick="togglePassword()"
+                                class="absolute right-4 top-1/2 -translate-y-1/2 text-[#5e1fbf]
+                                       hover:text-[#4a18a2] transition">
+                                <svg id="eye-icon" xmlns="http://www.w3.org/2000/svg"
+                                    class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0
+                                           8.268 2.943 9.542 7-1.274 4.057-5.065
+                                           7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                            </button>
                         </div>
 
-                        <!-- PASSWORD -->
-                        <div>
-                            <label for="password"
-                                class="text-yellow-400 text-[15px] font-medium mb-1 block">Password</label>
-                            <div class="relative flex items-center">
-                                <input id="password" name="password" type="password" required
-                                    autocomplete="current-password" class="w-full text-sm text-white bg-[#14141f] pl-4 pr-10 py-3.5 rounded-md border outline-none transition-all duration-300
-                @error('password') border-red-500 @enderror" style="
-                border-image: linear-gradient(to bottom, #D4AF37 0%, #C49A2C 35%, #8F6A15 80%, #5E450C 100%) 1;
-                box-shadow: inset 0 0 6px rgba(212,175,55,0.2);
-            " onfocus="this.style.boxShadow='0 0 12px rgba(212,175,55,0.55), inset 0 0 8px rgba(212,175,55,0.4)'; this.style.background='#1a1a27'"
-                                    onblur="this.style.boxShadow='inset 0 0 6px rgba(212,175,55,0.2)'; this.style.background='#14141f'"
-                                    placeholder="Enter password" />
+                        @error('password')
+                            <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
 
-                                <!-- Show password button -->
-                                <button type="button" onclick="togglePassword()"
-                                    class="absolute right-2 text-yellow-400 hover:text-yellow-300">
-                                    <svg id="eye-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-                                        viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                    </svg>
-                                </button>
-                            </div>
-                            @error('password')
-                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
+                    <!-- Remember + Forgot -->
+                    <div class="flex items-center justify-between">
+                        <label class="flex items-center text-sm text-purple-700 dark:text-purple-200 cursor-pointer">
+                            <input id="remember_me" name="remember" type="checkbox"
+                                class="h-4 w-4 rounded border-purple-600 bg-white dark:bg-black text-purple-600
+                                       focus:ring-purple-500"
+                                {{ old('remember') ? 'checked' : '' }}>
+                            <span class="ml-3">Remember me</span>
+                        </label>
 
-                        <script>
-                            function togglePassword() {
-    const passwordInput = document.getElementById('password');
-    const eyeIcon = document.getElementById('eye-icon');
+                        <a href="{{ route('password.request') }}"
+                            class="text-purple-600 dark:text-purple-300 text-sm hover:underline">
+                            Forgot password?
+                        </a>
+                    </div>
 
-    if (passwordInput.type === 'password') {
-        passwordInput.type = 'text';
-        eyeIcon.innerHTML = `
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a10.056 10.056 0 012.302-3.668m1.992-1.992A9.967 9.967 0 0112 5c4.477 0 8.268 2.943 9.542 7a10.05 10.05 0 01-1.455 2.847M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-        `;
-    } else {
-        passwordInput.type = 'password';
-        eyeIcon.innerHTML = `
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-        `;
-    }
-}
-                        </script>
+                    <!-- Button -->
+                    <button type="submit"
+                        class="w-full py-3.5 text-[16px] font-semibold rounded-xl text-white
+                               bg-gradient-to-r from-[#5e1fbf] to-[#7a30e3]
+                               hover:opacity-90 transition shadow-lg">
+                        Sign in
+                    </button>
 
-                        <!-- REMEMBER ME -->
-                        <div class="flex flex-wrap items-center justify-between gap-4">
-                            <div class="flex items-center">
-                                <input id="remember_me" name="remember" type="checkbox"
-                                    class="h-4 w-4 shrink-0 rounded-md cursor-pointer transition"
-                                    style="accent-color: #D4AF37; border: 2px solid #C49A2C; box-shadow: inset 0 0 6px rgba(212,175,55,0.3);"
-                                    onfocus="this.style.boxShadow='0 0 10px rgba(212,175,55,0.6)'"
-                                    onblur="this.style.boxShadow='inset 0 0 6px rgba(212,175,55,0.3)'" {{
-                                    old('remember') ? 'checked' : '' }} />
-                                <label for="remember_me" class="ml-3 block text-[15px] text-white">
-                                    Remember me
-                                </label>
-                            </div>
-                            <div>
-                                <a href="{{ route('password.request') }}"
-                                    class="text-yellow-400 font-medium text-sm hover:underline">
-                                    Forgot Password?
-                                </a>
-                            </div>
-                        </div>
-
-                        <!-- GOLD LOGIN BUTTON -->
-                        <button type="submit"
-                            class="w-full py-3 text-[16px] font-semibold tracking-wide rounded-md text-white transition-all duration-300"
-                            style="
-                        background: linear-gradient(
-                            to bottom,
-                            #D4AF37 0%,
-                            #C49A2C 20%,
-                            #B4851F 45%,
-                            #8F6A15 75%,
-                            #5E450C 100%
-                        );
-                        box-shadow: 
-                            inset 0 2px 8px rgba(255, 220, 130, 0.35),
-                            inset 0 -2px 6px rgba(0, 0, 0, 0.55),
-                            0 0 10px rgba(212, 175, 55, 0.5),
-                            0 0 18px rgba(180, 133, 31, 0.3);
-                        border: 1px solid #C49A2C;
-                    " onmouseover="this.style.boxShadow='inset 0 2px 10px rgba(255, 235, 160, 0.55), inset 0 -3px 8px rgba(0,0,0,0.7), 0 0 18px rgba(212, 175, 55, 0.9), 0 0 28px rgba(180, 133, 31, 0.7)'"
-                            onmouseout="this.style.boxShadow='inset 0 2px 8px rgba(255, 220, 130, 0.35), inset 0 -2px 6px rgba(0,0,0,0.55), 0 0 10px rgba(212, 175, 55, 0.5), 0 0 18px rgba(180, 133, 31, 0.3)'">
-                            Sign in
-                        </button>
                 </form>
             </div>
         </div>
     </div>
+
+    <script>
+        function togglePassword() {
+            const input = document.getElementById("password");
+            const icon = document.getElementById("eye-icon");
+
+            if (input.type === "password") {
+                input.type = "text";
+                icon.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7
+                        a10.056 10.056 0 012.302-3.668m1.992-1.992A9.967 9.967 0 0112 5c4.477
+                        0 8.268 2.943 9.542 7a10.05 10.05 0 01-1.455 2.847M15 12a3
+                        3 0 11-6 0 3 3 0 016 0z" />
+                `;
+            } else {
+                input.type = "password";
+                icon.innerHTML = `
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0
+                           8.268 2.943 9.542 7-1.274 4.057-5.065
+                           7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                `;
+            }
+        }
+    </script>
+
 </x-guest-layout>

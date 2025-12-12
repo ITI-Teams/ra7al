@@ -787,4 +787,7 @@ export class StudentProfile {
       },
     });
   }
+  onAddProperty(){
+    this.router.navigate(['filter']);
+  }
 }

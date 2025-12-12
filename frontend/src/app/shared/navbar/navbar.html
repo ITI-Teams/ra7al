@@ -66,38 +66,17 @@
       <!-- NOT LOGGED -->
       <ng-container *ngIf="!isLoggedIn">
         <!-- THEME TOGGLE -->
-        <!-- THEME TOGGLE -->
         <button
           (click)="theme.toggle()"
-          class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 text-zinc-700 dark:text-zinc-200"
+          class="py-3 px-2 dark:px-3 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 text-zinc-700 dark:text-zinc-200"
           aria-label="Toggle theme"
         >
           @if (themeSignal() === 'light') {
           <!-- Sun Icon for Light Mode -->
-          <svg
-            class="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path
-              d="M12 3v1m0 16v1m8.66-8.66h1M4.34 12H3m15.36 6.36l.7.7M6.34 6.34l-.7-.7m12.02 0l.7-.7M6.34 17.66l-.7.7M12 8a4 4 0 100 8 4 4 0 000-8z"
-            />
-          </svg>
+          <i class="fas fa-sun text-yellow-400"></i>
           } @else {
           <!-- Moon Icon for Dark Mode -->
-          <svg
-            class="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <path d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z" />
-          </svg>
+          <i class="fas fa-moon"></i>
           }
         </button>
 
@@ -125,20 +104,16 @@
     <!-- THEME TOGGLE -->
     <button
       (click)="theme.toggle()"
-      class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 text-zinc-700 dark:text-zinc-200"
+      class="px-3 py-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 text-zinc-700 dark:text-zinc-200"
       aria-label="Toggle theme"
     >
       <ng-container *ngIf="themeSignal() === 'light'; else darkMode">
         <!-- Sun Icon -->
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 3v1m0 16v1m8.66-8.66h1M4.34 12H3m15.36 6.36l.7.7M6.34 6.34l-.7-.7m12.02 0l.7-.7M6.34 17.66l-.7.7M12 8a4 4 0 100 8 4 4 0 000-8z" />
-        </svg>
+        <i class="fas fa-sun text-yellow-400"></i>
       </ng-container>
       <ng-template #darkMode>
         <!-- Moon Icon -->
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z" />
-        </svg>
+        <i class="fas fa-moon text-lg"></i>
       </ng-template>
     </button>
 

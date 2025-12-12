@@ -42,7 +42,7 @@
 
       <!-- Image (shorter height) -->
       <img
-        [src]="place.image"
+        [src]="place.image || '/asset/apartments/defaultImage.jpg'"
         alt="Location"
         class="h-36 w-full object-cover transition-all group-hover:brightness-75"
       />
@@ -117,7 +117,7 @@
 
       <!-- Image -->
       <img
-        [src]="quickViewData.image"
+        [src]="quickViewData.image || '/asset/apartments/defaultImage.jpg'"
         class="w-full h-56 object-cover rounded-xl"
       />
 

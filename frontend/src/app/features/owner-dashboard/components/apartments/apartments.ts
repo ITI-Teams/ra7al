@@ -9,7 +9,7 @@ import { ConfirmationService } from 'primeng/api';
 import { PropertyService } from '../../../../core/services/property/property.service';
 import { AuthService } from '../../../../core/services/authService/auth.service';
 import { Property } from '../../../../core/models/property.model';
-
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-apartments',
   standalone: true,
@@ -81,15 +81,45 @@ export class Apartments implements OnInit {
   }
 
   deleteProperty(property: any) {
-    this.confirmationService.confirm({
-      message: `Are you sure you want to delete "${property.title}"? This action cannot be undone.`,
-      header: 'Confirm Deletion',
-      icon: 'pi pi-exclamation-triangle',
-      accept: () => {
-        this.performDelete(property);
-      }
-    });
-  }
+   const isDark = document.documentElement.classList.contains('dark');
+
+      Swal.fire({
+        // 🔥 Dark mode support
+        background: isDark ? '#1f2937' : '#ffffff', // gray-800
+        color: isDark ? '#e5e7eb' : '#111827', // gray-200 / gray-900
+        iconColor: isDark ? '#fbbf24' : '#f59e0b', // amber
+    title: 'Are you sure?',
+    html: `<strong>${property.title}</strong><br>This action cannot be undone!`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, Delete',
+    cancelButtonText: 'Cancel',
+    confirmButtonColor: '#e53935', // red
+    cancelButtonColor: '#6b7280',  // gray
+    reverseButtons: true,
+    focusCancel: true,
+
+    showClass: {
+      popup: 'animate__animated animate__fadeInDown'
+    },
+    hideClass: {
+      popup: 'animate__animated animate__fadeOutUp'
+    }
+  }).then((result) => {
+    if (result.isConfirmed) {
+      this.performDelete(property);
+    } else if (result.dismiss === Swal.DismissReason.cancel) {
+      Swal.fire({
+        title: 'Cancelled',
+        text: 'Your property is safe :)',
+        icon: 'info',
+        timer: 1500,
+        showConfirmButton: false
+      });
+    }
+  });
+}
+
 
   private performDelete(property: any) {
     this.propertyService.deleteProperty(property.id).subscribe({
@@ -155,6 +185,10 @@ prevPage() {
   if (this.currentPage > 1) {
     this.goToPage(this.currentPage - 1);
   }
+}
+
+addProperty(){
+  this.router.navigate(['owner-dashboard/create-property']);
 }
 
 }
