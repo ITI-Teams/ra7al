@@ -6,6 +6,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\BroadcastMessage;
+use Illuminate\Broadcasting\PrivateChannel;
 
 class PropertyCreatedNotification extends Notification implements ShouldQueue
 {
@@ -20,7 +21,7 @@ class PropertyCreatedNotification extends Notification implements ShouldQueue
 
     public function via($notifiable)
     {
-        return ['database', 'broadcast'];
+        return ['broadcast'];
     }
 
     public function toDatabase($notifiable)
@@ -43,6 +44,6 @@ class PropertyCreatedNotification extends Notification implements ShouldQueue
 
     public function broadcastOn()
     {
-        return ['admin-notifications'];
+        return new PrivateChannel('admin-notifications');
     }
 }

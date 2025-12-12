@@ -96,7 +96,7 @@ Route::middleware(['auth', 'role:super,admin'])->group(function () {
     Route::delete('universities/{id}/force-delete', [UniversityController::class, 'forceDelete'])->name('universities.force-delete');
 });
 // In routes/web.php or routes/api.php (depending on where you want it)
-Broadcast::routes(['middleware' => ['web']]); // Adjust middleware as needed
+Broadcast::routes(['middleware' => ['web', 'auth']]); // Adjust middleware as needed
 // Add this if using web middleware
 Route::post('/broadcasting/auth', function () {
     return Broadcast::auth(request());

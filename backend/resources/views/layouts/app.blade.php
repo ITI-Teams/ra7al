@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ra7al Dashboard</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js','resources/js/bootstrap.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js','resources/js/bootstrap.js','resources/js/echo.js'])
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>

@@ -305,9 +305,9 @@ class PropertyController extends Controller
             }
             // Get all admins
             $admins = User::where('role', 'admin')->get();
-
-            // Send notification to all of them
-            NotificationService::sendToMany($admins, new PropertyCreatedNotification($property));
+            foreach ($admins as $admin) {
+                $admin->notify(new PropertyCreatedNotification($property));
+            }
 
 
             DB::commit();
