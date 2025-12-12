@@ -1,15 +1,18 @@
 <aside
-  class="flex flex-col h-screen bg-white/90 dark:bg-slate-900/95 border-r border-gray-200/40 dark:border-slate-700
-         transition-all duration-300 shadow-xl z-40 overflow-hidden"
+  class="flex flex-col h-screen bg-white/90 dark:bg-slate-900/95 border-r border-gray-200/40 dark:border-slate-700 transition-all duration-300 shadow-xl z-40 overflow-hidden"
   [class.w-64]="isOpen"
   [class.w-20]="!isOpen"
 >
-
   <!-- Logo + Toggle -->
-  <div class="flex items-center justify-between p-5 border-b border-gray-200/30 dark:border-slate-700">
+  <div
+    class="flex items-center justify-between p-5 border-b border-gray-200/30 dark:border-slate-700"
+  >
     <div class="flex items-center gap-3">
       <i class="fas fa-rocket text-2xl text-purple-600"></i>
-      <span *ngIf="isOpen" class="text-xl font-bold text-gray-800 dark:text-white tracking-wide">
+      <span
+        *ngIf="isOpen"
+        class="text-xl font-bold text-gray-800 dark:text-white tracking-wide"
+      >
         Ra7al
       </span>
     </div>
@@ -18,54 +21,51 @@
       (click)="toggleSidebar()"
       class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 transition-colors"
     >
-      <i class="text-gray-600 dark:text-gray-400 text-lg fas" [ngClass]="isOpen ? 'fa-chevron-left' : 'fa-chevron-right'"></i>
+      <i
+        class="text-gray-600 dark:text-gray-400 text-lg fas"
+        [ngClass]="isOpen ? 'fa-chevron-left' : 'fa-chevron-right'"
+      ></i>
     </button>
   </div>
 
   <!-- Navigation -->
   <nav class="flex-1 p-4 pb-0">
     <ul class="space-y-2">
-
       <li *ngFor="let item of menuItems">
         <a
           [routerLink]="item.route"
           routerLinkActive="bg-purple-600 text-white hover:bg-purple-700"
           [routerLinkActiveOptions]="{ exact: true }"
-          class="flex items-center gap-4 p-3 rounded-xl
-                 text-gray-700 dark:text-gray-300
-                 hover:bg-gray-100 dark:hover:bg-slate-800
-                 transition cursor-pointer font-medium"
+          class="flex items-center gap-4 p-3 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-800 transition cursor-pointer font-medium"
         >
           <i class="w-6 text-lg" [ngClass]="item.icon"></i>
 
           <!-- Label -->
-          <span *ngIf="isOpen" class="whitespace-nowrap font-medium text-gray-700 dark:text-gray-200">
+          <span
+            *ngIf="isOpen"
+            class="whitespace-nowrap font-medium text-gray-700 dark:text-gray-200"
+          >
             {{ item.label }}
-          </span>
-
-          <!-- Badge -->
-          <span *ngIf="item.badge && isOpen" class="ml-auto px-2 py-0.5 text-xs rounded-full bg-purple-600 text-white">
-            {{ item.badge }}
           </span>
         </a>
       </li>
-
     </ul>
   </nav>
 
   <!-- Bottom Mode Switch -->
-  <div class=" p-4 border-t border-gray-200/30 dark:border-slate-700">
+  <div class="p-4 border-t border-gray-200/30 dark:border-slate-700">
     <button
       (click)="toggleTheme()"
-      class="w-full flex items-center justify-center gap-3 py-3 rounded-xl
-             bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 transition"
+      class="w-full flex items-center justify-center gap-3 py-3 rounded-xl bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 transition"
     >
-      <i class="fas" [ngClass]="isDarkMode ? 'fa-sun text-yellow-400' : 'fa-moon text-purple-500'"></i>
+      <i
+        class="fas"
+        [ngClass]="isDarkMode ? 'fa-sun text-yellow-400' : 'fa-moon text-purple-500'"
+      ></i>
 
       <span *ngIf="isOpen" class="font-medium text-gray-700 dark:text-gray-300">
         {{ isDarkMode ? 'Light Mode' : 'Dark Mode' }}
       </span>
     </button>
   </div>
-
 </aside>
