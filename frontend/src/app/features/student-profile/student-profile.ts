@@ -31,17 +31,9 @@ export class StudentProfile {
 
   properties: any[] = [];
 
-<<<<<<< HEAD
-
-
-toastMessage: string = '';
-toastType: 'success' | 'error' = 'success';
-showToast: boolean = false;
-=======
   toastMessage: string = '';
   toastType: 'success' | 'error' = 'success';
   showToast: boolean = false;
->>>>>>> 7968bb20cdf24c82ceed679db49b20821e02c2ca
 
   profile: any;
   selectedAvatarFile: File | null = null;
