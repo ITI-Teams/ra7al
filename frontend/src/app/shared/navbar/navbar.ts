@@ -59,6 +59,7 @@ export class Navbar {
     this.profileOpen = !this.profileOpen;
   }
 
+
  logout() {
   const isDark = document.documentElement.classList.contains('dark');
 

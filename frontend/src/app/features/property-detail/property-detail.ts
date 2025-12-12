@@ -1,6 +1,6 @@
 // src/app/components/property-detail/property-detail.component.ts
 
-import { Component, OnInit, signal, computed,Input } from '@angular/core';
+import { Component, OnInit, signal, computed, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import {
@@ -62,8 +62,6 @@ export class PropertyDetail implements OnInit {
   // Booking modal
   bookingDialogVisible = signal(false);
   bookingForm!: FormGroup;
-
-
 
   // Comment modal
   commentDialogVisible = signal(false);
@@ -142,6 +140,33 @@ export class PropertyDetail implements OnInit {
     }
   };
 
+  // ===== AUTO-SLIDE CAROUSEL =====
+autoSlideInterval: any; // store interval reference
+
+/** Start auto-slide with optional interval (ms) */
+startAutoSlide(interval: number = 5000): void {
+  this.clearAutoSlide(); // prevent multiple intervals
+  this.autoSlideInterval = setInterval(() => this.nextImage(), interval);
+}
+
+/** Pause auto-slide */
+pauseAutoSlide(): void {
+  this.clearAutoSlide();
+}
+
+/** Resume auto-slide */
+resumeAutoSlide(interval: number = 5000): void {
+  this.startAutoSlide(interval);
+}
+
+/** Clear interval safely */
+private clearAutoSlide(): void {
+  if (this.autoSlideInterval) {
+    clearInterval(this.autoSlideInterval);
+    this.autoSlideInterval = null;
+  }
+}
+
   // Computed signal for formatted price
   formattedPrice = computed(() => {
     const prop = this.property();
@@ -164,7 +189,7 @@ export class PropertyDetail implements OnInit {
     private propertyService: PropertyService,
     private messageService: MessageService,
     private fb: FormBuilder,
-    private favouriteService:FavouriteService
+    private favouriteService: FavouriteService
   ) {}
 
   ngOnInit(): void {
@@ -276,28 +301,21 @@ export class PropertyDetail implements OnInit {
   /**
    * Toggle save/favorite status
    */
-  onToggleSave(id:number): void {
+  onToggleSave(id: number): void {
+    this.favouriteService.toggleFavourite(id).subscribe((res: any) => {
+      this.isSaved.set(!this.isSaved()); // signal update
 
+      const msg = res.is_favourite
+        ? 'Property has been saved successfully.'
+        : 'Property has been removed successfully.';
 
-  this.favouriteService.toggleFavourite(id).subscribe((res:any) => {
-    this.isSaved.set(!this.isSaved()); // signal update
-
-
-  const msg = res.is_favourite
-      ? 'Property has been saved successfully.'
-      : 'Property has been removed successfully.';
-
-    this.messageService.add({
-      severity: res.is_favourite ? 'success' : 'warn',
-      summary: res.is_favourite ? 'Saved!' : 'Removed',
-      detail: msg,
-      life: 3000,
+      this.messageService.add({
+        severity: res.is_favourite ? 'success' : 'warn',
+        summary: res.is_favourite ? 'Saved!' : 'Removed',
+        detail: msg,
+        life: 3000,
+      });
     });
-
-  });
-
-
-
   }
 
   /**

@@ -235,7 +235,11 @@ class RecommendationQuestionSeeder extends Seeder
         ];
 
         foreach ($questions as $question) {
-            RecommendationQuestion::create($question);
+            // Use updateOrCreate to make the seeder idempotent and avoid duplicate questions
+            RecommendationQuestion::updateOrCreate(
+                ['question' => $question['question']],
+                $question
+            );
         }
     }
 }
