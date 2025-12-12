@@ -15,6 +15,8 @@ use App\Models\City;
 use App\Models\Area;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use App\Models\PropertyView;
+
 use Illuminate\Support\Facades\Log;
 
 class PropertyController extends Controller
@@ -343,6 +345,8 @@ class PropertyController extends Controller
                 'message' => 'Property not found'
             ], 404);
         }
+
+
 
         if ($property->admin_approval_status !== 'approved') {
             $user = Auth::user();
