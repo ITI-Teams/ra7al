@@ -36,4 +36,8 @@ class PropertyCreatedNotification extends Notification
             'property_id' => $this->property->id,
         ];
     }
+    public function broadcastOn()
+    {
+        return new PrivateChannel('admin-notifications');
+    }
 }
