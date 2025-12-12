@@ -778,4 +778,13 @@ export class StudentProfile {
   viewPropertyFromRequest(propertyId: number) {
     this.router.navigate(['/properties', propertyId]);
   }
+
+  goToPayment(request: RentalRequest) {
+    this.router.navigate(['/payment'], {
+      state: {
+        request: request,
+        propertyDetails: request.property,
+      },
+    });
+  }
 }
