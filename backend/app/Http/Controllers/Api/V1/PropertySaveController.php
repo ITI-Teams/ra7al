@@ -37,9 +37,11 @@ class PropertySaveController extends Controller
 
 
 
-    public function myFavourites()
+    public function myFavourites(Request $request)
     {
         $user = Auth::user();
+
+
 
         $properties = $user->savedProperties()
             ->with(['images', 'university'])
@@ -53,6 +55,8 @@ class PropertySaveController extends Controller
 
                 return $property;
             });
+
+
 
         return response()->json($properties);
     }

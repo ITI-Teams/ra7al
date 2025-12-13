@@ -32,6 +32,8 @@ import {
   styleUrls: ['./student-profile.css'],
 })
 export class StudentProfile {
+
+
   properties: any[] = [];
 
   // Rental Requests
@@ -471,6 +473,9 @@ export class StudentProfile {
       console.log((this.properties = res));
     });
   }
+
+
+
 
   viewProperty(property: any) {
     this.router.navigate(['/properties', property.id]);

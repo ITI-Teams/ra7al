@@ -1,3 +1,10 @@
+
+
+
+
+
+
+
 <div
   class="w-full flex flex-col items-center py-10 px-4 bg-gradient-to-br from-orange-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 py-16 px-4 transition-colors duration-300"
 >
@@ -503,26 +510,7 @@
         </span>
       </button>
 
-      <!-- Roommates -->
-      <button
-        class="flex items-center gap-2 pb-2 transition"
-        [ngClass]="{'text-green-500 font-semibold border-b-2 border-green-500': activeTab === 'roommates'}"
-        (click)="changeTab('roommates')"
-      >
-        <i class="fa-solid fa-users"></i>
-        Roommates
-      </button>
 
-      <!-- History -->
-      <button
-        class="flex items-center gap-2 pb-2 transition"
-        [ngClass]="{'text-orange-500 font-semibold border-b-2 border-orange-500': activeTab === 'history'}"
-        (click)="changeTab('history')"
-      >
-        <i class="fa-solid fa-clock"></i>
-        History
-      </button>
-    </div>
 
     <!-- ============================================ -->
     <!-- TAB CONTENTS -->
@@ -1047,28 +1035,7 @@
       </div>
     </div>
 
-    <!-- ============================================ -->
-    <!-- ROOMMATES TAB -->
-    <!-- ============================================ -->
-    <div
-      *ngIf="activeTab === 'roommates'"
-      class="mt-10 w-full max-w-3xl text-gray-700 dark:text-gray-300"
-    >
-      <h3 class="text-xl font-semibold mb-4">Roommates</h3>
-      <p class="text-sm">No roommates found.</p>
-    </div>
 
-    <!-- ============================================ -->
-    <!-- HISTORY TAB -->
-    <!-- ============================================ -->
-    <div
-      *ngIf="activeTab === 'history'"
-      class="mt-10 w-full max-w-3xl text-gray-700 dark:text-gray-300"
-    >
-      <h3 class="text-xl font-semibold mb-4">History</h3>
-      <p class="text-sm">No history available.</p>
-    </div>
-  </div>
 
   <!-- Hidden File Input for Avatar Upload -->
   <input
