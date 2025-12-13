@@ -30,12 +30,12 @@ getProfile(): Observable<{ profile: StudentProfileData }> {
   const headers = { Authorization: `Bearer ${token}` };
 return this.http.get<{ profile: StudentProfileData }>(`${this.base}/profile`,{ headers });
 }
-// POST /profile (create/update)
+// POST /profile (create/update profile for authenticated user)
 saveProfile(payload: Partial<StudentProfileData> | FormData): Observable<any> {
   const token = localStorage.getItem('api_token');
   const headers: any = { Authorization: `Bearer ${token}` };
 
-  // If sending FormData (contains avatar file), let HttpClient set the Content-Type boundary automatically
+  // POST to /profile endpoint (backend expects profile save/update here)
   if (payload instanceof FormData) {
     return this.http.post<any>(`${this.base}/profile`, payload, { headers });
   }

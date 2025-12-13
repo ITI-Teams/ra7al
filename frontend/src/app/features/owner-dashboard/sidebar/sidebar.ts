@@ -26,14 +26,10 @@ export class Sidebar {
   }
 
   menuItems = [
-    { label: 'Dashboard', icon: 'fa-solid fa-gauge-high', route: '/owner-dashboard' },
+    { label: 'Dashboard', icon: 'fa-solid fa-gauge-high', route: '/owner-dashboard/owner-dashboardcharts' },
     { label: 'Offer for Rent', icon: 'fa-solid fa-handshake', route: '/owner-dashboard/create-property'},
-    { label: 'Apartments', icon: 'fa-solid fa-building', route: '/owner-dashboard/apartments', badge: 12 },
-    { label: 'Bookings', icon: 'fa-solid fa-calendar-check', route: '/owner-dashboard/bookings', badge: 5 },
-    { label: 'Tenants', icon: 'fa-solid fa-users', route: '/owner-dashboard/tenants' },
-    { label: 'Comments', icon: 'fa-solid fa-comments', route: '/owner-dashboard/comments', badge: 3 },
-    { label: 'Payments', icon: 'fa-solid fa-credit-card', route: '/owner-dashboard/payments' },
-    // { label: 'Reports', icon: 'fa-solid fa-chart-line', route: '/owner-dashboard/reports' },
+    { label: 'Apartments', icon: 'fa-solid fa-building', route: '/owner-dashboard/apartments'},
+    { label: 'Bookings', icon: 'fa-solid fa-calendar-check', route: '/owner-dashboard/rental-requests'},
     { label: 'Settings', icon: 'fa-solid fa-gear', route: '/owner-dashboard/settings' },
   ];
 
