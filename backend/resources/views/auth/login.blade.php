@@ -4,7 +4,7 @@
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
     <div class="flex flex-col md:flex-row w-full h-screen
-                bg-gradient-to-br from-[#f7f2ff] to-white dark:from-gray-900 dark:to-gray-800">
+                bg-gradient-to-br from-[#f7f2ff] to-white ">
 
         <!-- LEFT IMAGE -->
         <div class="relative w-full md:w-1/2 h-1/2 md:h-full order-2 md:order-1">
@@ -20,8 +20,8 @@
         <div class="w-full min-h-screen z-30 absolute md:static md:w-1/2 flex items-center justify-center
                     p-8 md:p-20 order-1 md:order-2">
 
-            <div class="w-full max-w-md bg-white/40 dark:bg-gray-900/40 backdrop-blur-xl
-                        shadow-xl rounded-3xl p-8 md:p-10 border border-white/30 dark:border-white/10">
+            <div class="w-full max-w-md bg-white/40  backdrop-blur-xl
+                        shadow-xl rounded-3xl p-8 md:p-10 border border-white/30 ">
 
                 <h2 class="text-4xl font-extrabold mb-8 text-center
                            bg-gradient-to-r from-[#5e1fbf] to-[#9b4dff]
@@ -34,15 +34,15 @@
 
                     <!-- Email -->
                     <div>
-                        <label class="text-purple-700 dark:text-purple-300 text-[15px] font-medium mb-1 block">
+                        <label class="text-purple-700  text-[15px] font-medium mb-1 block">
                             Email
                         </label>
 
                         <input id="email" type="email" name="email"
                             value="{{ old('email') }}" required autocomplete="email"
                             placeholder="Enter your email"
-                            class="w-full bg-white/40 dark:bg-black/30 px-5 py-3.5 rounded-xl
-                                   border border-[#7a30e3]/40 text-gray-900 dark:text-white
+                            class="w-full bg-white/40  px-5 py-3.5 rounded-xl
+                                   border border-[#7a30e3]/40 text-gray-900
                                    shadow-sm focus:ring-2 focus:ring-[#7a30e3] outline-none transition
                                    @error('email') border-red-500 @enderror">
 
@@ -53,7 +53,7 @@
 
                     <!-- Password -->
                     <div>
-                        <label class="text-purple-700 dark:text-purple-300 text-[15px] font-medium mb-1 block">
+                        <label class="text-purple-700  text-[15px] font-medium mb-1 block">
                             Password
                         </label>
 
@@ -61,8 +61,8 @@
                             <input id="password" type="password" name="password" required
                                 autocomplete="current-password"
                                 placeholder="Enter password"
-                                class="w-full bg-white/40 dark:bg-black/30 px-5 py-3.5 pr-12 rounded-xl
-                                       border border-[#7a30e3]/40 text-gray-900 dark:text-white
+                                class="w-full bg-white/40  px-5 py-3.5 pr-12 rounded-xl
+                                       border border-[#7a30e3]/40 text-gray-900
                                        shadow-sm focus:ring-2 focus:ring-[#7a30e3] outline-none transition
                                        @error('password') border-red-500 @enderror">
 
@@ -89,16 +89,16 @@
 
                     <!-- Remember + Forgot -->
                     <div class="flex items-center justify-between">
-                        <label class="flex items-center text-sm text-purple-700 dark:text-purple-200 cursor-pointer">
+                        <label class="flex items-center text-sm text-purple-700  cursor-pointer">
                             <input id="remember_me" name="remember" type="checkbox"
-                                class="h-4 w-4 rounded border-purple-600 bg-white dark:bg-black text-purple-600
+                                class="h-4 w-4 rounded border-purple-600 bg-white  text-purple-600
                                        focus:ring-purple-500"
                                 {{ old('remember') ? 'checked' : '' }}>
                             <span class="ml-3">Remember me</span>
                         </label>
 
                         <a href="{{ route('password.request') }}"
-                            class="text-purple-600 dark:text-purple-300 text-sm hover:underline">
+                            class="text-purple-600  text-sm hover:underline">
                             Forgot password?
                         </a>
                     </div>
