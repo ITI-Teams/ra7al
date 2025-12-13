@@ -1078,6 +1078,19 @@ class PropertyController extends Controller
                     'icon' => $amenity->icon
                 ];
             }),
+            'comments' => $safeMap('comments', function ($comment) {
+                return [
+                    'id' => $comment->id,
+                    'rating' => (int) $comment->rating,
+                    'comment' => $comment->comment,
+                    'created_at' => $comment->created_at ? $comment->created_at->diffForHumans() : null,
+                    'user' => $comment->user ? [
+                        'id' => $comment->user->id,
+                        'name' => $comment->user->name,
+                        'avatar' => $comment->user->avatar ? asset('storage/' . $comment->user->avatar) : null
+                    ] : null
+                ];
+            }),
             'current_tenants_count' => $safeCount('activeRentals')
         ];
 

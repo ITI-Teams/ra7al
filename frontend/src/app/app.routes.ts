@@ -76,6 +76,7 @@ export const routes: Routes = [
       { path: 'edit-property/:id', component: EditProperty },
       { path: 'owner-dashboardcharts', component: OwnerDashboardCharts },
       { path: 'rental-requests', component: RentalRequests },
+      {path: 'settings', component: OwnerProfile},
     ],
   },
 
