@@ -6,8 +6,8 @@ import { Observable, BehaviorSubject } from 'rxjs';
   providedIn: 'root',
 })
 export class AuthService {
-  private apiBase = 'http://localhost:8010/api';
-  private backendBase = 'http://localhost:8010';
+  private apiBase = 'http://localhost:8000/api';
+  private backendBase = 'http://localhost:8000';
 
   // 🔥 BehaviorSubject لمتابعة المستخدم
   private userSubject = new BehaviorSubject<any>(this.getUser());
