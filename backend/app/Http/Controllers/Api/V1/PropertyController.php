@@ -306,9 +306,10 @@ class PropertyController extends Controller
             }
             // Get all admins
             $admins = User::where('role', 'admin')->get();
-            foreach ($admins as $admin) {
-                $admin->notify(new PropertyCreatedNotification($property));
-            }
+
+            Notification::send($admins, new PropertyCreatedNotification($property));
+
+
 
 
             DB::commit();
@@ -512,11 +513,10 @@ class PropertyController extends Controller
             if ($request->has('amenities')) {
                 $property->amenities()->sync($request->amenities);
             }
-            // Get all admins
             $admins = User::where('role', 'admin')->get();
-
-            // Send notification to all of them
-            NotificationService::sendToMany($admins, new PropertyUpdatedNotification($property));
+            foreach ($admins as $admin) {
+                $admin->notify(new PropertyCreatedNotification($property));
+            }
 
 
             DB::commit();

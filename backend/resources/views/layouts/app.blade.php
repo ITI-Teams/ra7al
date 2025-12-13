@@ -4,8 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <title>Ra7al Dashboard</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js','resources/js/bootstrap.js','resources/js/echo.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
@@ -31,8 +33,9 @@
         <div class="flex-1 flex flex-col transition-all duration-300" :class="$store.sidebar.open ? 'ml-64' : 'ml-20'">
 
             <!-- Header -->
-            <header
-                class="glass-header shadow-lg border-b border-gray-200/20 dark:border-slate-800/50 px-6 py-4 flex justify-between items-center">
+            <header class="glass-header shadow-lg border-b border-gray-200/20 dark:border-slate-800/50 
+           px-6 py-4 flex justify-between items-center 
+           relative z-[5000] !overflow-visible">
                 @include('components.header')
             </header>
 
