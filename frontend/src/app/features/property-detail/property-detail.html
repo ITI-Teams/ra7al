@@ -17,7 +17,7 @@
     >
       <!-- Current Image -->
       <img
-        [src]="prop.images[currentImageIndex].path || prop.images[currentImageIndex].url"
+        [src]="prop.images[currentImageIndex].path || prop.images[currentImageIndex].url  || '/asset/apartments/defaultImage.jpg'"
         [alt]="prop.title"
         class="w-full h-[500px] object-cover transition-opacity duration-500"
       />
@@ -397,7 +397,7 @@
       <div class="relative h-48 overflow-hidden">
         @if (similarProp.images && similarProp.images[0]) {
         <img
-          [src]="similarProp.images[0].path || similarProp.images[0].url"
+          [src]="similarProp.images[0].path || similarProp.images[0].url  || '/asset/apartments/defaultImage.jpg'"
           [alt]="similarProp.title"
           class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
         />

@@ -60,7 +60,6 @@ class MailController extends Controller
             ], $message);
 
             return response()->json($message);
-
         } catch (\Exception $e) {
             \Log::error('Error fetching message: ' . $e->getMessage());
             return response()->json([

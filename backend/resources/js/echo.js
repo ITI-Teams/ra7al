@@ -3,23 +3,27 @@ import Pusher from "pusher-js";
 
 window.Pusher = Pusher;
 
-window.Echo = new Echo({
-    broadcaster: "pusher",
-    key: import.meta.env.VITE_PUSHER_APP_KEY,
-    cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
-    forceTLS: true,
-    encrypted: true,
-    authorizer: (channel, options) => {
-        return {
-            authorize: (socketId, callback) => {
-                axios
-                    .post("/broadcasting/auth", {
-                        socket_id: socketId,
-                        channel_name: channel.name,
-                    })
-                    .then((response) => callback(false, response.data))
-                    .catch((error) => callback(true, error));
-            },
-        };
-    },
-});
+// Create Echo instance ONCE
+if (!window.Echo) {
+    window.Echo = new Echo({
+        broadcaster: "pusher",
+        key: import.meta.env.VITE_PUSHER_APP_KEY,
+        cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
+        forceTLS: true,
+    });
+}
+
+// Attach listener ONCE
+if (!window.__adminNotifListenerAttached) {
+    window.__adminNotifListenerAttached = true;
+
+    window.Echo.private("admin-notifications").notification((notification) => {
+        console.log("Admin notification:", notification);
+
+        window.dispatchEvent(
+            new CustomEvent("admin-notification", {
+                detail: notification,
+            })
+        );
+    });
+}

@@ -308,9 +308,10 @@ class PropertyController extends Controller
             }
             // Get all admins
             $admins = User::where('role', 'admin')->get();
-            foreach ($admins as $admin) {
-                $admin->notify(new PropertyCreatedNotification($property));
-            }
+
+            Notification::send($admins, new PropertyCreatedNotification($property));
+
+
 
 
             DB::commit();
@@ -516,11 +517,10 @@ class PropertyController extends Controller
             if ($request->has('amenities')) {
                 $property->amenities()->sync($request->amenities);
             }
-            // Get all admins
             $admins = User::where('role', 'admin')->get();
-
-            // Send notification to all of them
-            NotificationService::sendToMany($admins, new PropertyUpdatedNotification($property));
+            foreach ($admins as $admin) {
+                $admin->notify(new PropertyCreatedNotification($property));
+            }
 
 
             DB::commit();
@@ -1080,6 +1080,19 @@ class PropertyController extends Controller
                     'id' => $amenity->id,
                     'name' => $amenity->name,
                     'icon' => $amenity->icon
+                ];
+            }),
+            'comments' => $safeMap('comments', function ($comment) {
+                return [
+                    'id' => $comment->id,
+                    'rating' => (int) $comment->rating,
+                    'comment' => $comment->comment,
+                    'created_at' => $comment->created_at ? $comment->created_at->diffForHumans() : null,
+                    'user' => $comment->user ? [
+                        'id' => $comment->user->id,
+                        'name' => $comment->user->name,
+                        'avatar' => $comment->user->avatar ? asset('storage/' . $comment->user->avatar) : null
+                    ] : null
                 ];
             }),
             'current_tenants_count' => $safeCount('activeRentals')

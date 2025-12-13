@@ -1,208 +1,274 @@
-<div class="w-full flex flex-col items-center py-10 px-4">
+<div
+  class="w-full flex flex-col items-center py-10 px-4 bg-gradient-to-br from-orange-50 to-purple-50 dark:from-gray-900 dark:to-gray-800 py-16 px-4 transition-colors duration-300"
+>
+  <!-- Toast Notification -->
+  <div
+    *ngIf="toastMessage"
+    class="fixed top-5 right-5 z-50 px-5 py-3 rounded-xl shadow-lg transform transition-all duration-500 ease-out pointer-events-auto"
+    [ngClass]="{
+    'opacity-0 translate-x-8': !showToast,
+    'opacity-100 translate-x-0': showToast,
+    'bg-green-500 text-white': toastType === 'success',
+    'bg-red-500 text-white': toastType === 'error'
+  }"
+  >
+    <div class="flex items-center gap-3">
+      <!-- Icon -->
+      <ng-container [ngSwitch]="toastType">
+        <i
+          *ngSwitchCase="'success'"
+          class="fas fa-check-circle w-5 h-5 text-white"
+        ></i>
+        <i
+          *ngSwitchCase="'error'"
+          class="fas fa-exclamation-circle w-5 h-5"
+        ></i>
+        <i *ngSwitchDefault class="fas fa-info-circle w-5 h-5"></i>
+      </ng-container>
+
+      <!-- Message -->
+      <span class="text-sm font-medium">{{ toastMessage }}</span>
+    </div>
+  </div>
 
   <!-- Profile Card -->
-  <div class="flex flex-col items-center">
-    <div class="w-28 h-28 rounded-full overflow-hidden shadow-md">
-      <img
-        src="images\profile_owner\3.png"
-        class="w-full h-full object-cover"
-        alt="User"
-      />
+  <div class="flex relative flex-col items-center z-10 w-full max-w-5xl">
+    <div
+      class="flex relative flex-col items-center z-10 w-full max-w-md rounded-3xl shadow-xl p-8 border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 transition-all duration-300 hover:shadow-2xl"
+    >
+      <!-- Avatar Wrapper -->
+      <div class="mt-2 relative w-32 h-32">
+        <!-- Avatar Preview -->
+        <img
+          *ngIf="avatarPreview; else originalAvatar"
+          [src]="avatarPreview"
+          class="w-32 h-32 rounded-full object-cover shadow-lg border-4 border-white dark:border-gray-800"
+        />
+
+        <!-- Avatar Normal -->
+        <ng-template #originalAvatar>
+          <img
+            [src]="avatarUrl()"
+            class="w-32 h-32 rounded-full object-cover shadow-lg border-4 border-white dark:border-gray-800"
+          />
+        </ng-template>
+
+        <!-- Camera Button -->
+        <label
+          class="absolute bottom-0 right-2 bg-gradient-to-r from-orange-500 to-pink-500 text-white py-2 px-3 rounded-full cursor-pointer shadow-md hover:scale-110 transition-all"
+          (click)="openAvatarModal()"
+        >
+          <i class="pi pi-camera text-lg"></i>
+        </label>
+      </div>
+
+      <!-- NAME -->
+      <h2 class="mt-5 text-3xl font-bold dark:text-white text-center">
+        {{ profileForm.get('name')?.value || 'Your Name' }}
+      </h2>
+
+      <!-- EMAIL -->
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 text-center">
+        {{ profileForm.get('email')?.value || profile?.email }}
+      </p>
+
+      <!-- EDIT BUTTON -->
+      <button
+        class="mt-4 px-8 py-2 rounded-xl font-semibold bg-gradient-to-r from-[#852EE4] to-[#A758FF] text-white shadow-md hover:shadow-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-[#852EE4]"
+        (click)="toggleEdit()"
+      >
+        {{ isEditing ? 'Cancel' : 'Edit my info' }}
+      </button>
     </div>
 
-    <h2 class="mt-3 text-xl font-semibold dark:text-white">
-      Saad Safwat
-    </h2>
-
- <button
-  class="mt-3 px-5 py-2 border border-orange-500 text-orange-500 rounded-lg
-         hover:bg-orange-500 hover:text-white transition-all duration-300"
-  (click)="toggleEdit()"
->
-  Edit my info
-</button>
-
-<!-- Edit Form -->
-<div *ngIf="isEditing" class="mt-5 w-900 max-w-md bg-white dark:bg-gray-800 p-5 rounded-xl shadow-lg">
-
-  <label class="block text-gray-600 dark:text-gray-300 mb-1">Name</label>
-  <input
-    type="text"
-    [(ngModel)]="user.name"
-    class="w-full p-2 border rounded-lg mb-3 dark:bg-gray-700 dark:border-gray-600"
-  />
-
-  <label class="block text-gray-600 dark:text-gray-300 mb-1">Email</label>
-  <input
-    type="email"
-    [(ngModel)]="user.email"
-    class="w-full p-2 border rounded-lg mb-3 dark:bg-gray-700 dark:border-gray-600"
-  />
-
-  <label class="block text-gray-600 dark:text-gray-300 mb-1">Password</label>
-  <input
-    type="password"
-    [(ngModel)]="user.password"
-    class="w-full p-2 border rounded-lg mb-4 dark:bg-gray-700 dark:border-gray-600"
-  />
-
-  <div class="flex justify-between">
-    <button
-      class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition"
-      (click)="saveInfo()"
+    <!-- EDIT PROFILE SLIDE PANEL -->
+    <div
+      *ngIf="isEditing"
+      class="fixed inset-0 w-full md:max-w-lg animate-slideLeft bg-transparent flex items-start justify-start z-50"
     >
-      Save
-    </button>
-
-    <button
-      class="px-4 py-2 border border-gray-400 text-gray-600 rounded-lg hover:bg-gray-200 transition"
-      (click)="toggleEdit()"
-    >
-      Cancel
-    </button>
-  </div>
-
-</div>
-  </div>
-
-  <!-- Tabs -->
-  <div class="flex flex-wrap justify-center gap-10 mt-10 border-b w-full max-w-4xl pb-2 text-gray-600 dark:text-gray-300">
-
-    <button
-      class="flex items-center gap-2 pb-2 transition"
-      [ngClass]="{
-        'border-b-2 border-orange-500 text-orange-500 font-semibold dark:text-orange-400': activeTab === 'favourites'
-      }"
-      (click)="changeTab('favourites')"
-    >
-      ❤️ Favourites
-    </button>
-
-    <button
-      class="flex items-center gap-2 pb-2 transition"
-      [ngClass]="{
-        'border-b-2 border-orange-500 text-orange-500 font-semibold dark:text-orange-400': activeTab === 'about'
-      }"
-      (click)="changeTab('about')"
-    >
-      👤 About me
-    </button>
-
-    <button
-      class="flex items-center gap-2 pb-2 transition"
-      [ngClass]="{
-        'border-b-2 border-orange-500 text-orange-500 font-semibold dark:text-orange-400': activeTab === 'roommates'
-      }"
-      (click)="changeTab('roommates')"
-    >
-      👥 Roommates
-    </button>
-
-    <button
-      class="flex items-center gap-2 pb-2 transition"
-      [ngClass]="{
-        'border-b-2 border-orange-500 text-orange-500 font-semibold dark:text-orange-400': activeTab === 'history'
-      }"
-      (click)="changeTab('history')"
-    >
-      🕘 History
-    </button>
-
-  </div>
-
-
-  <!-- ⭐ FAVOURITES TAB -->
-  <div *ngIf="activeTab === 'favourites'" class="grid md:grid-cols-2 grid-cols-1 gap-6 mt-10 w-full max-w-5xl">
-
-    <!-- Card 1 -->
-    <div class="bg-white dark:bg-gray-800 shadow-md rounded-xl overflow-hidden border dark:border-gray-700 cursor-pointer hover:shadow-xl transition">
-      <img src="images\profile_owner\1.png" class="w-full h-48 object-cover" />
-
-      <div class="p-4">
-        <span class="inline-block bg-green-100 text-green-700 px-3 py-1 rounded text-sm">
-          Bills included
-        </span>
-
-        <h3 class="mt-3 font-semibold text-lg dark:text-white">
-          Shared apartment (2/6 open spots)
-        </h3>
-
-        <p class="text-gray-500 dark:text-gray-300 text-sm mt-1">
-          Elhai elsabe , naser city
-        </p>
-
-        <div class="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-300 mt-3">
-          <span>3 Room</span>
-          <span>1 Bath</span>
-          <span>6 Beds</span>
+      <div
+        class="w-full md:max-w-lg h-[100vh] overflow-y-auto bg-white dark:bg-gray-800 p-8 rounded-2xl animate-fadeIn"
+      >
+        <!-- MODAL HEADER -->
+        <div class="flex justify-between items-center mb-6">
+          <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100">
+            Edit Profile
+          </h2>
+          <button
+            (click)="toggleEdit()"
+            class="text-gray-500 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition text-2xl"
+          >
+            ✕
+          </button>
         </div>
 
-        <div class="flex items-center justify-between mt-4">
-          <span class="font-semibold text-lg text-gray-900 dark:text-white">
-            $200 <span class="text-sm text-gray-400">/ month</span>
-          </span>
+        <!-- FORM -->
+        <form [formGroup]="profileForm" class="space-y-6">
+          <!-- Name -->
+          <div>
+            <label
+              class="block text-gray-700 dark:text-gray-300 mb-2 font-medium"
+              >Name</label
+            >
+            <input
+              type="text"
+              formControlName="name"
+              class="w-full p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#852EE4] dark:bg-gray-700 dark:border-gray-600"
+              placeholder="Enter your name"
+            />
+            <div
+              class="text-red-500 text-sm mt-1"
+              *ngIf="profileForm.get('name')?.invalid && profileForm.get('name')?.touched"
+            >
+              <div *ngIf="profileForm.get('name')?.errors?.['required']">
+                Name is required.
+              </div>
+              <div *ngIf="profileForm.get('name')?.errors?.['pattern']">
+                Name must be text only.
+              </div>
+            </div>
+          </div>
 
-          <button class="text-gray-400 dark:text-gray-200 text-xl">⋮</button>
-        </div>
+          <!-- Email -->
+          <div>
+            <label
+              class="block text-gray-700 dark:text-gray-300 mb-2 font-medium"
+              >Email</label
+            >
+            <input
+              type="email"
+              formControlName="email"
+              class="w-full p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#852EE4] dark:bg-gray-700 dark:border-gray-600"
+              placeholder="Enter your email"
+            />
+            <div
+              class="text-red-500 text-sm mt-1"
+              *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched"
+            >
+              <div *ngIf="profileForm.get('email')?.errors?.['required']">
+                Email is required.
+              </div>
+              <div *ngIf="profileForm.get('email')?.errors?.['email']">
+                Invalid email format.
+              </div>
+            </div>
+          </div>
+
+          <!-- Password -->
+          <div>
+            <label
+              class="block text-gray-700 dark:text-gray-300 mb-2 font-medium"
+              >Password</label
+            >
+            <input
+              type="password"
+              formControlName="password"
+              class="w-full p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#852EE4] dark:bg-gray-700 dark:border-gray-600"
+              placeholder="Enter your password"
+            />
+            <div
+              class="text-red-500 text-sm mt-1"
+              *ngIf="profileForm.get('password')?.invalid && profileForm.get('password')?.touched"
+            >
+              <div *ngIf="profileForm.get('password')?.errors?.['minlength']">
+                Password must be at least 6 characters.
+              </div>
+              <div *ngIf="profileForm.get('password')?.errors?.['maxlength']">
+                Password cannot exceed 20 characters.
+              </div>
+            </div>
+          </div>
+          <!-- Buttons -->
+          <div class="flex justify-end gap-4 mt-6">
+            <button
+              type="button"
+              class="px-6 py-3 rounded-xl font-semibold text-white bg-[#852EE4] hover:bg-[#6e24c0] transition shadow-md"
+              (click)="confirmSave()"
+            >
+              Save
+            </button>
+
+            <button
+              type="button"
+              class="px-6 py-3 border rounded-xl font-semibold border-gray-400 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+              (click)="toggleEdit()"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
       </div>
     </div>
 
-    <!-- Card 2 -->
-    <div class="bg-white dark:bg-gray-800 shadow-md rounded-xl overflow-hidden border dark:border-gray-700 cursor-pointer hover:shadow-xl transition">
-      <img src="images\profile_owner\2.png" class="w-full h-48 object-cover" />
+ <!-- Hidden File Input for Avatar Upload -->
+  <input
+    type="file"
+    id="avatarInput"
+    accept="image/*"
+    (change)="onAvatarChange($event)"
+    class="hidden"
+  />
 
-      <div class="p-4">
-        <span class="inline-block bg-red-100 text-red-700 px-3 py-1 rounded text-sm">
-          no bills paid
-        </span>
+  <style>
+    @keyframes slideLeft {
+      from {
+        transform: translateX(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
 
-        <h3 class="mt-3 font-semibold text-lg dark:text-white">
-          Private accommodation
-        </h3>
+    .animate-slideLeft {
+      animation: slideLeft 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
 
-        <p class="text-gray-500 dark:text-gray-300 text-sm mt-1">
-          Elhai elsabe , naser city
-        </p>
+    @keyframes glow {
+      0% {
+        transform: scale(1);
+        opacity: 0.4;
+      }
+      50% {
+        transform: scale(1.15);
+        opacity: 0.6;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 0.4;
+      }
+    }
+    .animate-glow {
+      animation: glow 3s infinite ease-in-out;
+    }
 
-        <div class="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-300 mt-3">
-          <span>2 Room</span>
-          <span>1 Bath</span>
-          <span>1 Bed</span>
-        </div>
+    @keyframes pop {
+      0% {
+        transform: scale(0.6);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    .animate-pop {
+      animation: pop 0.35s ease-out forwards;
+    }
 
-        <div class="flex items-center justify-between mt-4">
-          <span class="font-semibold text-lg text-gray-900 dark:text-white">
-            $250 <span class="text-sm text-gray-400">/ month</span>
-          </span>
-
-          <button class="text-gray-400 dark:text-gray-200 text-xl">⋮</button>
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-
-
-  <!-- ⭐ ABOUT ME TAB -->
-  <div *ngIf="activeTab === 'about'" class="mt-10 w-full max-w-3xl text-gray-700 dark:text-gray-300">
-    <h3 class="text-xl font-semibold mb-4">About Me</h3>
-    <p class="text-sm">
-      Add personal information here...
-    </p>
-  </div>
-
-  <!-- ⭐ ROOMMATES TAB -->
-  <div *ngIf="activeTab === 'roommates'" class="mt-10 w-full max-w-3xl text-gray-700 dark:text-gray-300">
-    <h3 class="text-xl font-semibold mb-4">Roommates</h3>
-    <p class="text-sm">No roommates found.</p>
-  </div>
-
-  <!-- ⭐ HISTORY TAB -->
-  <div *ngIf="activeTab === 'history'" class="mt-10 w-full max-w-3xl text-gray-700 dark:text-gray-300">
-    <h3 class="text-xl font-semibold mb-4">History</h3>
-    <p class="text-sm">No history available.</p>
-  </div>
-
+    @keyframes popupEnter {
+      0% {
+        transform: translateY(40px) scale(0.9);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+    }
+    .animate-popupEnter {
+      animation: popupEnter 0.35s ease-out forwards;
+    }
+  </style>
 </div>
-

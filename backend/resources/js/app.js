@@ -48,3 +48,5 @@ document.addEventListener("alpine:init", () => {
 document.addEventListener("DOMContentLoaded", () => {
     Alpine.start();
 });
+import "./bootstrap";
+import "./echo";

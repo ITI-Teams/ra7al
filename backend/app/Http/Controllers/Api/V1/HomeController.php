@@ -11,7 +11,7 @@ class HomeController extends Controller
     public function latestPropertiesByCity()
     {
         $cities = City::inRandomOrder()
-            ->limit(4)
+            ->limit(8)
             ->with(['properties' => function ($q) {
                 $q->latest()->take(4);
             }])

@@ -775,8 +775,11 @@ export class PropertyService {
     rating: number,
     comment: string
   ): Observable<any> {
+    const token = localStorage.getItem('api_token');
+    const headers: any = token ? { Authorization: `Bearer ${token}` } : {};
+
     return this.http
-      .post<any>(`${this.apiUrl}/${propertyId}/comments`, { rating, comment })
+      .post<any>(`${this.apiUrl}/${propertyId}/comments`, { rating, comment }, { headers })
       .pipe(
         catchError((error: HttpErrorResponse) => {
           console.error('Failed to add comment:', error);

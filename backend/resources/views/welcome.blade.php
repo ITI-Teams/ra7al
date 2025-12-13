@@ -1521,60 +1521,85 @@
     @endif
 </head>
 
-<body class="h-screen w-screen m-0 p-0">
-    <div class="h-screen w-screen flex items-center justify-center bg-cover bg-center"
-        style="background-image: url({{Storage::url('admin/bg2.png')}});">
+<body class="">
 
-        <div class=" rounded-2xl p-10 w-full 
-                flex flex-col md:flex-row  gap-10 mx-4">
-            <div class="text-left w-full md:w-2/3" style="font-family: 'DM Serif Display', serif;">
-                <!-- Small heading -->
-                <p class="uppercase text-2xl tracking-wider text-gray-700">We are here for you</p>
+    <!-- Background soft shapes -->
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute top-[-100px] left-[-80px] w-[320px] h-[320px] bg-[#E0ECF4] blur-[90px] rounded-full"></div>
+        <div class="absolute bottom-[-120px] right-[-100px] w-[380px] h-[380px] bg-[#DCE7F1] blur-[100px] rounded-full"></div>
+    </div>
 
-                <!-- Main title -->
-                <h1 class="text-8xl  mt-6 leading-tight">
-                    Welcome Admin we were waiting you
-                </h1>
+    <!-- Main Content -->
+    <div class="relative z-20 h-full bg-[#F5F7FA] min-h-screen flex items-center justify-center p-15 py-20 text-center md:text-start overflow-x-hidden">
 
-                <!-- Last login -->
+        <div class="w-full max-w-7xl grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+
+            <!-- LEFT SECTION -->
+            <div class="space-y-10" style="font-family: 'Inter', sans-serif;">
+
+                <div class="space-y-3">
+                    <h3 class="text-gray-500 text-sm tracking-wider uppercase">
+                        Admin Portal
+                    </h3>
+
+                    <h1 class="text-5xl lg:text-6xl font-extrabold text-gray-800 leading-tight">
+                        Welcome Back,
+                        <span class="block mt-2 text-gray-700">Good to See You.</span>
+                    </h1>
+                </div>
+
                 @php
-
-                $admin = \App\Models\User::where('role', 'admin')->first();
-
+                    $admin = \App\Models\User::where('role', 'admin')->first();
                 @endphp
 
-                <p class="mt-8 text-3xl text-gray-600">
-                    <span class="font-bold">Last Login</span> ·
+                <p class="text-xl text-gray-600">
+                    <span class="font-semibold">Last Login:</span>
                     {{ $admin && $admin->last_login
-                    ? $admin->last_login->format('F jS, Y H:i A')
-                    : 'Never'
-                    }}
+                        ? $admin->last_login->format('F j, Y • H:i A')
+                        : 'No previous login found.' }}
                 </p>
-                <!-- Subtext -->
-                <p class="mt-6 text-2xl text-gray-500">
-                    Buckle up — we ought to ruin someone’s life now
+
+                <p class="text-lg text-gray-500 max-w-xl">
+                    “Your admin panel is ready. Manage content, users and settings
+                    effortlessly in a clean and simple interface.”
                 </p>
+
             </div>
 
-            <div class="flex flex-col items-center w-full md:w-1/3 mt-10 md:mt-0 self-start">
-                <!-- Avatar -->
-                <div class="w-80 h-80 rounded-full overflow-hidden flex items-center justify-center">
-                    <img src="{{ Storage::url('admin/ava3.png') }}" alt="Admin Avatar"
-                        class="w-full h-full object-cover">
+            <!-- RIGHT SECTION -->
+            <div class="flex flex-col items-center">
+
+                <!-- Minimal Avatar -->
+                <div
+                    class="w-60 h-60 lg:w-72 lg:h-72 flex items-center justify-center rounded-full overflow-hidden shadow-md bg-white p-[4px]">
+
+                    <img src="assets/auth.avif"
+                         class="w-full h-full object-cover rounded-full" />
                 </div>
-                @guest
-                <button class="mt-6 w-48 bg-green-600 text-white px-6 py-3 rounded-full hover:bg-green-700 transition"
-                    onclick="window.location='{{ route('login') }}'">
-                    LOGIN
-                </button>
-                @endguest
-            </div>
 
+                <!-- Login button if guest -->
+                @guest
+                    <button
+                        onclick="window.location='{{ route('login') }}'"
+                        class="mt-10 px-14 py-3 mx-auto text-lg font-medium rounded-lg
+                        bg-[#4A90E2] text-white hover:bg-[#3c7bc0]
+                        shadow-sm transition-all duration-200"
+                        style="font-family: 'Inter', sans-serif;">
+                        LOGIN
+                    </button>
+                @endguest
+
+            </div>
 
         </div>
 
     </div>
-    </div>
+
+    <!-- Import Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+
 </body>
+
+
 
 </html>

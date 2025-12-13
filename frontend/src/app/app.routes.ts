@@ -70,12 +70,13 @@ export const routes: Routes = [
     canActivate: [UserRoleGuard],
     data: { role: 'owner' },
     children: [
-      { path: '', redirectTo: 'dashboardcharts', pathMatch: 'full' },
+      { path: '', redirectTo: 'owner-dashboardcharts', pathMatch: 'full' },
       { path: 'apartments', component: Apartments },
       { path: 'create-property', component: CreateProperty },
       { path: 'edit-property/:id', component: EditProperty },
       { path: 'owner-dashboardcharts', component: OwnerDashboardCharts },
       { path: 'rental-requests', component: RentalRequests },
+      {path: 'settings', component: OwnerProfile},
     ],
   },
 
